@@ -1,0 +1,104 @@
+.question-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: #181818;
+
+  border: 1px solid #242424;
+
+  border-radius: 20px;
+
+  padding: 18px 20px;
+
+  margin-bottom: 14px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.checkbox-wrapper input {
+  display: none;
+}
+
+.custom-check {
+  width: 22px;
+  height: 22px;
+
+  border: 2px solid #ff8b38;
+
+  border-radius: 50%;
+
+  display: inline-block;
+
+  cursor: pointer;
+}
+
+.checkbox-wrapper
+  input:checked
+  + .custom-check {
+  background: #ff8b38;
+}
+
+.completed-question {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.note-pill {
+  background: #1f1f1f;
+
+  border-radius: 999px;
+
+  padding: 8px 12px;
+
+  font-size: 13px;
+}
+
+.source-icon {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  background: white;
+
+  padding: 5px;
+}
+
+.delete-question-btn {
+  width: 36px;
+  height: 36px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 70, 70, .08);
+
+  color: #ff5c5c;
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+  transition: .2s ease;
+}
+
+.delete-question-btn:hover {
+  background:
+    rgba(255, 70, 70, .18);
+
+  transform:
+    translateY(-2px);
+}

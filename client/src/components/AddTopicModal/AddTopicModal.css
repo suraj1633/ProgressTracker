@@ -1,0 +1,44 @@
+.topic-modal {
+  background: #151515;
+
+  border: 1px solid #272727;
+
+  border-radius: 20px;
+
+  padding: 24px;
+
+  margin-bottom: 30px;
+}
+
+.topic-modal form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.topic-modal input {
+  flex: 1;
+
+  background: #1d1d1d;
+
+  border: 1px solid #272727;
+
+  color: white;
+
+  padding: 14px;
+
+  border-radius: 14px;
+}
+
+.topic-modal button {
+  background: #ff8b38;
+  color: white;
+
+  padding: 14px 20px;
+
+  border-radius: 14px;
+}
+
+.topic-modal h2 {
+  margin-bottom: 20px;
+}

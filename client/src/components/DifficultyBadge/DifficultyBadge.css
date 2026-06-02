@@ -1,0 +1,40 @@
+.difficulty-pill {
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.difficulty-pill.easy {
+  background: rgba(
+    35,
+    209,
+    139,
+    0.15
+  );
+
+  color: #23d18b;
+}
+
+.difficulty-pill.medium {
+  background: rgba(
+    247,
+    181,
+    0,
+    0.15
+  );
+
+  color: #f7b500;
+}
+
+.difficulty-pill.hard {
+  background: rgba(
+    255,
+    75,
+    92,
+    0.15
+  );
+
+  color: #ff4b5c;
+}

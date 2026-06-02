@@ -1,0 +1,272 @@
+.dashboard-layout {
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255, 120, 0, 0.08),
+      transparent 25%
+    ),
+    #080808;
+}
+
+.dashboard-content {
+  width: 100%;
+  max-width: 1600px;
+
+  margin: 0 auto;
+
+  padding: 50px 60px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.dashboard-header {
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.dashboard-header p {
+  color: #8d8d8d;
+  font-size: 18px;
+}
+
+/* =========================
+   OVERVIEW CARD
+========================= */
+
+.overview-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(24, 24, 24, 0.96),
+      rgba(12, 12, 12, 0.96)
+    );
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.06);
+
+  border-radius: 32px;
+
+  padding: 38px;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+.overview-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: -120px;
+  right: -120px;
+
+  width: 220px;
+  height: 220px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 132, 0, 0.08);
+
+  filter: blur(50px);
+}
+
+.overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+.overview-header p {
+  color: #8d8d8d;
+  margin-top: 6px;
+}
+
+.completion-badge {
+  background:
+    rgba(255, 139, 56, 0.15);
+
+  color: #ff8b38;
+
+  padding: 12px 18px;
+
+  border-radius: 999px;
+
+  font-weight: 700;
+}
+
+/* =========================
+   DASHBOARD GRID
+========================= */
+
+.stats-grid {
+  width: 100%;
+}
+
+.dashboard-grid {
+  display: grid;
+
+  grid-template-columns:
+    1.15fr 2fr;
+
+  gap: 24px;
+
+  margin-bottom: 35px;
+
+  width: 100%;
+}
+
+/* LEFT PANEL */
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* RIGHT PANEL */
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+/* UNIFORM CARD SIZE */
+
+.stats-card {
+  width: 100%;
+  min-height: 220px;
+  height: 220px;
+}
+
+/* ROWS */
+
+.top-row,
+.middle-row {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 24px;
+
+  width: 100%;
+}
+
+/* PROGRESS CARD */
+
+.bottom-row {
+  width: 100%;
+}
+
+.bottom-row .overview-card {
+  width: 100%;
+
+  min-height: 220px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* =========================
+   TOPIC SECTION
+========================= */
+
+.topic-section {
+  margin-top: 20px;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+.section-title span {
+  color: #8d8d8d;
+}
+
+.empty-dashboard {
+  background: #141414;
+
+  border: 1px dashed #2d2d2d;
+
+  border-radius: 30px;
+
+  text-align: center;
+
+  padding: 80px 30px;
+}
+
+.empty-dashboard h3 {
+  margin-bottom: 10px;
+}
+
+.empty-dashboard p {
+  color: #8d8d8d;
+}
+
+/* =========================
+   HEATMAP
+========================= */
+
+.heatmap-card {
+  margin-top: 40px;
+
+  padding: 34px;
+
+  border-radius: 32px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(22, 22, 22, 0.95),
+      rgba(12, 12, 12, 0.95)
+    );
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.06);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top-row,
+  .middle-row {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-card {
+    height: auto;
+    min-height: 180px;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-content {
+    padding: 25px;
+  }
+}

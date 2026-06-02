@@ -1,0 +1,196 @@
+/* =========================
+   GOOGLE FONT
+========================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* =========================
+   RESET
+========================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family:
+    "Inter",
+    sans-serif;
+
+  background:
+    #080808;
+
+  color: white;
+
+  min-height: 100vh;
+
+  overflow-x: hidden;
+
+  -webkit-font-smoothing:
+    antialiased;
+
+  -moz-osx-font-smoothing:
+    grayscale;
+}
+
+/* =========================
+   TYPOGRAPHY
+========================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: white;
+
+  font-weight: 700;
+
+  line-height: 1.1;
+}
+
+p {
+  line-height: 1.6;
+
+  color: #c7b4a2;
+}
+
+a {
+  text-decoration: none;
+
+  color: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* =========================
+   BUTTON RESET
+========================= */
+
+button {
+  border: none;
+
+  outline: none;
+
+  cursor: pointer;
+
+  background: transparent;
+}
+
+/* =========================
+   INPUT RESET
+========================= */
+
+input,
+textarea,
+select {
+  outline: none;
+}
+
+/* =========================
+   SELECTION
+========================= */
+
+::selection {
+  background:
+    rgba(255,139,56,.25);
+
+  color: white;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background:
+    #101010;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ff9238,
+      #ff6a00
+    );
+
+  transition:
+    background .2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(
+      180deg,
+      #ffab5c,
+      #ff7a1a
+    );
+}
+
+/* =========================
+   FOCUS RING
+========================= */
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus-visible {
+  box-shadow:
+    0 0 0 4px
+    rgba(255,139,56,.12);
+}
+
+/* =========================
+   UTILITY
+========================= */
+
+img {
+  max-width: 100%;
+
+  display: block;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* =========================
+   SMOOTH TRANSITIONS
+========================= */
+
+button,
+a,
+input,
+textarea,
+select {
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease,
+    color .2s ease;
+}

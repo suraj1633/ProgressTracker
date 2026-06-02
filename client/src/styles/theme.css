@@ -1,0 +1,137 @@
+/* =========================
+   ROOT THEME
+========================= */
+
+:root {
+  /* =========================
+     BACKGROUNDS
+  ========================= */
+
+  --bg-primary:
+    #080808;
+
+  --bg-secondary:
+    rgba(24, 24, 24, 0.96);
+
+  --bg-tertiary:
+    rgba(12, 12, 12, 0.96);
+
+  --bg-soft:
+    rgba(255,255,255,.03);
+
+  /* =========================
+     BORDERS
+  ========================= */
+
+  --border-primary:
+    rgba(255,139,56,.08);
+
+  --border-hover:
+    rgba(255,139,56,.16);
+
+  /* =========================
+     TEXT
+  ========================= */
+
+  --text-primary:
+    #ffffff;
+
+  --text-secondary:
+    #b7a08d;
+
+  --text-muted:
+    #907b68;
+
+  /* =========================
+     ORANGE THEME
+  ========================= */
+
+  --orange:
+    #ff9238;
+
+  --orange-dark:
+    #ff6a00;
+
+  --orange-soft:
+    rgba(255,139,56,.08);
+
+  --orange-glow:
+    rgba(255,139,56,.18);
+
+  /* gradient button/card accent */
+  --orange-gradient:
+    linear-gradient(
+      145deg,
+      #ff9238,
+      #ff6a00
+    );
+
+  /* =========================
+     STATUS
+  ========================= */
+
+  --success:
+    #22c55e;
+
+  --warning:
+    #facc15;
+
+  --danger:
+    #ff6b6b;
+
+  /* =========================
+     SHADOWS
+  ========================= */
+
+  --shadow-soft:
+    0 10px 30px
+    rgba(0,0,0,.28);
+
+  --shadow-glow:
+    0 0 30px
+    rgba(255,139,56,.14);
+
+  /* =========================
+     GLASS
+  ========================= */
+
+  --glass-bg:
+    linear-gradient(
+      145deg,
+      rgba(24,24,24,.96),
+      rgba(12,12,12,.96)
+    );
+
+  --glass-border:
+    1px solid
+    rgba(255,139,56,.08);
+
+  --glass-blur:
+    blur(20px);
+
+  /* =========================
+     RADIUS
+  ========================= */
+
+  --radius-sm:
+    16px;
+
+  --radius-md:
+    22px;
+
+  --radius-lg:
+    30px;
+
+  --radius-xl:
+    34px;
+
+  /* =========================
+     TRANSITIONS
+  ========================= */
+
+  --transition-fast:
+    .2s ease;
+
+  --transition:
+    .3s ease;
+}
