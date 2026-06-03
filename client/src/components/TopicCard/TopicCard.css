@@ -23,11 +23,11 @@
 .topic-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 20px;
 
   cursor: pointer;
 }
-
 .topic-title-row {
   display: flex;
   align-items: center;
@@ -92,6 +92,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
+
+  flex-wrap: wrap;
 }
 
 .add-question-btn,
@@ -126,4 +128,35 @@
 .topic-btn {
   background: #ff8b38;
   color: white;
+}
+
+/* Responsive Fix */
+
+@media (max-width: 700px) {
+  .topic-header {
+    align-items: flex-start;
+  }
+
+  .topic-actions {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    flex-shrink: 0;
+  }
+
+  .add-question-btn,
+  .topic-btn,
+  .delete-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .topic-title-row {
+    flex-wrap: wrap;
+  }
+
+  .topic-click {
+    min-width: 0;
+  }
 }
