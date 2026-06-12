@@ -1,9 +1,7 @@
 const getFavicon = (url) => {
   try {
-    const domain = new URL(url).hostname;
-
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-  } catch (error) {
+    return `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(url)}&sz=64`;
+  } catch {
     return "";
   }
 };
