@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FaTrash } from "react-icons/fa";
+import {
+  FaChevronDown,
+  FaPlus,
+  FaTrash,
+} from "react-icons/fa";
 
 import ProgressBar from "../ProgressBar/ProgressBar";
 import QuestionRow from "../QuestionRow/QuestionRow";
@@ -56,9 +60,7 @@ const TopicCard = ({
 
   return (
     <div className="topic-card">
-      <div
-        className="topic-header"
-      >
+      <div className="topic-header">
         <div
           className="topic-click"
           onClick={() =>
@@ -98,8 +100,10 @@ const TopicCard = ({
                 !showAddQuestion
               )
             }
+            aria-label="Add question"
+            title="Add question"
           >
-            +
+            <FaPlus />
           </button>
 
           <button
@@ -107,21 +111,37 @@ const TopicCard = ({
             onClick={
               handleDelete
             }
+            aria-label="Delete topic"
+            title="Delete topic"
           >
             <FaTrash />
           </button>
 
           <button
-            className="topic-btn"
+            className={
+              `topic-btn${
+                expanded
+                  ? " is-expanded"
+                  : ""
+              }`
+            }
             onClick={() =>
               setExpanded(
                 !expanded
               )
             }
+            aria-label={
+              expanded
+                ? "Collapse topic"
+                : "Expand topic"
+            }
+            title={
+              expanded
+                ? "Collapse topic"
+                : "Expand topic"
+            }
           >
-            {expanded
-              ? "−"
-              : "+"}
+            <FaChevronDown />
           </button>
         </div>
       </div>

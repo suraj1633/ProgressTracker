@@ -112,11 +112,38 @@ export const getAnalytics =
   async (
     type = "month",
     year,
-    month
+    month,
+    week
   ) => {
+    const params =
+      new URLSearchParams({
+        type,
+      });
+
+    if (year) {
+      params.append(
+        "year",
+        year
+      );
+    }
+
+    if (month) {
+      params.append(
+        "month",
+        month
+      );
+    }
+
+    if (week) {
+      params.append(
+        "week",
+        week
+      );
+    }
+
     const response =
       await API.get(
-        `/analytics?type=${type}&year=${year}&month=${month}`
+        `/analytics?${params.toString()}`
       );
 
     return response.data;
@@ -142,4 +169,51 @@ export const getAnalytics =
     return response.data;
   };
 
-  
+/*
+==================================
+TIPS
+==================================
+*/
+
+export const getTips =
+  async () => {
+    const response =
+      await API.get("/tips");
+
+    return response.data;
+  };
+
+export const createTip =
+  async (tipData) => {
+    const response =
+      await API.post(
+        "/tips",
+        tipData
+      );
+
+    return response.data;
+  };
+
+export const updateTip =
+  async (
+    id,
+    tipData
+  ) => {
+    const response =
+      await API.put(
+        `/tips/${id}`,
+        tipData
+      );
+
+    return response.data;
+  };
+
+export const deleteTip =
+  async (id) => {
+    const response =
+      await API.delete(
+        `/tips/${id}`
+      );
+
+    return response.data;
+  };

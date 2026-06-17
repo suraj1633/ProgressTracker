@@ -4,7 +4,7 @@ import Logo from "../../assets/logo.svg";
 import {
   HiOutlineChartBar,
   HiOutlineSquares2X2,
-  HiOutlineCodeBracket,
+  HiOutlineLightBulb,
 } from "react-icons/hi2";
 
 import "./Navbar.css";
@@ -52,6 +52,20 @@ const Navbar = () => {
           <HiOutlineChartBar />
 
           Analytics
+        </Link>
+
+        <Link
+          to="/tips"
+          className={
+            location.pathname ===
+            "/tips"
+              ? "active-link"
+              : ""
+          }
+        >
+          <HiOutlineLightBulb />
+
+          Tips
         </Link>
       </div>
     </nav>

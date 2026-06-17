@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 
 import topicRoutes from "./routes/topicRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
+import tipRoutes from "./routes/tipRoutes.js";
 
 dotenv.config();
 
@@ -55,6 +56,11 @@ app.use(
 app.use(
   "/api/analytics",
   analyticsRoutes
+);
+
+app.use(
+  "/api/tips",
+  tipRoutes
 );
 
 const PORT =

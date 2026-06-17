@@ -1,5 +1,9 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import {
+  FaSave,
+  FaTimes,
+} from "react-icons/fa";
 
 import "./NoteModal.css";
 
@@ -9,18 +13,36 @@ const NoteModal = ({
   note,
   setNote,
   onSave,
+  questionTitle,
 }) => {
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow =
-        "hidden";
-    }
+    if (!open) return undefined;
+
+    document.body.style.overflow =
+      "hidden";
+
+    const handleKeyDown =
+      (event) => {
+        if (event.key === "Escape") {
+          onClose();
+        }
+      };
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
 
     return () => {
       document.body.style.overflow =
         "auto";
+
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
     };
-  }, [open]);
+  }, [open, onClose]);
 
   if (!open) return null;
 
@@ -34,26 +56,73 @@ const NoteModal = ({
         onClick={(e) =>
           e.stopPropagation()
         }
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="note-modal-title"
       >
-        <h2>Edit Note</h2>
+        <div className="note-modal-header">
+          <div>
+            <p className="note-modal-kicker">
+              Question note
+            </p>
+            <h2 id="note-modal-title">
+              Edit Note
+            </h2>
+          </div>
 
-        <textarea
-          value={note}
-          onChange={(e) =>
-            setNote(
-              e.target.value
-            )
-          }
-          placeholder="Write your notes..."
-        />
+          <button
+            className="note-modal-close"
+            onClick={onClose}
+            aria-label="Close note"
+          >
+            <FaTimes />
+          </button>
+        </div>
+
+        {questionTitle && (
+          <p className="note-modal-question">
+            {questionTitle}
+          </p>
+        )}
+
+        <div className="note-editor">
+          <textarea
+            value={note}
+            onChange={(e) =>
+              setNote(
+                e.target.value
+              )
+            }
+            placeholder="Write a quick reminder, approach, or edge case to revisit..."
+            autoFocus
+          />
+
+          <div className="note-editor-meta">
+            <span>
+              {note.trim()
+                ? "Saved when you click Save"
+                : "Empty notes are allowed"}
+            </span>
+            <span>
+              {note.length} chars
+            </span>
+          </div>
+        </div>
 
         <div className="modal-actions">
-          <button onClick={onClose}>
+          <button
+            className="modal-secondary"
+            onClick={onClose}
+          >
             Cancel
           </button>
 
-          <button onClick={onSave}>
-            Save
+          <button
+            className="modal-primary"
+            onClick={onSave}
+          >
+            <FaSave />
+            Save Note
           </button>
         </div>
       </div>

@@ -11,6 +11,11 @@ import {
 import DifficultyBadge from "../DifficultyBadge/DifficultyBadge";
 
 import { useState } from "react";
+import {
+  FaPlus,
+  FaRegEdit,
+  FaTrash,
+} from "react-icons/fa";
 
 import NoteModal from "../NoteModal/NoteModal";
 
@@ -32,6 +37,11 @@ const QuestionRow = ({
   const [note, setNote] =
     useState(
       question.notes || ""
+    );
+
+  const hasNote =
+    Boolean(
+      question.notes?.trim()
     );
 
   const handleToggle =
@@ -83,8 +93,16 @@ const QuestionRow = ({
     };
 
   return (
-    <div className="question-row">
-      <div className="left">
+    <div
+      className={
+        `question-row${
+          question.completed
+            ? " is-completed"
+            : ""
+        }`
+      }
+    >
+      <div className="question-main">
         <label className="checkbox-wrapper">
           <input
             type="checkbox"
@@ -94,23 +112,24 @@ const QuestionRow = ({
             onChange={
               handleToggle
             }
+            aria-label={
+              question.completed
+                ? "Mark question as incomplete"
+                : "Mark question as complete"
+            }
           />
 
           <span className="custom-check" />
         </label>
 
-        <span
-          className={
-            question.completed
-              ? "completed-question"
-              : ""
-          }
-        >
-          {question.title}
-        </span>
+        <div className="question-content">
+          <span className="question-title">
+            {question.title}
+          </span>
+        </div>
       </div>
 
-      <div className="right">
+      <div className="question-actions">
         <DifficultyBadge
           difficulty={
             question.difficulty
@@ -118,40 +137,57 @@ const QuestionRow = ({
         />
 
         <button
-          className="note-pill"
+          className="row-action-btn note-action"
           onClick={() =>
             setShowNote(true)
           }
+          aria-label={
+            hasNote
+              ? "Edit note"
+              : "Add note"
+          }
+          title={
+            hasNote
+              ? "Edit note"
+              : "Add note"
+          }
         >
-          {question.notes
-            ? "📝 Edit Note"
-            : "➕ Add Note"}
-        </button>
-
-        <button
-          className="delete-question-btn"
-          onClick={handleDelete}
-        >
-          🗑
+          {hasNote ? (
+            <FaRegEdit />
+          ) : (
+            <FaPlus />
+          )}
         </button>
 
         {question.sourceIcon && (
           <a
+            className="row-action-btn source-action"
             href={
               question.sourceLink
             }
             target="_blank"
             rel="noreferrer"
+            aria-label="Open source"
+            title="Open source"
           >
             <img
               src={
                 question.sourceIcon
               }
-              alt="source"
+              alt=""
               className="source-icon"
             />
           </a>
         )}
+
+        <button
+          className="row-action-btn delete-question-btn"
+          onClick={handleDelete}
+          aria-label="Delete question"
+          title="Delete question"
+        >
+          <FaTrash />
+        </button>
       </div>
 
       <NoteModal
@@ -162,6 +198,9 @@ const QuestionRow = ({
         note={note}
         setNote={setNote}
         onSave={handleSaveNote}
+        questionTitle={
+          question.title
+        }
       />
     </div>
   );

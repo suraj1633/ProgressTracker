@@ -1,4 +1,7 @@
 import { useState } from "react";
+import {
+  FaPlus,
+} from "react-icons/fa";
 
 import {
   addQuestion,
@@ -68,65 +71,90 @@ const AddQuestionModal = ({
         handleSubmit
       }
     >
-      <input
-        placeholder="Question"
-        value={title}
-        onChange={(e) =>
-          setTitle(
-            e.target.value
-          )
-        }
-      />
+      <div className="question-form-header">
+        <h4>
+          Add Question
+        </h4>
 
-      <select
-        value={
-          difficulty
-        }
-        onChange={(e) =>
-          setDifficulty(
-            e.target.value
-          )
-        }
-      >
-        <option>
-          Easy
-        </option>
+        <span>
+          Add a problem to this topic
+        </span>
+      </div>
 
-        <option>
-          Medium
-        </option>
+      <div className="question-form-grid">
+        <label className="question-title-field">
+          <span>Question</span>
+          <input
+            placeholder="2574. Left and Right Sum Differences"
+            value={title}
+            onChange={(e) =>
+              setTitle(
+                e.target.value
+              )
+            }
+          />
+        </label>
 
-        <option>
-          Hard
-        </option>
-      </select>
+        <label>
+          <span>Difficulty</span>
+          <select
+            value={
+              difficulty
+            }
+            onChange={(e) =>
+              setDifficulty(
+                e.target.value
+              )
+            }
+          >
+            <option>
+              Easy
+            </option>
 
-      <input
-        placeholder="Source link"
-        value={
-          sourceLink
-        }
-        onChange={(e) =>
-          setSourceLink(
-            e.target.value
-          )
-        }
-      />
+            <option>
+              Medium
+            </option>
 
-      <input
-        placeholder="Notes"
-        value={notes}
-        onChange={(e) =>
-          setNotes(
-            e.target.value
-          )
-        }
-      />
+            <option>
+              Hard
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span>Source link</span>
+          <input
+            placeholder="https://..."
+            value={
+              sourceLink
+            }
+            onChange={(e) =>
+              setSourceLink(
+                e.target.value
+              )
+            }
+          />
+        </label>
+
+        <label>
+          <span>Notes</span>
+          <input
+            placeholder="Optional reminder"
+            value={notes}
+            onChange={(e) =>
+              setNotes(
+                e.target.value
+              )
+            }
+          />
+        </label>
+      </div>
 
       <button
         type="submit"
       >
-        Add
+        <FaPlus />
+        Add Question
       </button>
     </form>
   );

@@ -6,6 +6,7 @@ import {
 
 import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
+import Tips from "./pages/Tips";
 import TopicPage from "./pages/TopicPage";
 
 const AppRoutes = () => {
@@ -20,6 +21,11 @@ const AppRoutes = () => {
         <Route
           path="/analytics"
           element={<Analytics />}
+        />
+
+        <Route
+          path="/tips"
+          element={<Tips />}
         />
 
         <Route

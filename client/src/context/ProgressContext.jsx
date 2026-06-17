@@ -85,14 +85,16 @@ FETCH ANALYTICS
     async (
       type = "month",
       year,
-      month
+      month,
+      week
     ) => {
       try {
         const data =
           await getAnalytics(
             type,
             year,
-            month
+            month,
+            week
           );
 
         setAnalytics(data);

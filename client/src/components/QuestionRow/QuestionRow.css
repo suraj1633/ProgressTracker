@@ -1,23 +1,64 @@
 .question-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 20px;
 
-  background: #181818;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(26, 26, 26, .98),
+      rgba(16, 16, 16, .98)
+    );
 
-  border: 1px solid #242424;
+  border:
+    1px solid
+    rgba(255, 255, 255, .07);
 
   border-radius: 20px;
 
-  padding: 18px 20px;
+  padding: 20px;
 
-  margin-bottom: 14px;
+  margin-bottom: 12px;
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, .03);
+
+  overflow: hidden;
 }
 
-.left {
+.question-row:hover {
+  border-color:
+    rgba(255, 139, 56, .22);
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 14px 38px
+    rgba(0, 0, 0, .24),
+    inset 0 1px 0
+    rgba(255, 255, 255, .04);
+}
+
+.question-main {
+  min-width: 0;
+  flex: 1;
+
   display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.checkbox-wrapper {
+  flex: 0 0 20px;
+
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
+  justify-content: center;
+
+  padding-top: 6px;
 }
 
 .checkbox-wrapper input {
@@ -25,80 +66,177 @@
 }
 
 .custom-check {
-  width: 22px;
-  height: 22px;
+  width: 16px;
+  height: 16px;
 
-  border: 2px solid #ff8b38;
+  border: none;
 
   border-radius: 50%;
 
   display: inline-block;
 
   cursor: pointer;
+
+  background:
+    #ff8b38;
 }
 
 .checkbox-wrapper
   input:checked
   + .custom-check {
-  background: #ff8b38;
+  background:
+    #23d18b;
 }
 
-.completed-question {
+.question-title {
+  min-width: 0;
+
+  color: #f7f1eb;
+
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+
+  overflow-wrap: anywhere;
+}
+
+.question-row.is-completed .question-title {
+  color: #9f948b;
+
   text-decoration: line-through;
-  opacity: 0.6;
 }
 
-.right {
+.question-actions {
+  flex: 0 0 auto;
+
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.note-pill {
-  background: #1f1f1f;
+.row-action-btn {
+  position: relative;
 
-  border-radius: 999px;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
 
-  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  font-size: 13px;
+  border:
+    1px solid
+    rgba(255, 255, 255, .07);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, .035);
+
+  color: #e9d8c7;
+}
+
+.row-action-btn svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.row-action-btn:hover {
+  border-color:
+    rgba(255, 139, 56, .28);
+
+  background:
+    rgba(255, 139, 56, .1);
+
+  color: #ffad68;
+
+  transform:
+    translateY(-1px);
+}
+
+.note-action {
+  color: #ffad68;
+}
+
+.source-action {
+  padding: 0;
 }
 
 .source-icon {
-  width: 34px;
-  height: 34px;
+  width: 24px;
+  height: 24px;
 
   border-radius: 50%;
 
   background: white;
 
-  padding: 5px;
+  padding: 3px;
 }
 
 .delete-question-btn {
-  width: 36px;
-  height: 36px;
-
-  border: none;
-
-  border-radius: 12px;
-
-  background:
-    rgba(255, 70, 70, .08);
-
-  color: #ff5c5c;
-
-  cursor: pointer;
-
-  font-size: 18px;
-
-  transition: .2s ease;
+  color: #ff6b6b;
 }
 
 .delete-question-btn:hover {
-  background:
-    rgba(255, 70, 70, .18);
+  border-color:
+    rgba(255, 107, 107, .26);
 
-  transform:
-    translateY(-2px);
+  background:
+    rgba(255, 70, 70, .12);
+
+  color: #ff8282;
+}
+
+@media (max-width: 700px) {
+  .question-row {
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .question-main {
+    gap: 14px;
+  }
+
+  .question-actions {
+    width: 44px;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .question-actions .difficulty-pill {
+    max-width: 44px;
+    min-width: 44px;
+    height: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    font-size: 10px;
+    overflow: hidden;
+  }
+
+  .row-action-btn {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+}
+
+@media (max-width: 430px) {
+  .question-row {
+    padding: 15px 13px;
+  }
+
+  .question-title {
+    font-size: 15px;
+  }
+
 }

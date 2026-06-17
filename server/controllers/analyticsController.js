@@ -11,6 +11,7 @@ Query params:
 type=week | month
 year=2026
 month=5
+week=22
 */
 
 export const getAnalytics =
@@ -20,6 +21,7 @@ export const getAnalytics =
         type = "month",
         year,
         month,
+        week,
       } = req.query;
 
       const selectedYear =
@@ -30,6 +32,9 @@ export const getAnalytics =
         Number(month) ||
         new Date().getMonth() + 1;
 
+      const selectedWeek =
+        Number(week);
+
       let startDate;
       let endDate;
 
@@ -39,7 +44,10 @@ export const getAnalytics =
       ==========================
       */
 
-      if (type === "month") {
+      if (
+        type === "month" ||
+        !selectedWeek
+      ) {
         startDate =
           new Date(
             selectedYear,
@@ -62,21 +70,35 @@ export const getAnalytics =
       */
 
       else {
-        const today =
-          new Date();
-
-        const firstDay =
-          new Date(today);
-
-        firstDay.setDate(
-          today.getDate() -
-            6
-        );
+        const firstDayOfYear =
+          new Date(
+            selectedYear,
+            0,
+            1
+          );
 
         startDate =
-          firstDay;
+          new Date(
+            selectedYear,
+            0,
+            1 +
+              (selectedWeek -
+                1) *
+                7
+          );
 
-        endDate = today;
+        startDate.setDate(
+          startDate.getDate() -
+            firstDayOfYear.getDay()
+        );
+
+        endDate =
+          new Date(startDate);
+
+        endDate.setDate(
+          startDate.getDate() +
+            7
+        );
       }
 
       const logs =

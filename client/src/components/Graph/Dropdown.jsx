@@ -117,7 +117,7 @@ const Dropdown = ({
                 {value ===
                   option && (
                   <span className="checkmark">
-                    ✓
+                    &#10003;
                   </span>
                 )}
               </button>

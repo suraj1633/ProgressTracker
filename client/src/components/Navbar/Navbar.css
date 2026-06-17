@@ -170,18 +170,58 @@
 
 @media (max-width: 768px) {
   .navbar {
-    padding: 0 20px;
+    height: 72px;
+    padding: 0 16px;
+    gap: 12px;
   }
 
   .logo-text {
     display: none;
   }
 
-  .navbar-links a {
-    padding: 0 18px;
+  .navbar-logo-img {
+    width: 46px;
+    height: 46px;
   }
 
-  .navbar-links a span {
-    display: none;
+  .navbar-links {
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .navbar-links a {
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+    font-size: 0;
+    border-radius: 15px;
+  }
+
+  .navbar-links a svg {
+    flex: 0 0 auto;
+    font-size: 21px;
+  }
+}
+
+@media (max-width: 420px) {
+  .navbar {
+    padding: 0 10px;
+  }
+
+  .navbar-logo-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .navbar-links {
+    gap: 6px;
+  }
+
+  .navbar-links a {
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
   }
 }

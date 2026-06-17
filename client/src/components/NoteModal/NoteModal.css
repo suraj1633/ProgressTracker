@@ -6,122 +6,248 @@
   justify-content: center;
   align-items: center;
 
-  padding: 30px;
+  padding: 24px;
 
   background:
-    rgba(0, 0, 0, 0.58);
+    rgba(0, 0, 0, .64);
 
-  backdrop-filter: blur(14px);
+  backdrop-filter:
+    blur(14px);
   -webkit-backdrop-filter:
     blur(14px);
 
   z-index: 999999;
 
   animation:
-    fadeIn .2s ease;
+    fadeIn .18s ease;
 }
 
 .note-modal {
-  width: 620px;
-  max-width: 92vw;
+  width: 640px;
+  max-width: 94vw;
 
   background:
     linear-gradient(
       180deg,
-      rgba(24,24,24,.98),
-      rgba(12,12,12,.98)
+      rgba(24, 24, 24, .99),
+      rgba(12, 12, 12, .99)
     );
 
   border:
     1px solid
-    rgba(255,255,255,.08);
+    rgba(255, 139, 56, .12);
 
-  border-radius: 34px;
+  border-radius: 24px;
 
-  padding: 36px;
+  padding: 24px;
 
   box-shadow:
-    0 30px 100px
-    rgba(0,0,0,.5);
+    0 32px 100px
+    rgba(0, 0, 0, .54),
+    inset 0 1px 0
+    rgba(255, 255, 255, .04);
 
   animation:
-    modalPop .2s ease;
+    modalPop .18s ease;
+}
+
+.note-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin-bottom: 14px;
+}
+
+.note-modal-kicker {
+  margin-bottom: 7px;
+
+  color: #ffad68;
+
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .note-modal h2 {
-  font-size: 34px;
-  font-weight: 800;
-
-  margin-bottom: 28px;
-
   color: white;
+
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.note-modal-close {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, .08);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, .04);
+
+  color: #d7c6b4;
+}
+
+.note-modal-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.note-modal-close:hover {
+  border-color:
+    rgba(255, 139, 56, .24);
+
+  color: #ffad68;
+}
+
+.note-modal-question {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, .06);
+
+  border-radius: 14px;
+
+  background:
+    rgba(255, 255, 255, .035);
+
+  color: #c7b4a2;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.note-editor {
+  border:
+    1px solid
+    rgba(255, 255, 255, .08);
+
+  border-radius: 18px;
+
+  background:
+    rgba(255, 255, 255, .03);
+
+  overflow: hidden;
+}
+
+.note-editor:focus-within {
+  border-color:
+    #ff8b38;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(255, 139, 56, .1);
 }
 
 .note-modal textarea {
   width: 100%;
-  height: 240px;
+  min-height: 240px;
+
+  display: block;
 
   background:
-    rgba(255,255,255,.03);
+    transparent;
 
   color: white;
 
-  border:
-    1px solid
-    rgba(255,255,255,.08);
+  border: none;
 
-  border-radius: 24px;
+  padding: 18px;
 
-  padding: 22px;
+  font-size: 16px;
+  line-height: 1.6;
 
-  font-size: 18px;
-
-  resize: none;
+  resize: vertical;
   outline: none;
 }
 
-.note-modal textarea:focus {
-  border-color:
-    #ff8b38;
+.note-modal textarea::placeholder {
+  color: #75675d;
+}
+
+.note-editor-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 10px 14px;
+
+  border-top:
+    1px solid
+    rgba(255, 255, 255, .06);
+
+  color: #8d7d70;
+
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 14px;
+  gap: 12px;
 
-  margin-top: 24px;
+  margin-top: 18px;
 }
 
 .modal-actions button {
-  border: none;
+  min-height: 44px;
 
-  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
 
-  padding: 14px 28px;
+  border-radius: 14px;
 
-  font-size: 18px;
-  font-weight: 700;
+  padding: 0 18px;
 
-  cursor: pointer;
+  font-size: 14px;
+  font-weight: 800;
+}
 
-  transition:
-    transform .2s ease;
+.modal-actions svg {
+  width: 14px;
+  height: 14px;
 }
 
 .modal-actions button:hover {
   transform:
-    translateY(-2px);
+    translateY(-1px);
 }
 
-.modal-actions button:first-child {
+.modal-secondary {
+  border:
+    1px solid
+    rgba(255, 255, 255, .08);
+
   background:
     #1f1f1f;
 
   color: white;
 }
 
-.modal-actions button:last-child {
+.modal-secondary:hover {
+  border-color:
+    rgba(255, 255, 255, .16);
+}
+
+.modal-primary {
   background:
     linear-gradient(
       145deg,
@@ -132,12 +258,57 @@
   color: white;
 }
 
+.modal-primary:hover {
+  box-shadow:
+    0 12px 28px
+    rgba(255, 106, 0, .22);
+}
+
+@media (max-width: 560px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 12px;
+  }
+
+  .note-modal {
+    max-width: 100%;
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .note-modal h2 {
+    font-size: 24px;
+  }
+
+  .note-modal textarea {
+    min-height: 220px;
+    padding: 16px;
+    font-size: 15px;
+  }
+
+  .note-editor-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .modal-actions button {
+    width: 100%;
+    padding: 0 12px;
+  }
+}
+
 @keyframes modalPop {
   from {
     opacity: 0;
     transform:
-      scale(.96)
-      translateY(12px);
+      scale(.98)
+      translateY(10px);
   }
 
   to {

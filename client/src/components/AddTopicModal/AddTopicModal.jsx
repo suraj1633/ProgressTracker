@@ -1,4 +1,7 @@
 import { useState } from "react";
+import {
+  FaPlus,
+} from "react-icons/fa";
 
 import {
   createTopic,
@@ -47,42 +50,55 @@ const AddTopicModal = () => {
 
   return (
     <div className="topic-modal">
-      <h2>
-        Add Topic
-      </h2>
+      <div className="topic-modal-header">
+        <h2>
+          Add Topic
+        </h2>
+
+        <span>
+          Create a new practice section
+        </span>
+      </div>
 
       <form
         onSubmit={
           handleSubmit
         }
       >
-        <input
-          type="text"
-          placeholder="Topic Name"
-          value={title}
-          onChange={(e) =>
-            setTitle(
-              e.target.value
-            )
-          }
-        />
+        <label>
+          <span>Topic name</span>
+          <input
+            type="text"
+            placeholder="Arrays, Trees, Dynamic Programming..."
+            value={title}
+            onChange={(e) =>
+              setTitle(
+                e.target.value
+              )
+            }
+          />
+        </label>
 
-        <input
-          type="text"
-          placeholder="Description"
-          value={
-            description
-          }
-          onChange={(e) =>
-            setDescription(
-              e.target.value
-            )
-          }
-        />
+        <label>
+          <span>Description</span>
+          <input
+            type="text"
+            placeholder="Short note about what this topic covers"
+            value={
+              description
+            }
+            onChange={(e) =>
+              setDescription(
+                e.target.value
+              )
+            }
+          />
+        </label>
 
         <button
           type="submit"
         >
+          <FaPlus />
           Add Topic
         </button>
       </form>
