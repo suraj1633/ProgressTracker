@@ -103,6 +103,7 @@ export const getAnalytics =
 
       const logs =
         await ProgressLog.find({
+          userId: req.user._id,
           completedAt: {
             $gte:
               startDate,
@@ -175,7 +176,9 @@ export const getHeatmapData =
   async (req, res) => {
     try {
       const logs =
-        await ProgressLog.find();
+        await ProgressLog.find({
+          userId: req.user._id,
+        });
 
       const heatmapMap = {};
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
   useContext,
@@ -11,6 +12,7 @@ import {
   getDashboardStats,
   getHeatmap,
 } from "../services/topicApi";
+import { useAuth } from "./AuthContext";
 
 const ProgressContext =
   createContext();
@@ -18,6 +20,9 @@ const ProgressContext =
 export const ProgressProvider = ({
   children,
 }) => {
+  const { user, loading: authLoading } =
+    useAuth();
+
   const [topics, setTopics] =
     useState([]);
 
@@ -183,6 +188,22 @@ INITIAL LOAD
   useEffect(() => {
     const loadData =
       async () => {
+        if (authLoading) {
+          return;
+        }
+
+        if (!user) {
+          setTopics([]);
+          setAnalytics([]);
+          setHeatmapData([]);
+          setDashboardStats({
+            streak: 0,
+            solvedToday: 0,
+          });
+          setLoading(false);
+          return;
+        }
+
         setLoading(true);
 
         await fetchTopics();
@@ -197,7 +218,7 @@ INITIAL LOAD
       };
 
     loadData();
-  }, []);
+  }, [authLoading, user]);
 
   return (
     <ProgressContext.Provider

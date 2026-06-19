@@ -12,6 +12,7 @@ import DifficultyBadge from "../DifficultyBadge/DifficultyBadge";
 
 import { useState } from "react";
 import {
+  FaCheck,
   FaPlus,
   FaRegEdit,
   FaTrash,
@@ -119,23 +120,29 @@ const QuestionRow = ({
             }
           />
 
-          <span className="custom-check" />
+          <span className="custom-check">
+            {question.completed && (
+              <FaCheck />
+            )}
+          </span>
         </label>
 
         <div className="question-content">
           <span className="question-title">
             {question.title}
           </span>
+
+          <div className="question-meta">
+            <DifficultyBadge
+              difficulty={
+                question.difficulty
+              }
+            />
+          </div>
         </div>
       </div>
 
       <div className="question-actions">
-        <DifficultyBadge
-          difficulty={
-            question.difficulty
-          }
-        />
-
         <button
           className="row-action-btn note-action"
           onClick={() =>

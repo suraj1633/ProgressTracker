@@ -8,30 +8,53 @@ import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
 import Tips from "./pages/Tips";
 import TopicPage from "./pages/TopicPage";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route
-          path="/"
-          element={<Dashboard />}
+          path="/login"
+          element={<Login />}
         />
 
         <Route
-          path="/analytics"
-          element={<Analytics />}
+          path="/signup"
+          element={<Signup />}
         />
 
         <Route
-          path="/tips"
-          element={<Tips />}
-        />
+          element={<ProtectedRoute />}
+        >
+          <Route
+            path="/"
+            element={<Dashboard />}
+          />
 
-        <Route
-          path="/topic/:id"
-          element={<TopicPage />}
-        />
+          <Route
+            path="/analytics"
+            element={<Analytics />}
+          />
+
+          <Route
+            path="/tips"
+            element={<Tips />}
+          />
+
+          <Route
+            path="/profile"
+            element={<Profile />}
+          />
+
+          <Route
+            path="/topic/:id"
+            element={<TopicPage />}
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

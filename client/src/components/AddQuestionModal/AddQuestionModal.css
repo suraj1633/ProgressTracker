@@ -8,7 +8,7 @@
     1px solid
     #282828;
 
-  border-radius: 26px;
+  border-radius: 22px;
 
   padding: 24px;
 
@@ -170,7 +170,7 @@
 
 @media (max-width: 640px) {
   .question-form {
-    border-radius: 22px;
+    border-radius: 18px;
     padding: 20px 16px;
   }
 

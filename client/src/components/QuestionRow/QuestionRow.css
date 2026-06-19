@@ -1,64 +1,77 @@
 .question-row {
-  display: flex;
+  position: relative;
+
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr) auto;
+  gap: 18px;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+
+  padding: 18px;
+  margin-bottom: 12px;
+
+  overflow: hidden;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.075);
+  border-radius: 18px;
 
   background:
     linear-gradient(
-      180deg,
-      rgba(26, 26, 26, .98),
-      rgba(16, 16, 16, .98)
+      145deg,
+      rgba(27, 27, 27, 0.98),
+      rgba(13, 13, 13, 0.98)
     );
-
-  border:
-    1px solid
-    rgba(255, 255, 255, .07);
-
-  border-radius: 20px;
-
-  padding: 20px;
-
-  margin-bottom: 12px;
 
   box-shadow:
     inset 0 1px 0
-    rgba(255, 255, 255, .03);
+    rgba(255, 255, 255, 0.035);
 
-  overflow: hidden;
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
 }
 
 .question-row:hover {
+  transform: translateY(-2px);
   border-color:
-    rgba(255, 139, 56, .22);
-
-  transform:
-    translateY(-1px);
-
+    rgba(255, 139, 56, 0.22);
   box-shadow:
-    0 14px 38px
-    rgba(0, 0, 0, .24),
+    0 16px 44px
+    rgba(0, 0, 0, 0.28),
     inset 0 1px 0
-    rgba(255, 255, 255, .04);
+    rgba(255, 255, 255, 0.05);
+}
+
+.question-row.is-completed {
+  border-color:
+    rgba(35, 209, 139, 0.16);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(18, 25, 21, 0.98),
+      rgba(11, 13, 12, 0.98)
+    );
 }
 
 .question-main {
   min-width: 0;
-  flex: 1;
 
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
 }
 
 .checkbox-wrapper {
-  flex: 0 0 20px;
+  flex: 0 0 auto;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  padding-top: 6px;
+  padding-top: 2px;
 }
 
 .checkbox-wrapper input {
@@ -66,26 +79,41 @@
 }
 
 .custom-check {
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
 
-  border: none;
+  display: inline-grid;
+  place-items: center;
 
-  border-radius: 50%;
+  border: 1px solid
+    rgba(255, 139, 56, 0.42);
+  border-radius: 8px;
 
-  display: inline-block;
+  color: #0d0d0d;
+  background:
+    rgba(255, 139, 56, 0.12);
 
   cursor: pointer;
+}
 
-  background:
-    #ff8b38;
+.custom-check svg {
+  width: 12px;
+  height: 12px;
 }
 
 .checkbox-wrapper
   input:checked
   + .custom-check {
-  background:
-    #23d18b;
+  border-color:
+    rgba(35, 209, 139, 0.55);
+  background: #23d18b;
+}
+
+.question-content {
+  min-width: 0;
+
+  display: grid;
+  gap: 10px;
 }
 
 .question-title {
@@ -94,16 +122,21 @@
   color: #f7f1eb;
 
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.45;
 
   overflow-wrap: anywhere;
 }
 
 .question-row.is-completed .question-title {
-  color: #9f948b;
+  color: #c8beb5;
+}
 
-  text-decoration: line-through;
+.question-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .question-actions {
@@ -111,28 +144,35 @@
 
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
+
+  padding: 6px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.055);
+  border-radius: 16px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
 }
 
 .row-action-btn {
   position: relative;
 
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  border:
-    1px solid
-    rgba(255, 255, 255, .07);
-
+  border: 1px solid
+    rgba(255, 255, 255, 0.07);
   border-radius: 12px;
 
   background:
-    rgba(255, 255, 255, .035);
+    rgba(255, 255, 255, 0.045);
 
   color: #e9d8c7;
 }
@@ -145,15 +185,11 @@
 
 .row-action-btn:hover {
   border-color:
-    rgba(255, 139, 56, .28);
-
+    rgba(255, 139, 56, 0.28);
   background:
-    rgba(255, 139, 56, .1);
-
+    rgba(255, 139, 56, 0.1);
   color: #ffad68;
-
-  transform:
-    translateY(-1px);
+  transform: translateY(-1px);
 }
 
 .note-action {
@@ -181,62 +217,49 @@
 
 .delete-question-btn:hover {
   border-color:
-    rgba(255, 107, 107, .26);
-
+    rgba(255, 107, 107, 0.26);
   background:
-    rgba(255, 70, 70, .12);
-
+    rgba(255, 70, 70, 0.12);
   color: #ff8282;
 }
 
 @media (max-width: 700px) {
   .question-row {
-    align-items: stretch;
+    grid-template-columns: 1fr;
     gap: 12px;
-    padding: 16px;
+    padding: 14px;
+    border-radius: 16px;
   }
 
   .question-main {
-    gap: 14px;
+    width: 100%;
+    gap: 12px;
   }
 
   .question-actions {
-    width: 44px;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-start;
-    gap: 8px;
-  }
-
-  .question-actions .difficulty-pill {
-    max-width: 44px;
-    min-width: 44px;
-    height: 40px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0;
-
-    font-size: 10px;
-    overflow: hidden;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 5px;
+    gap: 7px;
   }
 
   .row-action-btn {
-    width: 42px;
-    height: 42px;
-    flex-basis: 42px;
+    flex: 1 1 0;
+    min-width: 44px;
   }
 }
 
 @media (max-width: 430px) {
   .question-row {
-    padding: 15px 13px;
+    padding: 13px;
   }
 
   .question-title {
-    font-size: 15px;
+    font-size: 14px;
   }
 
+  .row-action-btn {
+    height: 38px;
+  }
 }

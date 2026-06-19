@@ -395,18 +395,18 @@ const Graph = () => {
       <div className="chart-shell">
         <ResponsiveContainer
           width="100%"
-          height={230}
+          height={220}
         >
           <BarChart
             data={chartData}
             margin={{
-              top: 16,
-              right: 8,
-              left: -24,
+              top: 14,
+              right: 0,
+              left: -18,
               bottom: 0,
             }}
             barCategoryGap={
-              "56%"
+              "48%"
             }
           >
             <CartesianGrid
@@ -418,9 +418,21 @@ const Graph = () => {
               dataKey="label"
               axisLine={false}
               tickLine={false}
-              interval={
-                3
-              }
+              padding={{
+                left: 8,
+                right: 8,
+              }}
+              ticks={[
+                "1",
+                "2",
+                "5",
+                "9",
+                "13",
+                "17",
+                "21",
+                "25",
+                "29",
+              ]}
               tick={{
                 fill:
                   "#8a8a8a",

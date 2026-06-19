@@ -209,19 +209,7 @@ const Dashboard = () => {
           </section>
 
           {/* HEATMAP */}
-          <div className="heatmap-card">
-            <div className="section-title">
-              <div>
-                <h2>
-                  Consistency
-                </h2>
-
-                <span>
-                  Your coding activity
-                </span>
-              </div>
-            </div>
-
+          <div className="heatmap-section">
             <Heatmap />
           </div>
 

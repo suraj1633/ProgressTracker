@@ -1,0 +1,126 @@
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background: #080808;
+}
+
+.auth-panel {
+  width: min(460px, 100%);
+  padding: 32px;
+  border-radius: 22px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(24, 24, 24, 0.96),
+      rgba(12, 12, 12, 0.96)
+    );
+  border: 1px solid
+    rgba(255, 139, 56, 0.12);
+  box-shadow:
+    0 18px 55px
+    rgba(0, 0, 0, 0.38);
+}
+
+.auth-header {
+  margin-bottom: 24px;
+}
+
+.auth-header h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.auth-header p {
+  color: #b7a08d;
+}
+
+.auth-form {
+  display: grid;
+  gap: 16px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 8px;
+  color: #d7c8bb;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.auth-form input {
+  width: 100%;
+  height: 50px;
+  padding: 0 15px;
+  border-radius: 14px;
+  border: 1px solid
+    rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.28);
+  color: white;
+}
+
+.auth-form button,
+.auth-secondary-action {
+  height: 50px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: white;
+  font-weight: 800;
+  background:
+    linear-gradient(
+      145deg,
+      #ff9238,
+      #ff6a00
+    );
+}
+
+.auth-secondary-action {
+  width: 100%;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.auth-form button:disabled,
+.auth-secondary-action:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.auth-message {
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: #ffd7bd;
+  background: rgba(255, 139, 56, 0.1);
+  border: 1px solid
+    rgba(255, 139, 56, 0.18);
+}
+
+.auth-error {
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: #ffb6b6;
+  background: rgba(255, 55, 95, 0.1);
+  border: 1px solid
+    rgba(255, 55, 95, 0.18);
+}
+
+.auth-switch {
+  margin-top: 22px;
+  color: #b7a08d;
+  text-align: center;
+}
+
+.auth-switch a {
+  color: #ff9238;
+  font-weight: 800;
+}
+
+@media (max-width: 520px) {
+  .auth-panel {
+    padding: 24px;
+  }
+}

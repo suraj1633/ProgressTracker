@@ -53,32 +53,13 @@
   border: 1px solid
     rgba(255, 255, 255, 0.06);
 
-  border-radius: 32px;
+  border-radius: 22px;
 
-  padding: 38px;
+  padding: 28px;
 
   position: relative;
 
   overflow: hidden;
-}
-
-.overview-card::before {
-  content: "";
-
-  position: absolute;
-
-  top: -120px;
-  right: -120px;
-
-  width: 220px;
-  height: 220px;
-
-  border-radius: 50%;
-
-  background:
-    rgba(255, 132, 0, 0.08);
-
-  filter: blur(50px);
 }
 
 .overview-header {
@@ -149,8 +130,8 @@
 
 .stats-card {
   width: 100%;
-  min-height: 220px;
-  height: 220px;
+  min-height: 190px;
+  height: 190px;
 }
 
 /* ROWS */
@@ -176,7 +157,7 @@
 .bottom-row .overview-card {
   width: 100%;
 
-  min-height: 220px;
+  min-height: 190px;
 
   display: flex;
   flex-direction: column;
@@ -227,22 +208,8 @@
    HEATMAP
 ========================= */
 
-.heatmap-card {
+.heatmap-section {
   margin-top: 40px;
-
-  padding: 34px;
-
-  border-radius: 32px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(22, 22, 22, 0.95),
-      rgba(12, 12, 12, 0.95)
-    );
-
-  border: 1px solid
-    rgba(255, 255, 255, 0.06);
 }
 
 /* =========================
@@ -261,12 +228,49 @@
 
   .stats-card {
     height: auto;
-    min-height: 180px;
+    min-height: 150px;
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .dashboard-content {
-    padding: 25px;
+    padding: 24px 16px 108px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 34px;
+    letter-spacing: 0;
+  }
+
+  .dashboard-header p {
+    font-size: 15px;
+  }
+
+  .left-panel,
+  .right-panel,
+  .dashboard-grid,
+  .top-row,
+  .middle-row {
+    gap: 14px;
+  }
+
+  .overview-card {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .overview-header {
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .overview-header h2 {
+    font-size: 20px;
+  }
+
+  .completion-badge {
+    padding: 8px 12px;
+    font-size: 13px;
   }
 }

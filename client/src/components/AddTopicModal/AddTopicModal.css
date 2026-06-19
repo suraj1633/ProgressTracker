@@ -6,9 +6,9 @@
     1px solid
     #282828;
 
-  border-radius: 28px;
+  border-radius: 22px;
 
-  padding: 28px;
+  padding: 24px;
 
   margin-bottom: 28px;
 
@@ -143,8 +143,8 @@
 
 @media (max-width: 560px) {
   .topic-modal {
-    border-radius: 24px;
-    padding: 22px 18px;
+    border-radius: 18px;
+    padding: 18px;
   }
 
   .topic-modal h2 {

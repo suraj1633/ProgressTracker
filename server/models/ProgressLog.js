@@ -8,6 +8,13 @@ const progressLogSchema =
         ref: "Question",
       },
 
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        index: true,
+      },
+
       difficulty: {
         type: String,
         enum: [

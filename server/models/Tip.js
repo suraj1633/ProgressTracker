@@ -8,6 +8,13 @@ const tipSchema = new mongoose.Schema(
       trim: true,
     },
 
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+
     body: {
       type: String,
       default: "",

@@ -1,11 +1,12 @@
 .navbar {
-  height: 82px;
+  height: 76px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: clamp(24px, 4vw, 64px);
 
-  padding: 0 50px;
+  padding: 0 clamp(22px, 4vw, 50px);
 
   position: sticky;
   top: 0;
@@ -32,6 +33,8 @@
   gap: 14px;
 
   cursor: pointer;
+  flex: 0 0 auto;
+  min-width: max-content;
 }
 
 .logo-icon {
@@ -64,12 +67,14 @@
 }
 
 .logo-text {
-  font-size: 1.45rem;
+  font-size: 1.35rem;
   font-weight: 800;
 
   color: white;
 
-  letter-spacing: -0.5px;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .logo-text span {
@@ -77,8 +82,8 @@
 }
 
 .navbar-logo-img {
-  width: 56px;
-  height: 56px;
+  width: 50px;
+  height: 50px;
 
   object-fit: contain;
 
@@ -105,43 +110,64 @@
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: flex-end;
+  gap: clamp(8px, 1.2vw, 18px);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-.navbar-links a {
-  height: 52px;
+.mobile-bottom-nav {
+  display: none;
+}
+
+.navbar-links a,
+.navbar-logout,
+.mobile-bottom-nav a,
+.mobile-bottom-nav .navbar-logout {
+  height: 48px;
 
   display: flex;
   align-items: center;
   gap: 10px;
 
-  padding: 0 22px;
+  padding: 0 clamp(12px, 1.3vw, 20px);
 
-  border-radius: 18px;
+  border-radius: 16px;
 
   text-decoration: none;
 
   color: #9b9b9b;
 
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 600;
 
   transition: all 0.25s ease;
 
   position: relative;
+  white-space: nowrap;
 }
 
-.navbar-links a svg {
+.navbar-links a svg,
+.navbar-logout svg,
+.mobile-bottom-nav a svg,
+.mobile-bottom-nav .navbar-logout svg {
   font-size: 20px;
 }
 
-.navbar-links a:hover {
+.navbar-links a:hover,
+.navbar-logout:hover,
+.mobile-bottom-nav a:hover,
+.mobile-bottom-nav .navbar-logout:hover {
   color: white;
 
   background:
     rgba(255, 255, 255, 0.05);
 
   transform: translateY(-2px);
+}
+
+.navbar-logout {
+  color: #ffb6b6;
 }
 
 /* ACTIVE LINK */
@@ -168,40 +194,96 @@
    MOBILE
 ========================= */
 
+@media (max-width: 1080px) {
+  .navbar {
+    padding: 0 22px;
+  }
+
+  .navbar-links a,
+  .navbar-logout {
+    padding: 0 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar {
     height: 72px;
+    justify-content: flex-start;
     padding: 0 16px;
-    gap: 12px;
+    gap: 0;
+  }
+
+  .navbar-logo {
+    margin: 0;
+    gap: 10px;
   }
 
   .logo-text {
-    display: none;
+    display: block;
+    font-size: 1.05rem;
   }
 
   .navbar-logo-img {
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
   }
 
   .navbar-links {
-    gap: 8px;
-    margin-left: auto;
+    display: none;
   }
 
-  .navbar-links a {
-    width: 48px;
-    height: 48px;
+  .mobile-bottom-nav {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom:
+      calc(12px + env(safe-area-inset-bottom));
+    z-index: 300;
+
+    display: grid;
+    grid-template-columns:
+      repeat(5, minmax(0, 1fr));
+    gap: 6px;
+
+    height: 66px;
+    margin-left: 0;
+    padding: 7px;
+
+    border: 1px solid
+      rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+
+    background:
+      rgba(12, 12, 12, 0.94);
+
+    box-shadow:
+      0 18px 55px
+      rgba(0, 0, 0, 0.45);
+
+    backdrop-filter: blur(20px);
+  }
+
+  .mobile-bottom-nav a,
+  .mobile-bottom-nav .navbar-logout {
+    width: 100%;
+    height: 52px;
     justify-content: center;
     gap: 0;
     padding: 0;
     font-size: 0;
-    border-radius: 15px;
+    border-radius: 16px;
   }
 
-  .navbar-links a svg {
+  .mobile-bottom-nav a svg,
+  .mobile-bottom-nav .navbar-logout svg {
     flex: 0 0 auto;
-    font-size: 21px;
+    font-size: 23px;
+  }
+
+  .mobile-bottom-nav a:hover,
+  .mobile-bottom-nav .navbar-logout:hover {
+    transform: none;
   }
 }
 
@@ -210,18 +292,27 @@
     padding: 0 10px;
   }
 
+  .logo-text {
+    font-size: 0.95rem;
+  }
+
   .navbar-logo-img {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
   }
 
-  .navbar-links {
-    gap: 6px;
+  .mobile-bottom-nav {
+    left: 8px;
+    right: 8px;
+    bottom:
+      calc(8px + env(safe-area-inset-bottom));
+    height: 62px;
+    border-radius: 19px;
   }
 
-  .navbar-links a {
-    width: 43px;
-    height: 43px;
+  .mobile-bottom-nav a,
+  .mobile-bottom-nav .navbar-logout {
+    height: 48px;
     border-radius: 13px;
   }
 }

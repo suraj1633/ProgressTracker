@@ -36,7 +36,7 @@
 /* mobile */
 @media (max-width: 768px) {
   .analytics-content {
-    padding: 28px 20px;
+    padding: 28px 20px 108px;
   }
 
   .analytics-content h1 {

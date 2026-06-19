@@ -4,7 +4,9 @@ export const getTips =
   async (req, res) => {
     try {
       const tips =
-        await Tip.find().sort({
+        await Tip.find({
+          userId: req.user._id,
+        }).sort({
           updatedAt: -1,
         });
 
@@ -47,6 +49,7 @@ export const createTip =
           title:
             cleanTitle ||
             "Untitled tip",
+          userId: req.user._id,
           body: cleanBody,
           topicId,
           color,
@@ -87,8 +90,11 @@ export const updateTip =
       }
 
       const tip =
-        await Tip.findByIdAndUpdate(
-          req.params.id,
+        await Tip.findOneAndUpdate(
+          {
+            _id: req.params.id,
+            userId: req.user._id,
+          },
           {
             title:
               cleanTitle ||
@@ -122,9 +128,10 @@ export const deleteTip =
   async (req, res) => {
     try {
       const tip =
-        await Tip.findByIdAndDelete(
-          req.params.id
-        );
+        await Tip.findOneAndDelete({
+          _id: req.params.id,
+          userId: req.user._id,
+        });
 
       if (!tip) {
         return res.status(404).json({

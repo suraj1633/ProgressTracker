@@ -194,3 +194,13 @@ select {
     transform .2s ease,
     color .2s ease;
 }
+
+.route-loader {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #080808;
+  color: #ff9238;
+  font-size: 15px;
+  font-weight: 800;
+}

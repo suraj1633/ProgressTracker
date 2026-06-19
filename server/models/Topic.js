@@ -8,6 +8,13 @@ const topicSchema = new mongoose.Schema(
       trim: true,
     },
 
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+
     description: {
       type: String,
       default: "",

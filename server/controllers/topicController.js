@@ -23,6 +23,7 @@ export const createTopic = async (
     const topic = await Topic.create({
       title,
       description,
+      userId: req.user._id,
     });
 
     res.status(201).json(topic);
@@ -46,9 +47,14 @@ export const getTopics = async (
 ) => {
   try {
     const topics =
-      await Topic.find().populate(
-        "questions"
-      );
+      await Topic.find({
+        userId: req.user._id,
+      }).populate({
+        path: "questions",
+        match: {
+          userId: req.user._id,
+        },
+      });
 
     res.status(200).json(topics);
   } catch (error) {
@@ -81,20 +87,29 @@ export const addQuestion =
       const sourceIcon =
         getFavicon(sourceLink);
 
+      const topic =
+        await Topic.findOne({
+          _id: topicId,
+          userId: req.user._id,
+        });
+
+      if (!topic) {
+        return res.status(404).json({
+          message:
+            "Topic not found",
+        });
+      }
+
       const question =
         await Question.create({
           title,
+          userId: req.user._id,
           difficulty,
           sourceLink,
           sourceIcon,
           notes,
           topicId,
         });
-
-      const topic =
-        await Topic.findById(
-          topicId
-        );
 
       topic.questions.push(
         question._id
@@ -126,9 +141,10 @@ export const toggleQuestion =
   async (req, res) => {
     try {
       const question =
-        await Question.findById(
-          req.params.id
-        );
+        await Question.findOne({
+          _id: req.params.id,
+          userId: req.user._id,
+        });
 
       if (!question) {
         return res
@@ -140,9 +156,19 @@ export const toggleQuestion =
       }
 
       const topic =
-        await Topic.findById(
-          question.topicId
-        );
+        await Topic.findOne({
+          _id: question.topicId,
+          userId: req.user._id,
+        });
+
+      if (!topic) {
+        return res
+          .status(404)
+          .json({
+            message:
+              "Topic not found",
+          });
+      }
 
       question.completed =
         !question.completed;
@@ -158,6 +184,7 @@ export const toggleQuestion =
         await ProgressLog.create({
           questionId:
             question._id,
+          userId: req.user._id,
           difficulty:
             question.difficulty,
           completedAt:
@@ -172,6 +199,7 @@ export const toggleQuestion =
         await ProgressLog.deleteOne({
           questionId:
             question._id,
+          userId: req.user._id,
         });
       }
 
@@ -210,9 +238,10 @@ export const deleteQuestion =
       } = req.params;
 
       const question =
-        await Question.findById(
-          id
-        );
+        await Question.findOne({
+          _id: id,
+          userId: req.user._id,
+        });
 
       if (!question) {
         return res
@@ -224,9 +253,10 @@ export const deleteQuestion =
       }
 
       const topic =
-        await Topic.findById(
-          question.topicId
-        );
+        await Topic.findOne({
+          _id: question.topicId,
+          userId: req.user._id,
+        });
 
       if (!topic) {
         return res
@@ -267,12 +297,14 @@ export const deleteQuestion =
       // delete logs if exist
       await ProgressLog.deleteOne({
         questionId: id,
+        userId: req.user._id,
       });
 
       // delete actual question doc
-      await Question.findByIdAndDelete(
-        id
-      );
+      await Question.deleteOne({
+        _id: id,
+        userId: req.user._id,
+      });
 
       await topic.save();
 
@@ -300,13 +332,45 @@ export const updateQuestion =
       const questionId =
         req.params.id;
 
+      const {
+        title,
+        difficulty,
+        sourceLink,
+        notes,
+      } = req.body;
+
+      const update = {};
+
+      if (title !== undefined) {
+        update.title = title;
+      }
+
+      if (difficulty !== undefined) {
+        update.difficulty =
+          difficulty;
+      }
+
+      if (sourceLink !== undefined) {
+        update.sourceLink =
+          sourceLink;
+        update.sourceIcon =
+          getFavicon(sourceLink);
+      }
+
+      if (notes !== undefined) {
+        update.notes = notes;
+      }
+
       const updatedQuestion =
-        await Question.findByIdAndUpdate(
-          questionId,
-          req.body,
+        await Question.findOneAndUpdate(
           {
-            returnDocument:
-              "after",
+            _id: questionId,
+            userId: req.user._id,
+          },
+          update,
+          {
+            new: true,
+            runValidators: true,
           }
         );
 
@@ -345,9 +409,10 @@ export const deleteTopic =
   async (req, res) => {
     try {
       const topic =
-        await Topic.findById(
-          req.params.id
-        );
+        await Topic.findOne({
+          _id: req.params.id,
+          userId: req.user._id,
+        });
 
       if (!topic) {
         return res
@@ -361,11 +426,20 @@ export const deleteTopic =
       await Question.deleteMany({
         topicId:
           topic._id,
+        userId: req.user._id,
       });
 
-      await Topic.findByIdAndDelete(
-        req.params.id
-      );
+      await ProgressLog.deleteMany({
+        userId: req.user._id,
+        questionId: {
+          $in: topic.questions,
+        },
+      });
+
+      await Topic.deleteOne({
+        _id: req.params.id,
+        userId: req.user._id,
+      });
 
       res.status(200).json({
         message:
@@ -391,6 +465,7 @@ export const getDashboardStats =
     try {
       const questions =
         await Question.find({
+          userId: req.user._id,
           completed: true,
         });
 

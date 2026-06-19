@@ -55,16 +55,10 @@ const StatsCard = ({
       <div className="card-shine" />
 
       <div className="stats-top">
-        <div>
+        <div className="stats-copy">
           <p className="stats-title">
             {title}
           </p>
-
-          {subtitle && (
-            <span className="stats-subtitle">
-              {subtitle}
-            </span>
-          )}
         </div>
 
         {icon && (
@@ -74,15 +68,24 @@ const StatsCard = ({
         )}
       </div>
 
-      <h2 className="stats-value">
-        <CountUp
-          start={0}
-          end={numericValue}
-          duration={1.3}
-        />
+      <div className="stats-body">
+        <h2 className="stats-value">
+          <CountUp
+            start={0}
+            end={numericValue}
+            duration={1.3}
+          />
 
-        {showPercent && "%"}
-      </h2>
+          {showPercent && "%"}
+        </h2>
+
+        {subtitle && (
+          <span className="stats-subtitle">
+            {subtitle}
+          </span>
+        )}
+      </div>
+
     </div>
   );
 };
