@@ -1,6 +1,6 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
 <defs>
-  <filter id="sparkGlow" x="-50%" y="-50%" width="200%" height="200%">
+  <filter id="cherryGlow" x="-50%" y="-50%" width="200%" height="200%">
     <feGaussianBlur stdDeviation="22" result="blur"/>
     <feMerge>
       <feMergeNode in="blur"/>
@@ -14,7 +14,7 @@
 
 <!-- dark left shape -->
 <path d="M335 345L230 512L335 680"
-      stroke="#7a4b18"
+      stroke="#7d3550"
       stroke-width="48"
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -22,30 +22,30 @@
 
 <!-- bottom orange connector -->
 <path d="M335 680L510 512"
-      stroke="#7a4b18"
+      stroke="#7d3550"
       stroke-width="48"
       stroke-linecap="round"
       stroke-linejoin="round"/>
 
 <!-- glowing top line -->
 <path d="M510 512L685 345L800 512"
-      stroke="#ff9f43"
+      stroke="#ff8fb1"
       stroke-width="48"
       stroke-linecap="round"
       stroke-linejoin="round"
-      filter="url(#sparkGlow)"/>
+      filter="url(#cherryGlow)"/>
 
 <!-- faded right leg -->
 <path d="M800 512L690 680"
-      stroke="#7a4b18"
+      stroke="#7d3550"
       stroke-width="48"
       stroke-linecap="round"
       opacity="0.5"/>
 
 <!-- glowing node -->
 <circle cx="800" cy="512" r="45"
-        fill="#ff9f43"
-        filter="url(#sparkGlow)"/>
+        fill="#ff8fb1"
+        filter="url(#cherryGlow)"/>
 
 <!-- center white dot -->
 <circle cx="800" cy="512" r="16"

@@ -3,44 +3,102 @@ export const STREAK_THEME_CLASSES = [
   "streak-theme-spark",
   "streak-theme-week",
   "streak-theme-bonfire",
-  "streak-theme-flare",
+  "streak-theme-inferno",
+  "streak-theme-mint",
+  "streak-theme-forest",
+  "streak-theme-diamond",
   "streak-theme-month",
   "streak-theme-blue-flare",
-  "streak-theme-two-month",
-  "streak-theme-violet-flare",
+  "streak-theme-frost",
   "streak-theme-quarter",
+  "streak-theme-obsidian",
+  "streak-theme-golden-flare",
+  "streak-theme-storm",
+  "streak-theme-cosmic",
+  "streak-theme-violet-flare",
+  "streak-theme-two-month",
+  "streak-theme-cherry",
+  "streak-theme-crimson",
 ];
 
 export const getStreakThemeClass = (
-  streak
+    streak
 ) => {
-  const value =
-    Number(streak) || 0;
+  const value = Number(streak) || 0;
 
-  if (value >= 90)
-    return "streak-theme-quarter";
+  // Red
+  if (value >= 365)
+    return "streak-theme-crimson";
 
-  if (value >= 75)
-    return "streak-theme-violet-flare";
+  // Pink
+  if (value >= 300)
+    return "streak-theme-cherry";
 
-  if (value >= 60)
+  // Purple
+  if (value >= 270)
     return "streak-theme-two-month";
 
-  if (value >= 45)
+  // Violet
+  if (value >= 240)
+    return "streak-theme-violet-flare";
+
+  // Magenta
+  if (value >= 210)
+    return "streak-theme-cosmic";
+
+  // Indigo
+  if (value >= 180)
+    return "streak-theme-storm";
+
+  // Golden Yellow
+  if (value >= 150)
+    return "streak-theme-golden-flare";
+
+  // Black + Gold
+  if (value >= 135)
+    return "streak-theme-obsidian";
+
+  // Yellow
+  if (value >= 120)
+    return "streak-theme-quarter";
+
+  // Ice Blue
+  if (value >= 105)
+    return "streak-theme-frost";
+
+  // Blue
+  if (value >= 90)
     return "streak-theme-blue-flare";
 
-  if (value >= 30)
+  // Sky Blue
+  if (value >= 75)
     return "streak-theme-month";
 
-  if (value >= 21)
-    return "streak-theme-flare";
+  // White + Cyan
+  if (value >= 60)
+    return "streak-theme-diamond";
 
+  // Green
+  if (value >= 45)
+    return "streak-theme-forest";
+
+  // Light Green
+  if (value >= 30)
+    return "streak-theme-mint";
+
+  // Deep Red/Orange
+  if (value >= 21)
+    return "streak-theme-inferno";
+
+  // Deep Orange
   if (value >= 14)
     return "streak-theme-bonfire";
 
+  // Orange
   if (value >= 7)
     return "streak-theme-week";
 
+  // Light Orange
   if (value >= 3)
     return "streak-theme-spark";
 
@@ -48,29 +106,46 @@ export const getStreakThemeClass = (
 };
 
 export const getStreakCardClass = (
-  streak
+    streak
 ) =>
-  getStreakThemeClass(streak)
-    .replace(
-      "streak-theme-",
-      "streak-"
+    getStreakThemeClass(streak).replace(
+        "streak-theme-",
+        "streak-"
     );
 
 export const getActiveStreakThemeClass =
-  () => {
-    if (
-      typeof document ===
-      "undefined"
-    ) {
-      return "streak-theme-starter";
-    }
+    () => {
+      if (
+          typeof document === "undefined"
+      ) {
+        return "streak-theme-starter";
+      }
 
-    return (
-      STREAK_THEME_CLASSES.find(
-        (themeClass) =>
-          document.documentElement.classList.contains(
-            themeClass
-          )
-      ) || "streak-theme-starter"
-    );
-  };
+      return (
+          STREAK_THEME_CLASSES.find(
+              (themeClass) =>
+                  document.documentElement.classList.contains(
+                      themeClass
+                  )
+          ) || "streak-theme-starter"
+      );
+    };
+
+/**
+ * Aggressive fire scaling.
+ * 0 → 365 streak maps smoothly to 0 → 1.
+ * High streaks become significantly more intense.
+ */
+export const getStreakPower = (
+    streak
+) => {
+  const value = Number(streak) || 0;
+
+  return Math.pow(
+      Math.min(
+          value / 365,
+          1
+      ),
+      0.65
+  );
+};

@@ -1,6 +1,6 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
 <defs>
-  <filter id="milestoneGlow" x="-50%" y="-50%" width="200%" height="200%">
+  <filter id="quarterGlow" x="-50%" y="-50%" width="200%" height="200%">
     <feGaussianBlur stdDeviation="22" result="blur"/>
     <feMerge>
       <feMergeNode in="blur"/>
@@ -9,13 +9,12 @@
   </filter>
 </defs>
 
-<!-- milestone: Quarter Crown (90+); primary #fef08a; secondary #fef9c3 -->
 <!-- background -->
 <rect width="1024" height="1024" rx="72" fill="#000000"/>
 
 <!-- dark left shape -->
 <path d="M335 345L230 512L335 680"
-      stroke="#474327"
+      stroke="#7a6d22"
       stroke-width="48"
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -23,7 +22,7 @@
 
 <!-- bottom orange connector -->
 <path d="M335 680L510 512"
-      stroke="#fef9c3"
+      stroke="#7a6d22"
       stroke-width="48"
       stroke-linecap="round"
       stroke-linejoin="round"/>
@@ -34,11 +33,11 @@
       stroke-width="48"
       stroke-linecap="round"
       stroke-linejoin="round"
-      filter="url(#milestoneGlow)"/>
+      filter="url(#quarterGlow)"/>
 
 <!-- faded right leg -->
 <path d="M800 512L690 680"
-      stroke="#38372b"
+      stroke="#7a6d22"
       stroke-width="48"
       stroke-linecap="round"
       opacity="0.5"/>
@@ -46,7 +45,7 @@
 <!-- glowing node -->
 <circle cx="800" cy="512" r="45"
         fill="#fef08a"
-        filter="url(#milestoneGlow)"/>
+        filter="url(#quarterGlow)"/>
 
 <!-- center white dot -->
 <circle cx="800" cy="512" r="16"

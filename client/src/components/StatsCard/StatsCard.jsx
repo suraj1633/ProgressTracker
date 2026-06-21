@@ -6,31 +6,31 @@ import {
 import "./StatsCard.css";
 
 const CountUp =
-  CountUpModule.default ||
-  CountUpModule;
+    CountUpModule.default ||
+    CountUpModule;
 
 const StatsCard = ({
-  title,
-  value,
-  subtitle,
-  icon,
-}) => {
+                     title,
+                     value,
+                     subtitle,
+                     icon,
+                   }) => {
   const numericValue =
-    parseInt(value) || 0;
+      parseInt(value) || 0;
 
   const showPercent =
-    typeof value === "string" &&
-    value.includes("%");
+      typeof value === "string" &&
+      value.includes("%");
 
   const getCardType = () => {
     const lower =
-      title.toLowerCase();
+        title.toLowerCase();
 
     if (lower.includes("easy"))
       return "easy";
 
     if (
-      lower.includes("medium")
+        lower.includes("medium")
     )
       return "medium";
 
@@ -38,12 +38,12 @@ const StatsCard = ({
       return "hard";
 
     if (
-      lower.includes("solved")
+        lower.includes("solved")
     )
       return "solved";
 
     if (
-      lower.includes("streak")
+        lower.includes("streak")
     )
       return "streak";
 
@@ -52,98 +52,104 @@ const StatsCard = ({
 
   const cardType = getCardType();
 
+  /*
+   * Improved streak scaling
+   * Small streaks still have visible fire
+   * High streaks become much larger and more intense
+   * 365+ streak reaches maximum power
+   */
   const streakPower =
-    cardType === "streak"
-      ? Math.min(
-          Math.sqrt(
-            numericValue
-          ) / Math.sqrt(30),
-          1
-        )
-      : 0;
+      cardType === "streak"
+          ? Math.pow(
+              Math.min(
+                  numericValue / 365,
+                  1
+              ),
+              0.65
+          )
+          : 0;
 
   const getStreakTier = () => {
     if (cardType !== "streak")
       return "";
 
     return getStreakCardClass(
-      numericValue
+        numericValue
     );
   };
 
   const streakTier =
-    getStreakTier();
+      getStreakTier();
 
   useEffect(() => {
     if (cardType !== "streak")
       return;
 
     window.dispatchEvent(
-      new CustomEvent(
-        "streak-theme-change",
-        {
-          detail: {
-            streak:
-              numericValue,
-          },
-        }
-      )
+        new CustomEvent(
+            "streak-theme-change",
+            {
+              detail: {
+                streak:
+                numericValue,
+              },
+            }
+        )
     );
   }, [cardType, numericValue]);
 
   return (
-    <div
-      className={`stats-card ${cardType} ${streakTier}`}
-      style={{
-        "--streak-power":
-          streakPower,
-      }}
-    >
       <div
-        className={`stats-art stats-art-${cardType}`}
-        aria-hidden="true"
+          className={`stats-card ${cardType} ${streakTier}`}
+          style={{
+            "--streak-power":
+            streakPower,
+          }}
       >
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
-
-      <div className="stats-top">
-        <div className="stats-copy">
-          <p className="stats-title">
-            {title}
-          </p>
+        <div
+            className={`stats-art stats-art-${cardType}`}
+            aria-hidden="true"
+        >
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
         </div>
 
-        {icon && (
-          <div className="stats-icon">
-            {icon}
+        <div className="stats-top">
+          <div className="stats-copy">
+            <p className="stats-title">
+              {title}
+            </p>
           </div>
-        )}
-      </div>
 
-      <div className="stats-body">
-        <h2 className="stats-value">
-          <CountUp
-            start={0}
-            end={numericValue}
-            duration={1.3}
-          />
+          {icon && (
+              <div className="stats-icon">
+                {icon}
+              </div>
+          )}
+        </div>
 
-          {showPercent && "%"}
-        </h2>
+        <div className="stats-body">
+          <h2 className="stats-value">
+            <CountUp
+                start={0}
+                end={numericValue}
+                duration={1.3}
+            />
 
-        {subtitle && (
-          <span className="stats-subtitle">
+            {showPercent && "%"}
+          </h2>
+
+          {subtitle && (
+              <span className="stats-subtitle">
             {subtitle}
           </span>
-        )}
+          )}
+        </div>
       </div>
-
-    </div>
   );
 };
 
