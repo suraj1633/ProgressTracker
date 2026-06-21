@@ -290,6 +290,7 @@
 
   .mobile-bottom-nav .navbar-logout svg{
     color: rgb(152 1 1 / 0.75);
+    transition: all 0.25s ease;
   }
 
   .mobile-bottom-nav .navbar-logout:hover {
