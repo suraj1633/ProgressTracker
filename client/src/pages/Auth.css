@@ -3,7 +3,7 @@
   display: grid;
   place-items: center;
   padding: 32px 16px;
-  background: #080808;
+  background: var(--theme-page-bg);
 }
 
 .auth-panel {
@@ -17,7 +17,7 @@
       rgba(12, 12, 12, 0.96)
     );
   border: 1px solid
-    rgba(255, 139, 56, 0.12);
+    var(--theme-border);
   box-shadow:
     0 18px 55px
     rgba(0, 0, 0, 0.38);
@@ -73,8 +73,8 @@
   background:
     linear-gradient(
       145deg,
-      #ff9238,
-      #ff6a00
+      var(--theme-accent),
+      var(--theme-accent-2)
     );
 }
 
@@ -94,9 +94,9 @@
   padding: 12px 14px;
   border-radius: 14px;
   color: #ffd7bd;
-  background: rgba(255, 139, 56, 0.1);
+  background: var(--theme-accent-soft);
   border: 1px solid
-    rgba(255, 139, 56, 0.18);
+    var(--theme-border);
 }
 
 .auth-error {
@@ -115,7 +115,7 @@
 }
 
 .auth-switch a {
-  color: #ff9238;
+  color: var(--theme-accent);
   font-weight: 800;
 }
 

@@ -93,7 +93,7 @@
 .question-form input:focus,
 .question-form select:focus {
   border-color:
-    rgba(255, 139, 56, .38);
+    var(--theme-border);
 }
 
 .question-form select {
@@ -103,11 +103,11 @@
     linear-gradient(
       45deg,
       transparent 50%,
-      #ff8738 50%
+      var(--theme-accent) 50%
     ),
     linear-gradient(
       135deg,
-      #ff8738 50%,
+      var(--theme-accent) 50%,
       transparent 50%
     );
   background-position:
@@ -131,7 +131,7 @@
   margin-top: 16px;
 
   background:
-    #ff8738;
+    var(--theme-accent);
 
   color: #111111;
 
@@ -150,7 +150,7 @@
 
 .question-form button:hover {
   background:
-    #ff9b57;
+    var(--theme-accent-2);
 
   transform:
     translateY(-1px);

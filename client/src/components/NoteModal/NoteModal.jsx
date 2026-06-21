@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import {
+  FaEraser,
+  FaRegStickyNote,
   FaSave,
   FaTimes,
 } from "react-icons/fa";
@@ -15,8 +17,21 @@ const NoteModal = ({
   onSave,
   questionTitle,
 }) => {
+  const trimmedNote =
+    note.trim();
+
+  const wordCount =
+    trimmedNote
+      ? trimmedNote
+          .split(/\s+/)
+          .length
+      : 0;
+
   useEffect(() => {
     if (!open) return undefined;
+
+    const previousOverflow =
+      document.body.style.overflow;
 
     document.body.style.overflow =
       "hidden";
@@ -35,7 +50,7 @@ const NoteModal = ({
 
     return () => {
       document.body.style.overflow =
-        "auto";
+        previousOverflow;
 
       window.removeEventListener(
         "keydown",
@@ -48,29 +63,42 @@ const NoteModal = ({
 
   return createPortal(
     <div
-      className="modal-overlay"
+      className="note-modal-overlay"
       onClick={onClose}
     >
-      <div
+      <form
         className="note-modal"
-        onClick={(e) =>
-          e.stopPropagation()
+        onClick={(event) =>
+          event.stopPropagation()
         }
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSave();
+        }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="note-modal-title"
+        aria-describedby="note-modal-description"
       >
         <div className="note-modal-header">
-          <div>
-            <p className="note-modal-kicker">
-              Question note
-            </p>
-            <h2 id="note-modal-title">
-              Edit Note
-            </h2>
+          <div className="note-modal-title-row">
+            <span className="note-modal-icon">
+              <FaRegStickyNote />
+            </span>
+
+            <div>
+              <p className="note-modal-kicker">
+                Question note
+              </p>
+
+              <h2 id="note-modal-title">
+                Edit note
+              </h2>
+            </div>
           </div>
 
           <button
+            type="button"
             className="note-modal-close"
             onClick={onClose}
             aria-label="Close note"
@@ -79,18 +107,32 @@ const NoteModal = ({
           </button>
         </div>
 
-        {questionTitle && (
-          <p className="note-modal-question">
-            {questionTitle}
+        <div
+          className="note-modal-question"
+          id="note-modal-description"
+        >
+          <span>Question</span>
+
+          <p>
+            {questionTitle ||
+              "Untitled question"}
           </p>
-        )}
+        </div>
 
         <div className="note-editor">
+          <label
+            className="note-editor-label"
+            htmlFor="question-note"
+          >
+            Note
+          </label>
+
           <textarea
+            id="question-note"
             value={note}
-            onChange={(e) =>
+            onChange={(event) =>
               setNote(
-                e.target.value
+                event.target.value
               )
             }
             placeholder="Write a quick reminder, approach, or edge case to revisit..."
@@ -99,33 +141,48 @@ const NoteModal = ({
 
           <div className="note-editor-meta">
             <span>
-              {note.trim()
-                ? "Saved when you click Save"
-                : "Empty notes are allowed"}
+              {trimmedNote
+                ? "Draft ready"
+                : "No note content"}
             </span>
+
             <span>
+              {wordCount} words /{" "}
               {note.length} chars
             </span>
           </div>
         </div>
 
-        <div className="modal-actions">
+        <div className="note-modal-actions">
           <button
-            className="modal-secondary"
+            type="button"
+            className="note-modal-clear"
+            onClick={() =>
+              setNote("")
+            }
+            disabled={!note.length}
+          >
+            <FaEraser />
+            Clear
+          </button>
+
+          <button
+            type="button"
+            className="note-modal-secondary"
             onClick={onClose}
           >
             Cancel
           </button>
 
           <button
-            className="modal-primary"
-            onClick={onSave}
+            type="submit"
+            className="note-modal-primary"
           >
             <FaSave />
-            Save Note
+            Save note
           </button>
         </div>
-      </div>
+      </form>
     </div>,
     document.body
   );

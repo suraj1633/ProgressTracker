@@ -1,0 +1,54 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <filter id="milestoneGlow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="22" result="blur"/>
+    <feMerge>
+      <feMergeNode in="blur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
+
+<!-- milestone: Week (7-13); primary #ffb020; secondary #ffd166 -->
+<!-- background -->
+<rect width="1024" height="1024" rx="72" fill="#000000"/>
+
+<!-- dark left shape -->
+<path d="M335 345L230 512L335 680"
+      stroke="#473109"
+      stroke-width="48"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      opacity="0.9"/>
+
+<!-- bottom orange connector -->
+<path d="M335 680L510 512"
+      stroke="#ffd166"
+      stroke-width="48"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+<!-- glowing top line -->
+<path d="M510 512L685 345L800 512"
+      stroke="#ffb020"
+      stroke-width="48"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      filter="url(#milestoneGlow)"/>
+
+<!-- faded right leg -->
+<path d="M800 512L690 680"
+      stroke="#382e16"
+      stroke-width="48"
+      stroke-linecap="round"
+      opacity="0.5"/>
+
+<!-- glowing node -->
+<circle cx="800" cy="512" r="45"
+        fill="#ffb020"
+        filter="url(#milestoneGlow)"/>
+
+<!-- center white dot -->
+<circle cx="800" cy="512" r="16"
+        fill="#F2F2F2"/>
+</svg>

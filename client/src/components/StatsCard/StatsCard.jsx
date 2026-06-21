@@ -1,4 +1,8 @@
+import { useEffect } from "react";
 import CountUpModule from "react-countup";
+import {
+  getStreakCardClass,
+} from "../../utils/streakTheme";
 import "./StatsCard.css";
 
 const CountUp =
@@ -34,11 +38,9 @@ const StatsCard = ({
       return "hard";
 
     if (
-      lower.includes(
-        "completion"
-      )
+      lower.includes("solved")
     )
-      return "completion";
+      return "solved";
 
     if (
       lower.includes("streak")
@@ -48,11 +50,66 @@ const StatsCard = ({
     return "default";
   };
 
+  const cardType = getCardType();
+
+  const streakPower =
+    cardType === "streak"
+      ? Math.min(
+          Math.sqrt(
+            numericValue
+          ) / Math.sqrt(30),
+          1
+        )
+      : 0;
+
+  const getStreakTier = () => {
+    if (cardType !== "streak")
+      return "";
+
+    return getStreakCardClass(
+      numericValue
+    );
+  };
+
+  const streakTier =
+    getStreakTier();
+
+  useEffect(() => {
+    if (cardType !== "streak")
+      return;
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "streak-theme-change",
+        {
+          detail: {
+            streak:
+              numericValue,
+          },
+        }
+      )
+    );
+  }, [cardType, numericValue]);
+
   return (
     <div
-      className={`stats-card ${getCardType()}`}
+      className={`stats-card ${cardType} ${streakTier}`}
+      style={{
+        "--streak-power":
+          streakPower,
+      }}
     >
-      <div className="card-shine" />
+      <div
+        className={`stats-art stats-art-${cardType}`}
+        aria-hidden="true"
+      >
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
 
       <div className="stats-top">
         <div className="stats-copy">

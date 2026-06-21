@@ -19,6 +19,7 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none;
 }
 
 body {
@@ -108,7 +109,7 @@ select {
 
 ::selection {
   background:
-    rgba(255,139,56,.25);
+    var(--theme-accent-muted);
 
   color: white;
 }
@@ -118,36 +119,23 @@ select {
 ========================= */
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 0;
+  height: 0;
 }
 
 ::-webkit-scrollbar-track {
   background:
-    #101010;
+    transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-
   background:
-    linear-gradient(
-      180deg,
-      #ff9238,
-      #ff6a00
-    );
-
-  transition:
-    background .2s ease;
+    transparent;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background:
-    linear-gradient(
-      180deg,
-      #ffab5c,
-      #ff7a1a
-    );
+    transparent;
 }
 
 /* =========================
@@ -160,7 +148,7 @@ select:focus,
 button:focus-visible {
   box-shadow:
     0 0 0 4px
-    rgba(255,139,56,.12);
+    var(--theme-accent-soft);
 }
 
 /* =========================
@@ -200,7 +188,7 @@ select {
   display: grid;
   place-items: center;
   background: #080808;
-  color: #ff9238;
+  color: var(--theme-accent);
   font-size: 15px;
   font-weight: 800;
 }

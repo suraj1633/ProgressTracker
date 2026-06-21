@@ -85,7 +85,7 @@
 
   padding: 8px 14px;
 
-  color: #ffad68;
+  color: var(--theme-accent);
 
   font-size: 14px;
   font-weight: 800;
@@ -145,18 +145,18 @@
 }
 
 .add-question-btn {
-  color: #ffad68;
+  color: var(--theme-accent);
 }
 
 .add-question-btn:hover,
 .topic-btn:hover {
   border-color:
-    rgba(255, 139, 56, .28);
+    var(--theme-border);
 
   background:
-    rgba(255, 139, 56, .1);
+    var(--theme-accent-soft);
 
-  color: #ffad68;
+  color: var(--theme-accent);
 
   transform:
     translateY(-1px);

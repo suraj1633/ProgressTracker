@@ -91,7 +91,7 @@
 
 .topic-modal input:focus {
   border-color:
-    rgba(255, 139, 56, .38);
+    var(--theme-border);
 }
 
 .topic-modal button {
@@ -103,7 +103,7 @@
   gap: 9px;
 
   background:
-    #ff8738;
+    var(--theme-accent);
 
   color: #111111;
 
@@ -123,7 +123,7 @@
 
 .topic-modal button:hover {
   background:
-    #ff9b57;
+    var(--theme-accent-2);
 
   transform:
     translateY(-1px);

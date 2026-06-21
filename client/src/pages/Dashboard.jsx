@@ -1,5 +1,4 @@
 import Navbar from "../components/Navbar/Navbar";
-import ProgressBar from "../components/ProgressBar/ProgressBar";
 import TopicCard from "../components/TopicCard/TopicCard";
 import AddTopicModal from "../components/AddTopicModal/AddTopicModal";
 import StatsCard from "../components/StatsCard/StatsCard";
@@ -7,9 +6,7 @@ import Heatmap from "../components/Heatmap/Heatmap";
 
 import {
   HiFire,
-  HiBolt,
   HiCheckCircle,
-  HiChartBar,
   HiFaceSmile,
   HiSignal,
   HiExclamationTriangle,
@@ -27,23 +24,12 @@ const Dashboard = () => {
     dashboardStats,
   } = useProgress();
 
-  const completionPercent =
-    overallProgress.total === 0
-      ? 0
-      : Math.round(
-          (overallProgress.completed /
-            overallProgress.total) *
-            100
-        );
-
   return (
     <>
       <Navbar />
 
       <div className="dashboard-layout">
         <main className="dashboard-content">
-
-          {/* HEADER */}
           <div className="dashboard-header">
             <div>
               <h1>
@@ -60,118 +46,55 @@ const Dashboard = () => {
 
           <AddTopicModal />
 
-          {/* STATS SECTION */}
           <div className="stats-grid">
-            <div className="dashboard-grid">
+            <StatsCard
+              title="Daily Streak"
+              value={
+                dashboardStats.streak
+              }
+              icon={<HiFire />}
+            />
 
-              {/* LEFT SIDE */}
-              <div className="left-panel">
+            <StatsCard
+              title="Solved Questions"
+              value={
+                overallProgress.completed
+              }
+              subtitle={`Out of ${overallProgress.total}`}
+              icon={
+                <HiCheckCircle />
+              }
+            />
 
-                <StatsCard
-                  title="Daily Streak 🔥"
-                  value={
-                    dashboardStats.streak
-                  }
-                  icon={<HiFire />}
-                />
+            <StatsCard
+              title="Easy"
+              value={
+                difficultyCounts.Easy
+              }
+              icon={
+                <HiFaceSmile />
+              }
+            />
 
-                <StatsCard
-                  title="Solved Today"
-                  value={
-                    dashboardStats.solvedToday
-                  }
-                  icon={<HiBolt />}
-                />
+            <StatsCard
+              title="Medium"
+              value={
+                difficultyCounts.Medium
+              }
+              icon={<HiSignal />}
+            />
 
-                <StatsCard
-                  title="Solved Questions"
-                  value={
-                    overallProgress.completed
-                  }
-                  subtitle={`Out of ${overallProgress.total}`}
-                  icon={
-                    <HiCheckCircle />
-                  }
-                />
-              </div>
-
-              {/* RIGHT SIDE */}
-              <div className="right-panel">
-
-                <div className="top-row">
-                  <StatsCard
-                    title="Completion"
-                    value={`${completionPercent}%`}
-                    icon={<HiChartBar />}
-                  />
-
-                  <StatsCard
-                    title="Easy"
-                    value={
-                      difficultyCounts.Easy
-                    }
-                    icon={
-                      <HiFaceSmile />
-                    }
-                  />
-                </div>
-
-                <div className="middle-row">
-                  <StatsCard
-                    title="Medium"
-                    value={
-                      difficultyCounts.Medium
-                    }
-                    icon={<HiSignal />}
-                  />
-
-                  <StatsCard
-                    title="Hard"
-                    value={
-                      difficultyCounts.Hard
-                    }
-                    icon={
-                      <HiExclamationTriangle />
-                    }
-                  />
-                </div>
-
-                {/* OVERALL PROGRESS */}
-                <div className="bottom-row">
-                  <div className="overview-card">
-
-                    <div className="overview-header">
-                      <div>
-                        <h2>
-                          Overall Progress
-                        </h2>
-
-                        <p>
-                          Your complete DSA
-                          progress
-                        </p>
-                      </div>
-
-                      <div className="completion-badge">
-                        {completionPercent}%
-                      </div>
-                    </div>
-
-                    <ProgressBar
-                      completed={
-                        overallProgress.completed
-                      }
-                      total={
-                        overallProgress.total
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <StatsCard
+              title="Hard"
+              value={
+                difficultyCounts.Hard
+              }
+              icon={
+                <HiExclamationTriangle />
+              }
+            />
           </div>
 
-          {/* TOPICS */}
           <section className="topic-section">
             <div className="section-title">
               <h2>Topics</h2>
@@ -191,7 +114,7 @@ const Dashboard = () => {
                 <p>
                   Create your first
                   topic and start
-                  tracking progress 🚀
+                  tracking progress
                 </p>
               </div>
             ) : (
@@ -208,11 +131,9 @@ const Dashboard = () => {
             )}
           </section>
 
-          {/* HEATMAP */}
           <div className="heatmap-section">
             <Heatmap />
           </div>
-
         </main>
       </div>
     </>

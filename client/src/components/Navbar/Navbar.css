@@ -49,21 +49,20 @@
 
   font-size: 26px;
 
-  color: #ff8b38;
+  color: var(--theme-accent);
 
   background:
     linear-gradient(
       145deg,
-      rgba(255, 140, 60, 0.2),
-      rgba(255, 120, 0, 0.08)
+      var(--theme-accent-soft),
+      var(--theme-accent-soft)
     );
 
   border: 1px solid
-    rgba(255, 140, 60, 0.18);
+    var(--theme-border);
 
   box-shadow:
-    0 0 30px
-    rgba(255, 136, 0, 0.12);
+    none;
 }
 
 .logo-text {
@@ -78,7 +77,7 @@
 }
 
 .logo-text span {
-  color: #ff8b38;
+  color: var(--theme-accent);
 }
 
 .navbar-logo-img {
@@ -87,11 +86,7 @@
 
   object-fit: contain;
 
-  filter:
-    drop-shadow(
-      0 0 18px
-      rgba(255,139,56,.2)
-    );
+  filter: none;
 
   transition:
     transform .25s ease;
@@ -178,16 +173,16 @@
   background:
     linear-gradient(
       145deg,
-      rgba(255, 139, 56, 0.18),
-      rgba(255, 120, 0, 0.08)
+      var(--theme-accent-soft),
+      var(--theme-accent-soft)
     );
 
   border: 1px solid
-    rgba(255, 139, 56, 0.18);
+    var(--theme-border);
 
   box-shadow:
     0 0 25px
-    rgba(255, 139, 56, 0.12);
+    var(--theme-accent-soft);
 }
 
 /* =========================

@@ -43,8 +43,8 @@
   background:
     linear-gradient(
       90deg,
-      #ff8b38,
-      #ffc36f
+      var(--theme-accent),
+      var(--theme-accent-2)
     );
 
   transition: width 0.4s ease;

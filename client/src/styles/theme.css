@@ -24,10 +24,10 @@
   ========================= */
 
   --border-primary:
-    rgba(255,139,56,.08);
+    var(--theme-accent-soft);
 
   --border-hover:
-    rgba(255,139,56,.16);
+    var(--theme-border);
 
   /* =========================
      TEXT
@@ -47,23 +47,23 @@
   ========================= */
 
   --orange:
-    #ff9238;
+    var(--theme-accent);
 
   --orange-dark:
-    #ff6a00;
+    var(--theme-accent-2);
 
   --orange-soft:
-    rgba(255,139,56,.08);
+    var(--theme-accent-soft);
 
   --orange-glow:
-    rgba(255,139,56,.18);
+    var(--theme-accent-muted);
 
   /* gradient button/card accent */
   --orange-gradient:
     linear-gradient(
       145deg,
-      #ff9238,
-      #ff6a00
+      var(--theme-accent),
+      var(--theme-accent-2)
     );
 
   /* =========================
@@ -89,7 +89,7 @@
 
   --shadow-glow:
     0 0 30px
-    rgba(255,139,56,.14);
+    var(--theme-accent-soft);
 
   /* =========================
      GLASS
@@ -104,7 +104,7 @@
 
   --glass-border:
     1px solid
-    rgba(255,139,56,.08);
+    var(--theme-border);
 
   --glass-blur:
     blur(20px);
@@ -134,4 +134,580 @@
 
   --transition:
     .3s ease;
+}
+
+/* =========================
+   STREAK MILESTONE THEMES
+========================= */
+
+:root,
+.app {
+  --theme-bg:
+    #080808;
+
+  --theme-surface-a:
+    rgba(25, 25, 25, .98);
+
+  --theme-surface-b:
+    rgba(12, 12, 12, .98);
+
+  --theme-page-bg:
+    radial-gradient(
+      circle at 14% 0,
+      var(--theme-accent-soft),
+      transparent 28%
+    ),
+    #080808;
+
+  --theme-card-bg:
+    linear-gradient(
+      145deg,
+      var(--theme-surface-a),
+      var(--theme-surface-b)
+    );
+
+  --theme-card-bg-strong:
+    linear-gradient(
+      145deg,
+      rgba(24, 24, 24, .98),
+      var(--theme-surface-b)
+    );
+
+  --theme-accent:
+    #ff8738;
+
+  --theme-accent-2:
+    #ffbe68;
+
+  --theme-accent-soft:
+    rgba(255, 135, 56, .12);
+
+  --theme-accent-muted:
+    rgba(255, 135, 56, .2);
+
+  --theme-border:
+    rgba(255, 135, 56, .13);
+
+  --theme-border-soft:
+    rgba(255, 255, 255, .075);
+
+  --theme-text-soft:
+    #b8ada3;
+
+  --theme-text-muted:
+    #907b68;
+
+  --theme-button-text:
+    #111111;
+
+  min-height: 100vh;
+  background: var(--theme-bg);
+}
+
+:root.streak-theme-week,
+.app.streak-theme-week,
+.app:has(.stats-card.streak-week) {
+  --theme-page-bg:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 30%
+    ),
+    #080808;
+
+  --theme-card-bg:
+    linear-gradient(
+      145deg,
+      var(--theme-surface-a),
+      var(--theme-surface-b)
+    );
+
+  --theme-card-bg-strong:
+    linear-gradient(
+      145deg,
+      rgba(24, 24, 24, .98),
+      var(--theme-surface-b)
+    );
+
+  --theme-accent:
+    #ffb020;
+
+  --theme-accent-2:
+    #ffd166;
+
+  --theme-accent-soft:
+    rgba(255, 176, 32, .14);
+
+  --theme-accent-muted:
+    rgba(255, 176, 32, .24);
+
+  --theme-border:
+    rgba(255, 176, 32, .18);
+
+  --theme-text-soft:
+    #d2b98f;
+
+  --theme-text-muted:
+    #a5875f;
+}
+
+:root.streak-theme-spark,
+.app.streak-theme-spark,
+.app:has(.stats-card.streak-spark) {
+  --theme-page-bg:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 29%
+    ),
+    #080808;
+
+  --theme-accent:
+    #ff9f43;
+
+  --theme-accent-2:
+    #ffc078;
+
+  --theme-accent-soft:
+    rgba(255, 159, 67, .13);
+
+  --theme-accent-muted:
+    rgba(255, 159, 67, .22);
+
+  --theme-border:
+    rgba(255, 159, 67, .17);
+}
+
+:root.streak-theme-month,
+.app.streak-theme-month,
+.app:has(.stats-card.streak-month) {
+  --theme-page-bg:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 30%
+    ),
+    #080808;
+
+  --theme-card-bg:
+    linear-gradient(
+      145deg,
+      var(--theme-surface-a),
+      var(--theme-surface-b)
+    );
+
+  --theme-card-bg-strong:
+    linear-gradient(
+      145deg,
+      rgba(24, 24, 24, .98),
+      var(--theme-surface-b)
+    );
+
+  --theme-accent:
+    #7dd3fc;
+
+  --theme-accent-2:
+    #bae6fd;
+
+  --theme-accent-soft:
+    rgba(125, 211, 252, .13);
+
+  --theme-accent-muted:
+    rgba(125, 211, 252, .24);
+
+  --theme-border:
+    rgba(125, 211, 252, .2);
+
+  --theme-text-soft:
+    #b7d9e8;
+
+  --theme-text-muted:
+    #7aa9bd;
+}
+
+:root.streak-theme-bonfire,
+.app.streak-theme-bonfire,
+.app:has(.stats-card.streak-bonfire) {
+  --theme-page-bg:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 30%
+    ),
+    #080808;
+
+  --theme-accent:
+    #ff7a1a;
+
+  --theme-accent-2:
+    #ffcf7a;
+
+  --theme-accent-soft:
+    rgba(255, 122, 26, .15);
+
+  --theme-accent-muted:
+    rgba(255, 122, 26, .25);
+
+  --theme-border:
+    rgba(255, 122, 26, .2);
+}
+
+:root.streak-theme-flare,
+.app.streak-theme-flare,
+.app:has(.stats-card.streak-flare) {
+  --theme-page-bg:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 30%
+    ),
+    #080808;
+
+  --theme-accent:
+    #ffdd57;
+
+  --theme-accent-2:
+    #fff1a8;
+
+  --theme-accent-soft:
+    rgba(255, 221, 87, .14);
+
+  --theme-accent-muted:
+    rgba(255, 221, 87, .24);
+
+  --theme-border:
+    rgba(255, 221, 87, .2);
+}
+
+:root.streak-theme-two-month,
+.app.streak-theme-two-month,
+.app:has(.stats-card.streak-two-month) {
+  --theme-page-bg:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 30%
+    ),
+    #080808;
+
+  --theme-card-bg:
+    linear-gradient(
+      145deg,
+      var(--theme-surface-a),
+      var(--theme-surface-b)
+    );
+
+  --theme-card-bg-strong:
+    linear-gradient(
+      145deg,
+      rgba(24, 24, 24, .98),
+      var(--theme-surface-b)
+    );
+
+  --theme-accent:
+    #c084fc;
+
+  --theme-accent-2:
+    #e9d5ff;
+
+  --theme-accent-soft:
+    rgba(192, 132, 252, .13);
+
+  --theme-accent-muted:
+    rgba(192, 132, 252, .24);
+
+  --theme-border:
+    rgba(192, 132, 252, .2);
+
+  --theme-text-soft:
+    #d7c1ef;
+
+  --theme-text-muted:
+    #aa8ccc;
+}
+
+:root.streak-theme-blue-flare,
+.app.streak-theme-blue-flare,
+.app:has(.stats-card.streak-blue-flare) {
+  --theme-page-bg:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 30%
+    ),
+    #080808;
+
+  --theme-accent:
+    #38bdf8;
+
+  --theme-accent-2:
+    #d9f99d;
+
+  --theme-accent-soft:
+    rgba(56, 189, 248, .14);
+
+  --theme-accent-muted:
+    rgba(56, 189, 248, .24);
+
+  --theme-border:
+    rgba(56, 189, 248, .2);
+}
+
+:root.streak-theme-quarter,
+.app.streak-theme-quarter,
+.app:has(.stats-card.streak-quarter) {
+  --theme-page-bg:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 30%
+    ),
+    #080808;
+
+  --theme-card-bg:
+    linear-gradient(
+      145deg,
+      var(--theme-surface-a),
+      var(--theme-surface-b)
+    );
+
+  --theme-card-bg-strong:
+    linear-gradient(
+      145deg,
+      rgba(24, 24, 24, .98),
+      var(--theme-surface-b)
+    );
+
+  --theme-accent:
+    #fef08a;
+
+  --theme-accent-2:
+    #fef9c3;
+
+  --theme-accent-soft:
+    rgba(254, 240, 138, .14);
+
+  --theme-accent-muted:
+    rgba(254, 240, 138, .25);
+
+  --theme-border:
+    rgba(254, 240, 138, .22);
+
+  --theme-text-soft:
+    #e4dba2;
+
+  --theme-text-muted:
+    #b8a95f;
+}
+
+:root.streak-theme-violet-flare,
+.app.streak-theme-violet-flare,
+.app:has(.stats-card.streak-violet-flare) {
+  --theme-page-bg:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 30%
+    ),
+    #080808;
+
+  --theme-accent:
+    #a78bfa;
+
+  --theme-accent-2:
+    #f0abfc;
+
+  --theme-accent-soft:
+    rgba(167, 139, 250, .14);
+
+  --theme-accent-muted:
+    rgba(167, 139, 250, .24);
+
+  --theme-border:
+    rgba(167, 139, 250, .2);
+}
+
+.app .dashboard-layout,
+.app .analytics-page,
+.app .tips-page,
+.app .profile-page,
+.app .auth-page {
+  background: var(--theme-page-bg);
+}
+
+.app .navbar,
+.app .mobile-bottom-nav {
+  background:
+    color-mix(
+      in srgb,
+      var(--theme-bg) 82%,
+      #111111
+    );
+  border-color: var(--theme-border-soft);
+}
+
+.app .logo-text span,
+.app .logo-icon,
+.app .navbar-links a:hover,
+.app .mobile-bottom-nav a:hover,
+.app .tip-card-header span,
+.app .tip-detail-header span,
+.app .topic-count,
+.app .tips-count,
+.app .graph-kicker,
+.app .tips-empty svg {
+  color: var(--theme-accent);
+}
+
+.app .logo-icon {
+  background:
+    linear-gradient(
+      145deg,
+      var(--theme-accent-soft),
+      rgba(255, 255, 255, .035)
+    );
+  border-color: var(--theme-border);
+  box-shadow: none;
+}
+
+.app .navbar-logo-img {
+  filter: none;
+}
+
+.app .active-link,
+.app .tips-count,
+.app .completion-badge {
+  background:
+    linear-gradient(
+      145deg,
+      var(--theme-accent-soft),
+      rgba(255, 255, 255, .035)
+    );
+  border-color: var(--theme-border);
+  box-shadow: none;
+}
+
+.app .topic-card,
+.app .graph-card,
+.app .heatmap-card,
+.app .profile-card,
+.app .auth-panel,
+.app .tip-editor,
+.app .tips-empty,
+.app .overview-card {
+  background: var(--theme-card-bg);
+  border-color: var(--theme-border-soft);
+}
+
+.app .topic-card,
+.app .graph-card,
+.app .heatmap-card,
+.app .profile-card,
+.app .tip-editor,
+.app .auth-panel {
+  border-top-color: var(--theme-border);
+}
+
+.app .tip-save-button,
+.app .tip-detail-footer button,
+.app .question-form button,
+.app .topic-modal button,
+.app .auth-form button,
+.app .note-modal-primary {
+  background: var(--theme-accent);
+  color: var(--theme-button-text);
+}
+
+.app .tip-save-button:hover,
+.app .tip-detail-footer button:hover,
+.app .question-form button:hover,
+.app .topic-modal button:hover,
+.app .auth-form button:hover,
+.app .note-modal-primary:hover {
+  background: var(--theme-accent-2);
+}
+
+.app .progress-fill {
+  background:
+    linear-gradient(
+      90deg,
+      var(--theme-accent),
+      var(--theme-accent-2)
+    );
+}
+
+.app .topic-count,
+.app .note-modal-icon,
+.app .stats-icon,
+.app .tips-count,
+.app .completion-badge {
+  border-color: var(--theme-border);
+  background:
+    linear-gradient(
+      145deg,
+      var(--theme-accent-soft),
+      rgba(255, 255, 255, .035)
+    );
+}
+
+.app .note-modal-kicker,
+.app .note-modal-icon,
+.app .note-modal-close:hover,
+.app .add-question-btn,
+.app .add-question-btn:hover,
+.app .topic-btn:hover,
+.app .row-action-btn:hover,
+.app .note-action,
+.app .tip-card-header span,
+.app .tip-detail-header span,
+.app .auth-switch a {
+  color: var(--theme-accent);
+}
+
+.app .add-question-btn:hover,
+.app .topic-btn:hover,
+.app .row-action-btn:hover,
+.app .note-modal-close:hover,
+.app .tip-card:hover,
+.app .tip-card:focus-visible,
+.app .question-row:hover,
+.app .topic-card:hover {
+  border-color: var(--theme-border);
+}
+
+.app .add-question-btn:hover,
+.app .topic-btn:hover,
+.app .row-action-btn:hover {
+  background: var(--theme-accent-soft);
+}
+
+.app .custom-check {
+  border-color: var(--theme-border);
+  background: var(--theme-accent-soft);
+}
+
+.app .question-form input:focus,
+.app .question-form select:focus,
+.app .topic-modal input:focus,
+.app .note-editor:focus-within,
+.app .auth-form input:focus {
+  border-color: var(--theme-border);
+}
+
+.app .tip-colors button.active {
+  outline-color: var(--theme-accent);
+}
+
+.app input:focus,
+.app textarea:focus,
+.app select:focus,
+.app button:focus-visible {
+  box-shadow:
+    0 0 0 4px
+    var(--theme-accent-soft);
+}
+
+.app ::selection {
+  background: var(--theme-accent-muted);
+  color: #ffffff;
 }

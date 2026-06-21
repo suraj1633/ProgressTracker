@@ -3,7 +3,10 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import Logo from "../../assets/logo.svg";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   HiOutlineChartBar,
@@ -13,6 +16,12 @@ import {
   HiArrowRightOnRectangle,
 } from "react-icons/hi2";
 import { useAuth } from "../../context/AuthContext";
+import {
+  getActiveStreakThemeClass,
+} from "../../utils/streakTheme";
+import {
+  getLogoForTheme,
+} from "../../utils/streakLogos";
 
 import "./Navbar.css";
 
@@ -20,6 +29,39 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [
+    activeTheme,
+    setActiveTheme,
+  ] = useState(
+    getActiveStreakThemeClass
+  );
+
+  useEffect(() => {
+    const syncLogo = () => {
+      setActiveTheme(
+        getActiveStreakThemeClass()
+      );
+    };
+
+    syncLogo();
+
+    window.addEventListener(
+      "streak-theme-applied",
+      syncLogo
+    );
+
+    return () => {
+      window.removeEventListener(
+        "streak-theme-applied",
+        syncLogo
+      );
+    };
+  }, []);
+
+  const logo =
+    getLogoForTheme(
+      activeTheme
+    );
 
   const handleLogout = () => {
     logout();
@@ -110,7 +152,7 @@ const Navbar = () => {
       <nav className="navbar">
       <div className="navbar-logo">
         <img
-          src={Logo}
+          src={logo}
           alt="DSA Tracker"
           className="navbar-logo-img"
         />
