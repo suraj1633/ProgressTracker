@@ -150,7 +150,6 @@
 }
 
 .navbar-links a:hover,
-.navbar-logout:hover,
 .mobile-bottom-nav a:hover,
 .mobile-bottom-nav .navbar-logout:hover {
   color: white;
@@ -161,8 +160,16 @@
   transform: translateY(-2px);
 }
 
+
+.navbar-logout:hover{
+  color: white;
+  background: rgb(152 1 1 / 0.75);
+
+  transform: translateY(-2px);
+}
+
 .navbar-logout {
-  color: #ffb6b6;
+  color: rgb(152 1 1 / 0.75);
 }
 
 /* ACTIVE LINK */
@@ -279,6 +286,18 @@
   .mobile-bottom-nav a:hover,
   .mobile-bottom-nav .navbar-logout:hover {
     transform: none;
+  }
+
+  .mobile-bottom-nav .navbar-logout svg{
+    color: rgb(152 1 1 / 0.75);
+  }
+
+  .mobile-bottom-nav .navbar-logout:hover {
+    background: rgb(152 1 1 / 0.75);
+  }
+
+  .mobile-bottom-nav .navbar-logout:hover svg {
+    color: white;
   }
 }
 
