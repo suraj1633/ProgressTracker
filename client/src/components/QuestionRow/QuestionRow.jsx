@@ -10,7 +10,9 @@ import {
 
 import DifficultyBadge from "../DifficultyBadge/DifficultyBadge";
 
-import { useState } from "react";
+import {
+  useState,
+} from "react";
 import {
   FaCheck,
   FaPlus,
@@ -54,6 +56,8 @@ const QuestionRow = ({
 
         await fetchTopics();
         await fetchAnalytics();
+        await fetchDashboardStats();
+        await fetchHeatmap();
       } catch (error) {
         console.error(error);
       }

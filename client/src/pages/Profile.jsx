@@ -30,8 +30,7 @@ const Profile = () => {
             <h1>Profile</h1>
 
             <p>
-              Your account details and
-              verification status.
+              View your account details and verification status.
             </p>
           </div>
 

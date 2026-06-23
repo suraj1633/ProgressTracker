@@ -1,10 +1,10 @@
 .topic-card {
   background:
-    #161616;
+    var(--theme-glass-bg);
 
   border:
     1px solid
-    #282828;
+    var(--theme-border-soft);
 
   border-radius: 22px;
 
@@ -13,8 +13,10 @@
   margin-bottom: 26px;
 
   box-shadow:
-    inset 0 1px 0
-    rgba(255, 255, 255, .02);
+    var(--theme-glass-shadow);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 
   transition:
     transform .25s ease,
@@ -24,7 +26,7 @@
 
 .topic-card:hover {
   border-color:
-    #333333;
+    var(--theme-border);
 
   transform:
     translateY(-1px);
@@ -33,7 +35,7 @@
     0 16px 36px
     rgba(0, 0, 0, .2),
     inset 0 1px 0
-    rgba(255, 255, 255, .035);
+    var(--theme-glass-highlight);
 }
 
 .topic-header {

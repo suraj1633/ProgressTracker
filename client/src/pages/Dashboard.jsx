@@ -37,9 +37,7 @@ const Dashboard = () => {
               </h1>
 
               <p>
-                Track your coding
-                consistency and
-                topic progress
+                Track your topics, solved questions, and daily progress in one place.
               </p>
             </div>
           </div>
@@ -97,7 +95,13 @@ const Dashboard = () => {
 
           <section className="topic-section">
             <div className="section-title">
-              <h2>Topics</h2>
+              <div>
+                <h2>Topics</h2>
+
+                <p>
+                  Organize your DSA practice by topic.
+                </p>
+              </div>
 
               <span>
                 {topics.length} topics

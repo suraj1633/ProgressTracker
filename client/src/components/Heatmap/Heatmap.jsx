@@ -255,10 +255,18 @@ const Heatmap = () => {
                                     )}`
                                   : "heat-cell is-empty-space"
                               }
-                              title={
+                              data-tooltip={
                                 cell
                                   ? `${cell.count} solved on ${cell.date}`
-                                  : ""
+                                  : undefined
+                              }
+                              aria-label={
+                                cell
+                                  ? `${cell.count} solved on ${cell.date}`
+                                  : undefined
+                              }
+                              tabIndex={
+                                cell ? 0 : undefined
                               }
                             />
                           )

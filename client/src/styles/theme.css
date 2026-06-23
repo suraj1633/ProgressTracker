@@ -200,6 +200,43 @@
     --theme-button-text:
             #111111;
 
+    --theme-glass-bg:
+            linear-gradient(
+                    145deg,
+                    color-mix(
+                            in srgb,
+                            var(--theme-surface-a) 76%,
+                            transparent
+                    ),
+                    color-mix(
+                            in srgb,
+                            var(--theme-surface-b) 82%,
+                            transparent
+                    )
+            );
+
+    --theme-glass-bg-soft:
+            linear-gradient(
+                    145deg,
+                    color-mix(
+                            in srgb,
+                            var(--theme-surface-a) 58%,
+                            transparent
+                    ),
+                    color-mix(
+                            in srgb,
+                            var(--theme-surface-b) 70%,
+                            transparent
+                    )
+            );
+
+    --theme-glass-highlight:
+            rgba(255, 255, 255, .065);
+
+    --theme-glass-shadow:
+            0 24px 70px rgba(0, 0, 0, .3),
+            inset 0 1px 0 var(--theme-glass-highlight);
+
     min-height: 100vh;
     background: var(--theme-bg);
 }
@@ -640,10 +677,14 @@
     background:
             color-mix(
                     in srgb,
-                    var(--theme-bg) 82%,
-                    #111111
+                    var(--theme-bg) 72%,
+                    transparent
             );
     border-color: var(--theme-border-soft);
+    box-shadow:
+            var(--theme-glass-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .app .logo-text span,
@@ -692,20 +733,44 @@
 .app .heatmap-card,
 .app .profile-card,
 .app .auth-panel,
-.app .tip-editor,
+.app .question-form,
+.app .tips-editor-panel,
+.app .tips-list-panel,
 .app .tips-empty,
+.app .analytics-side-panel,
+.app .note-modal,
 .app .overview-card {
-    background: var(--theme-card-bg);
+    background: var(--theme-glass-bg);
     border-color: var(--theme-border-soft);
+    box-shadow:
+            var(--theme-glass-shadow);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 .app .topic-card,
 .app .graph-card,
 .app .heatmap-card,
 .app .profile-card,
-.app .tip-editor,
-.app .auth-panel {
+.app .question-form,
+.app .tips-editor-panel,
+.app .tips-list-panel,
+.app .auth-panel,
+.app .analytics-side-panel,
+.app .note-modal {
     border-top-color: var(--theme-border);
+}
+
+.app .stats-card,
+.app .question-row,
+.app .tip-note,
+.app .tip-detail {
+    background: var(--theme-glass-bg-soft);
+    box-shadow:
+            0 18px 48px rgba(0, 0, 0, .22),
+            inset 0 1px 0 var(--theme-glass-highlight);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 
 .app .tip-save-button,
@@ -942,4 +1007,9 @@
 
     --theme-text-muted:
             #d6bf66;
+}
+
+:root,
+.app {
+    --theme-page-bg: #080808 !important;
 }

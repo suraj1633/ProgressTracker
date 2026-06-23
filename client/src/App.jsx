@@ -12,19 +12,48 @@ import {
   getLogoForTheme,
 } from "./utils/streakLogos";
 
+const normalizeStreak = (
+  value
+) => {
+  const streak =
+    Number(value);
+
+  return Number.isFinite(
+    streak
+  )
+    ? streak
+    : 0;
+};
+
 function App() {
   const { dashboardStats } =
     useProgress();
 
+  const dashboardStreak =
+    normalizeStreak(
+      dashboardStats?.streak
+    );
+
   const [
-    renderedStreak,
-    setRenderedStreak,
-  ] = useState(null);
+    manualStreakChange,
+    setManualStreakChange,
+  ] = useState(
+    {
+      streak: null,
+      dashboardStreak: null,
+    }
+  );
+
+  const hasCurrentManualStreak =
+    manualStreakChange.streak !==
+      null &&
+    manualStreakChange.dashboardStreak ===
+      dashboardStreak;
 
   const streak =
-    renderedStreak ??
-    dashboardStats?.streak ??
-    0;
+    hasCurrentManualStreak
+      ? manualStreakChange.streak
+      : dashboardStreak;
 
   const themeClass =
     getStreakThemeClass(
@@ -44,8 +73,11 @@ function App() {
             nextStreak
           )
         ) {
-          setRenderedStreak(
-            nextStreak
+          setManualStreakChange(
+            {
+              streak: nextStreak,
+              dashboardStreak,
+            }
           );
         }
       };
@@ -61,7 +93,7 @@ function App() {
         handleStreakThemeChange
       );
     };
-  }, []);
+  }, [dashboardStreak]);
 
   useEffect(() => {
     document.documentElement.classList.remove(

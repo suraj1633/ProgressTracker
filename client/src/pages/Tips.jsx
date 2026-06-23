@@ -10,12 +10,12 @@ import {
   HiOutlineLightBulb,
   HiPencilSquare,
   HiPlus,
-  HiTag,
   HiTrash,
   HiXMark,
 } from "react-icons/hi2";
 
 import Navbar from "../components/Navbar/Navbar";
+import Dropdown from "../components/Graph/Dropdown";
 import { useProgress } from "../context/ProgressContext";
 import {
   createTip,
@@ -26,99 +26,74 @@ import {
 
 import "./Tips.css";
 
-const NOTE_COLORS = [
-  {
-    name: "Default",
-    value: "#202020",
-  },
-  {
-    name: "Amber",
-    value: "#3a2a12",
-  },
-  {
-    name: "Green",
-    value: "#173026",
-  },
-  {
-    name: "Blue",
-    value: "#182c3f",
-  },
-  {
-    name: "Red",
-    value: "#3a1d25",
-  },
-];
+const DEFAULT_COLOR = "#1b1f24";
 
-const createEmptyTip = () => ({
+const emptyDraft = () => ({
   title: "",
   body: "",
   topicId: "general",
-  color: NOTE_COLORS[0].value,
+  color: DEFAULT_COLOR,
 });
 
-const formatDate = (
-  value
-) =>
-  new Intl.DateTimeFormat(
-    "en",
-    {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }
-  ).format(new Date(value));
+const formatDate = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(value));
+};
+
+const createDraftFromTip = (tip) => ({
+  title: tip.title || "",
+  body: tip.body || "",
+  topicId: tip.topicId || "general",
+  color: tip.color || DEFAULT_COLOR,
+});
 
 const Tips = () => {
-  const { topics } =
-    useProgress();
+  const { topics } = useProgress();
 
   const [tips, setTips] =
     useState([]);
-
   const [loading, setLoading] =
     useState(true);
-
+  const [saving, setSaving] =
+    useState(false);
   const [error, setError] =
     useState("");
-
   const [draft, setDraft] =
-    useState(
-      createEmptyTip
-    );
-
+    useState(emptyDraft);
   const [editingId, setEditingId] =
     useState(null);
-
-  const [activeTip, setActiveTip] =
-    useState(null);
-
   const [query, setQuery] =
     useState("");
-
   const [selectedTopic, setSelectedTopic] =
     useState("all");
 
   useEffect(() => {
-    const loadTips =
-      async () => {
-        try {
-          setLoading(true);
-          setError("");
+    const loadTips = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-          const data =
-            await getTips();
+        const data =
+          await getTips();
 
-          setTips(data);
-        } catch (err) {
-          setError(
-            err.response?.data
-              ?.message ||
-              "Unable to load tips"
-          );
-        } finally {
-          setLoading(false);
-        }
-      };
+        setTips(data);
+      } catch (err) {
+        setError(
+          err.response?.data
+            ?.message ||
+            "Unable to load tips"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
 
     loadTips();
   }, []);
@@ -138,10 +113,7 @@ const Tips = () => {
   const topicNameById =
     useMemo(() => {
       return topicOptions.reduce(
-        (
-          acc,
-          topic
-        ) => {
+        (acc, topic) => {
           acc[topic._id] =
             topic.title ||
             topic.name ||
@@ -153,6 +125,31 @@ const Tips = () => {
       );
     }, [topicOptions]);
 
+  const draftTopicOptions =
+    useMemo(
+      () =>
+        topicOptions.map((topic) => ({
+          value: topic._id,
+          label:
+            topic.title ||
+            topic.name ||
+            "Topic",
+        })),
+      [topicOptions]
+    );
+
+  const filterTopicOptions =
+    useMemo(
+      () => [
+        {
+          value: "all",
+          label: "All topics",
+        },
+        ...draftTopicOptions,
+      ],
+      [draftTopicOptions]
+    );
+
   const filteredTips =
     useMemo(() => {
       const normalizedQuery =
@@ -163,10 +160,8 @@ const Tips = () => {
       return tips
         .filter((tip) => {
           const matchesTopic =
-            selectedTopic ===
-              "all" ||
-            tip.topicId ===
-              selectedTopic;
+            selectedTopic === "all" ||
+            tip.topicId === selectedTopic;
 
           const searchable =
             `${tip.title} ${tip.body} ${
@@ -183,10 +178,7 @@ const Tips = () => {
           );
         })
         .sort(
-          (
-            first,
-            second
-          ) =>
+          (first, second) =>
             new Date(
               second.updatedAt
             ) -
@@ -202,28 +194,29 @@ const Tips = () => {
     ]);
 
   const resetDraft = () => {
-    setDraft(
-      createEmptyTip()
-    );
-
+    setDraft(emptyDraft());
     setEditingId(null);
   };
 
-  const saveTip = async () => {
+  const handleSubmit = async (
+    event
+  ) => {
+    event.preventDefault();
+
     const title =
       draft.title.trim();
-
     const body =
       draft.body.trim();
 
-    if (
-      !title &&
-      !body
-    ) {
+    if (!title && !body) {
+      setError(
+        "Add a title or note before saving."
+      );
       return;
     }
 
     try {
+      setSaving(true);
       setError("");
 
       const payload = {
@@ -267,30 +260,24 @@ const Tips = () => {
           ?.message ||
           "Unable to save tip"
       );
+    } finally {
+      setSaving(false);
     }
   };
 
-  const editTip = (
-    tip
-  ) => {
-    setDraft({
-      title: tip.title,
-      body: tip.body,
-      topicId:
-        tip.topicId ||
-        "general",
-      color:
-        tip.color ||
-        NOTE_COLORS[0].value,
-    });
-
+  const handleEdit = (tip) => {
+    setDraft(
+      createDraftFromTip(tip)
+    );
     setEditingId(tip._id);
-    setActiveTip(null);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
-  const removeTip = async (
-    id
-  ) => {
+  const handleDelete = async (id) => {
     try {
       setError("");
 
@@ -305,12 +292,6 @@ const Tips = () => {
 
       if (editingId === id) {
         resetDraft();
-      }
-
-      if (
-        activeTip?._id === id
-      ) {
-        setActiveTip(null);
       }
     } catch (err) {
       setError(
@@ -327,375 +308,258 @@ const Tips = () => {
 
       <div className="tips-page">
         <main className="tips-content">
-          <div className="tips-header">
+          <header className="tips-header">
             <div>
               <h1>Tips</h1>
 
               <p>
-                Save important points
-                topic-wise for quick
-                revision.
+                Keep short notes, patterns, and mistakes ready for revision.
               </p>
             </div>
 
-            <div className="tips-count">
-              <HiOutlineLightBulb />
+            <span>
+              {tips.length} saved
+            </span>
+          </header>
 
-              {tips.length} notes
-            </div>
-          </div>
+          <section className="tips-layout">
+            <form
+              className="tips-form"
+              onSubmit={handleSubmit}
+            >
+              <div className="tips-form-title">
+                <div className="tips-form-icon">
+                  {editingId ? (
+                    <HiPencilSquare />
+                  ) : (
+                    <HiPlus />
+                  )}
+                </div>
 
-          <section className="tip-editor">
-            {error && (
-              <div className="tips-error">
-                {error}
+                <div>
+                  <h2>
+                    {editingId
+                      ? "Edit tip"
+                      : "New tip"}
+                  </h2>
+
+                  <p>
+                    Write one clear idea you want to remember.
+                  </p>
+                </div>
               </div>
-            )}
 
-            <input
-              value={draft.title}
-              onChange={(event) =>
-                setDraft({
-                  ...draft,
-                  title:
-                    event.target
-                      .value,
-                })
-              }
-              placeholder="Title"
-              className="tip-title-input"
-            />
+              {error && (
+                <div className="tips-error">
+                  {error}
+                </div>
+              )}
 
-            <textarea
-              value={draft.body}
-              onChange={(event) =>
-                setDraft({
-                  ...draft,
-                  body:
-                    event.target
-                      .value,
-                })
-              }
-              placeholder="Write an important point..."
-              className="tip-body-input"
-              rows={5}
-            />
+              <label className="tips-field">
+                <span>Title</span>
 
-            <div className="tip-editor-actions">
-              <label className="tip-select-wrap">
-                <HiTag />
-
-                <select
-                  value={
-                    draft.topicId
-                  }
-                  onChange={(
-                    event
-                  ) =>
+                <input
+                  value={draft.title}
+                  onChange={(event) =>
                     setDraft({
                       ...draft,
-                      topicId:
+                      title:
                         event.target
                           .value,
                     })
                   }
-                >
-                  {topicOptions.map(
-                    (topic) => (
-                      <option
-                        key={
-                          topic._id
-                        }
-                        value={
-                          topic._id
-                        }
-                      >
-                        {topic.title ||
-                          topic.name ||
-                          "Topic"}
-                      </option>
-                    )
-                  )}
-                </select>
+                  placeholder="Two pointer invariant"
+                />
               </label>
 
-              <div className="tip-colors">
-                {NOTE_COLORS.map(
-                  (color) => (
-                    <button
-                      key={
-                        color.value
-                      }
-                      type="button"
-                      className={
-                        draft.color ===
-                        color.value
-                          ? "active"
-                          : ""
-                      }
-                      style={{
-                        background:
-                          color.value,
-                      }}
-                      title={
-                        color.name
-                      }
-                      onClick={() =>
-                        setDraft({
-                          ...draft,
-                          color:
-                            color.value,
-                        })
-                      }
-                    />
-                  )
-                )}
+              <div className="tips-field">
+                <span>Topic</span>
+
+                <Dropdown
+                  value={draft.topicId}
+                  width="100%"
+                  options={draftTopicOptions}
+                  onChange={(value) =>
+                    setDraft({
+                      ...draft,
+                      topicId: value,
+                    })
+                  }
+                />
               </div>
 
-              <div className="tip-buttons">
+              <label className="tips-field">
+                <span>Note</span>
+
+                <textarea
+                  value={draft.body}
+                  onChange={(event) =>
+                    setDraft({
+                      ...draft,
+                      body:
+                        event.target
+                          .value,
+                    })
+                  }
+                  placeholder="Add the approach, trap, edge case, or reminder."
+                  rows={8}
+                />
+              </label>
+
+              <div className="tips-form-actions">
                 {editingId && (
                   <button
                     type="button"
-                    className="tip-icon-button"
-                    onClick={
-                      resetDraft
-                    }
-                    title="Cancel edit"
+                    className="tips-secondary-button"
+                    onClick={resetDraft}
                   >
                     <HiXMark />
+                    Cancel
                   </button>
                 )}
 
                 <button
-                  type="button"
-                  className="tip-save-button"
-                  onClick={saveTip}
+                  type="submit"
+                  className="tips-primary-button"
+                  disabled={saving}
                 >
-                  {editingId ? (
-                    <HiCheck />
-                  ) : (
-                    <HiPlus />
-                  )}
-
-                  {editingId
-                    ? "Update"
-                    : "Add"}
+                  <HiCheck />
+                  {saving
+                    ? "Saving"
+                    : editingId
+                      ? "Update"
+                      : "Save"}
                 </button>
               </div>
-            </div>
-          </section>
+            </form>
 
-          <section className="tips-toolbar">
-            <label className="tips-search">
-              <HiMagnifyingGlass />
+            <section className="tips-library">
+              <div className="tips-library-header">
+                <div>
+                  <h2>Saved tips</h2>
 
-              <input
-                value={query}
-                onChange={(
-                  event
-                ) =>
-                  setQuery(
-                    event.target
-                      .value
-                  )
-                }
-                placeholder="Search notes"
-              />
-            </label>
+                  <p>
+                    Search and manage your revision notes.
+                  </p>
+                </div>
+              </div>
 
-            <select
-              className="tips-topic-filter"
-              value={selectedTopic}
-              onChange={(event) =>
-                setSelectedTopic(
-                  event.target.value
-                )
-              }
-            >
-              <option value="all">
-                All topics
-              </option>
+              <div className="tips-toolbar">
+                <label className="tips-search">
+                  <HiMagnifyingGlass />
 
-              {topicOptions.map(
-                (topic) => (
-                  <option
-                    key={topic._id}
-                    value={topic._id}
-                  >
-                    {topic.title ||
-                      topic.name ||
-                      "Topic"}
-                  </option>
-                )
-              )}
-            </select>
-          </section>
-
-          {filteredTips.length ===
-          0 ? (
-            <div className="tips-empty">
-              <HiOutlineLightBulb />
-
-              <h3>
-                {loading
-                  ? "Loading notes"
-                  : "No notes yet"}
-              </h3>
-
-              <p>
-                {loading
-                  ? "Fetching your saved tips."
-                  : "Add a tip, trick, or pattern you want to remember."}
-              </p>
-            </div>
-          ) : (
-            <section className="tips-grid">
-              {filteredTips.map(
-                (tip) => (
-                  <article
-                    key={tip._id}
-                    className="tip-card"
-                    role="button"
-                    tabIndex={0}
-                    style={{
-                      background:
-                        tip.color,
-                    }}
-                    onClick={() =>
-                      setActiveTip(tip)
+                  <input
+                    value={query}
+                    onChange={(event) =>
+                      setQuery(
+                        event.target.value
+                      )
                     }
-                    onKeyDown={(
-                      event
-                    ) => {
-                      if (
-                        event.key ===
-                          "Enter" ||
-                        event.key ===
-                          " "
-                      ) {
-                        setActiveTip(tip);
-                      }
-                    }}
-                  >
-                    <div className="tip-card-header">
-                      <span>
-                        {topicNameById[
-                          tip.topicId
-                        ] || "General"}
-                      </span>
+                    placeholder="Search tips"
+                  />
+                </label>
 
-                      <div className="tip-card-actions">
-                        <button
-                          type="button"
-                          onClick={(
-                            event
-                          ) => {
-                            event.stopPropagation();
-                            editTip(tip)
-                          }}
-                          title="Edit note"
-                        >
-                          <HiPencilSquare />
-                        </button>
+                <div className="tips-filter">
+                  <Dropdown
+                    value={selectedTopic}
+                    width="100%"
+                    options={filterTopicOptions}
+                    onChange={(value) =>
+                      setSelectedTopic(
+                        value
+                      )
+                    }
+                  />
+                </div>
+              </div>
 
-                        <button
-                          type="button"
-                          onClick={(
-                            event
-                          ) => {
-                            event.stopPropagation();
-                            removeTip(
-                              tip._id
-                            )
-                          }}
-                          title="Delete note"
-                        >
-                          <HiTrash />
-                        </button>
-                      </div>
-                    </div>
+              {filteredTips.length === 0 ? (
+                <div className="tips-empty">
+                  <HiOutlineLightBulb />
 
-                    <h2>{tip.title}</h2>
+                  <h3>
+                    {loading
+                      ? "Loading tips"
+                      : "No tips found"}
+                  </h3>
 
-                    <time>
-                      Updated{" "}
-                      {formatDate(
-                        tip.updatedAt
-                      )}
-                    </time>
-                  </article>
-                )
+                  <p>
+                    {loading
+                      ? "Fetching your saved notes."
+                      : "Create a new tip or adjust your filters."}
+                  </p>
+                </div>
+              ) : (
+                <div className="tips-list">
+                  {filteredTips.map(
+                    (tip) => (
+                      <article
+                        key={tip._id}
+                        className={
+                          editingId === tip._id
+                            ? "tip-card is-editing"
+                            : "tip-card"
+                        }
+                      >
+                        <div className="tip-card-main">
+                          <div className="tip-card-meta">
+                            <span>
+                              {topicNameById[
+                                tip.topicId
+                              ] || "General"}
+                            </span>
+
+                            <time>
+                              {formatDate(
+                                tip.updatedAt
+                              )}
+                            </time>
+                          </div>
+
+                          <h3>
+                            {tip.title ||
+                              "Untitled tip"}
+                          </h3>
+
+                          <p>
+                            {tip.body?.trim() ||
+                              "No details added yet."}
+                          </p>
+                        </div>
+
+                        <div className="tip-card-actions">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleEdit(tip)
+                            }
+                            title="Edit tip"
+                            aria-label="Edit tip"
+                          >
+                            <HiPencilSquare />
+                          </button>
+
+                          <button
+                            type="button"
+                            className="tip-delete-button"
+                            onClick={() =>
+                              handleDelete(
+                                tip._id
+                              )
+                            }
+                            title="Delete tip"
+                            aria-label="Delete tip"
+                          >
+                            <HiTrash />
+                          </button>
+                        </div>
+                      </article>
+                    )
+                  )}
+                </div>
               )}
             </section>
-          )}
-
-          {activeTip && (
-            <div
-              className="tip-detail-backdrop"
-              onClick={() =>
-                setActiveTip(null)
-              }
-            >
-              <article
-                className="tip-detail"
-                style={{
-                  background:
-                    activeTip.color,
-                }}
-                onClick={(
-                  event
-                ) =>
-                  event.stopPropagation()
-                }
-              >
-                <div className="tip-detail-header">
-                  <span>
-                    {topicNameById[
-                      activeTip.topicId
-                    ] || "General"}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setActiveTip(null)
-                    }
-                    title="Close note"
-                  >
-                    <HiXMark />
-                  </button>
-                </div>
-
-                <h2>
-                  {activeTip.title}
-                </h2>
-
-                <p>
-                  {activeTip.body}
-                </p>
-
-                <div className="tip-detail-footer">
-                  <time>
-                    Updated{" "}
-                    {formatDate(
-                      activeTip.updatedAt
-                    )}
-                  </time>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      editTip(activeTip)
-                    }
-                  >
-                    <HiPencilSquare />
-
-                    Edit
-                  </button>
-                </div>
-              </article>
-            </div>
-          )}
+          </section>
         </main>
       </div>
     </>

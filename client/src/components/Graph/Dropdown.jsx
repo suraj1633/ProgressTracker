@@ -12,6 +12,25 @@ const Dropdown = ({
   onChange,
   width = 140,
 }) => {
+  const normalizedOptions =
+    options.map((option) =>
+      typeof option === "object"
+        ? option
+        : {
+            value: option,
+            label: option,
+          }
+    );
+
+  const selectedOption =
+    normalizedOptions.find(
+      (option) =>
+        option.value === value
+    );
+
+  const selectedLabel =
+    selectedOption?.label || value;
+
   const [
     open,
     setOpen,
@@ -55,6 +74,7 @@ const Dropdown = ({
       }}
     >
       <button
+        type="button"
         className="dropdown-trigger"
         onClick={() =>
           setOpen(
@@ -63,7 +83,7 @@ const Dropdown = ({
         }
       >
         <span>
-          {value}
+          {selectedLabel}
         </span>
 
         <svg
@@ -84,23 +104,24 @@ const Dropdown = ({
 
       {open && (
         <div className="dropdown-menu">
-          {options.map(
+          {normalizedOptions.map(
             (
               option
             ) => (
               <button
+                type="button"
                 key={
-                  option
+                  option.value
                 }
                 className={`dropdown-item ${
                   value ===
-                  option
+                  option.value
                     ? "selected"
                     : ""
                 }`}
                 onClick={() => {
                   onChange(
-                    option
+                    option.value
                   );
 
                   setOpen(
@@ -110,16 +131,9 @@ const Dropdown = ({
               >
                 <span>
                   {
-                    option
+                    option.label
                   }
                 </span>
-
-                {value ===
-                  option && (
-                  <span className="checkmark">
-                    &#10003;
-                  </span>
-                )}
               </button>
             )
           )}

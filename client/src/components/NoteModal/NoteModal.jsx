@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import {
-  FaEraser,
-  FaRegStickyNote,
   FaSave,
   FaTimes,
 } from "react-icons/fa";
@@ -17,16 +15,6 @@ const NoteModal = ({
   onSave,
   questionTitle,
 }) => {
-  const trimmedNote =
-    note.trim();
-
-  const wordCount =
-    trimmedNote
-      ? trimmedNote
-          .split(/\s+/)
-          .length
-      : 0;
-
   useEffect(() => {
     if (!open) return undefined;
 
@@ -81,20 +69,14 @@ const NoteModal = ({
         aria-describedby="note-modal-description"
       >
         <div className="note-modal-header">
-          <div className="note-modal-title-row">
-            <span className="note-modal-icon">
-              <FaRegStickyNote />
-            </span>
+          <div>
+            <p className="note-modal-kicker">
+              Question note
+            </p>
 
-            <div>
-              <p className="note-modal-kicker">
-                Question note
-              </p>
-
-              <h2 id="note-modal-title">
-                Edit note
-              </h2>
-            </div>
+            <h2 id="note-modal-title">
+              Edit note
+            </h2>
           </div>
 
           <button
@@ -111,8 +93,6 @@ const NoteModal = ({
           className="note-modal-question"
           id="note-modal-description"
         >
-          <span>Question</span>
-
           <p>
             {questionTitle ||
               "Untitled question"}
@@ -138,34 +118,9 @@ const NoteModal = ({
             placeholder="Write a quick reminder, approach, or edge case to revisit..."
             autoFocus
           />
-
-          <div className="note-editor-meta">
-            <span>
-              {trimmedNote
-                ? "Draft ready"
-                : "No note content"}
-            </span>
-
-            <span>
-              {wordCount} words /{" "}
-              {note.length} chars
-            </span>
-          </div>
         </div>
 
         <div className="note-modal-actions">
-          <button
-            type="button"
-            className="note-modal-clear"
-            onClick={() =>
-              setNote("")
-            }
-            disabled={!note.length}
-          >
-            <FaEraser />
-            Clear
-          </button>
-
           <button
             type="button"
             className="note-modal-secondary"
@@ -179,7 +134,7 @@ const NoteModal = ({
             className="note-modal-primary"
           >
             <FaSave />
-            Save note
+            Save
           </button>
         </div>
       </form>

@@ -152,8 +152,8 @@ const Signup = () => {
 
           <p>
             {step === "details"
-              ? "Use a valid email to secure your progress."
-              : "Enter the 6 digit OTP sent to your email."}
+              ? "Create your account and start tracking your DSA practice."
+              : "Enter the code sent to your email to finish setup."}
           </p>
         </div>
 

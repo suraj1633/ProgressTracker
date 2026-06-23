@@ -1,11 +1,11 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
 import {
-  ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
@@ -42,6 +42,120 @@ const difficultyKeys = [
   "Medium",
   "Hard",
 ];
+
+const useElementSize = () => {
+  const ref = useRef(null);
+  const [size, setSize] =
+    useState({
+      width: 0,
+      height: 0,
+    });
+
+  useEffect(() => {
+    const element = ref.current;
+
+    if (!element) {
+      return undefined;
+    }
+
+    const updateSize = () => {
+      const { width, height } =
+        element.getBoundingClientRect();
+
+      setSize({
+        width:
+          width > 0
+            ? Math.floor(width)
+            : 0,
+        height:
+          height > 0
+            ? Math.floor(height)
+            : 0,
+      });
+    };
+
+    updateSize();
+
+    if (
+      typeof ResizeObserver ===
+      "undefined"
+    ) {
+      window.addEventListener(
+        "resize",
+        updateSize
+      );
+
+      return () => {
+        window.removeEventListener(
+          "resize",
+          updateSize
+        );
+      };
+    }
+
+    const resizeObserver =
+      new ResizeObserver(
+        updateSize
+      );
+
+    resizeObserver.observe(
+      element
+    );
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  return [ref, size];
+};
+
+const useIsNarrowScreen = () => {
+  const getIsNarrow = () =>
+    typeof window !==
+      "undefined" &&
+    window.matchMedia(
+      "(max-width: 640px)"
+    ).matches;
+
+  const [isNarrow, setIsNarrow] =
+    useState(getIsNarrow);
+
+  useEffect(() => {
+    if (
+      typeof window ===
+      "undefined"
+    ) {
+      return undefined;
+    }
+
+    const mediaQuery =
+      window.matchMedia(
+        "(max-width: 640px)"
+      );
+
+    const handleChange = () =>
+      setIsNarrow(
+        mediaQuery.matches
+      );
+
+    handleChange();
+
+    mediaQuery.addEventListener(
+      "change",
+      handleChange
+    );
+
+    return () => {
+      mediaQuery.removeEventListener(
+        "change",
+        handleChange
+      );
+    };
+  }, []);
+
+  return isNarrow;
+};
 
 const toDateKey = (
   date
@@ -160,6 +274,14 @@ const Graph = () => {
     fetchAnalytics,
     heatmapData,
   } = useProgress();
+
+  const isNarrowScreen =
+    useIsNarrowScreen();
+
+  const [
+    chartShellRef,
+    chartSize,
+  ] = useElementSize();
 
   const today =
     useMemo(
@@ -337,17 +459,47 @@ const Graph = () => {
       );
     }, [chartData]);
 
+  const xAxisTicks =
+    useMemo(() => {
+      if (isNarrowScreen) {
+        return [
+          "1",
+          "7",
+          "14",
+          "21",
+          "28",
+        ];
+      }
+
+      return [
+        "1",
+        "2",
+        "5",
+        "9",
+        "13",
+        "17",
+        "21",
+        "25",
+        "29",
+      ];
+    }, [isNarrowScreen]);
+
   return (
     <div className="graph-card">
       <div className="graph-header">
         <div className="graph-title-block">
           <span className="graph-kicker">
-            Solved
+            {selectedMonthLabel}{" "}
+            {year}
           </span>
 
           <div className="graph-total">
             {totals.total}
           </div>
+
+          <span className="graph-caption">
+            problems solved
+          </span>
         </div>
 
         <div className="top-right-controls">
@@ -392,13 +544,16 @@ const Graph = () => {
         </div>
       </div>
 
-      <div className="chart-shell">
-        <ResponsiveContainer
-          width="100%"
-          height={220}
-        >
+      <div
+        className="chart-shell"
+        ref={chartShellRef}
+      >
+        {chartSize.width > 0 &&
+        chartSize.height > 0 ? (
           <BarChart
             data={chartData}
+            width={chartSize.width}
+            height={chartSize.height}
             margin={{
               top: 14,
               right: 0,
@@ -406,12 +561,70 @@ const Graph = () => {
               bottom: 0,
             }}
             barCategoryGap={
-              "48%"
+              isNarrowScreen
+                ? "30%"
+                : "42%"
             }
           >
+            <defs>
+              <linearGradient
+                id="graphEasyGradient"
+                x1="0"
+                y1="1"
+                x2="0"
+                y2="0"
+              >
+                <stop
+                  offset="0%"
+                  stopColor="var(--graph-easy-start)"
+                />
+
+                <stop
+                  offset="100%"
+                  stopColor="var(--graph-easy-end)"
+                />
+              </linearGradient>
+
+              <linearGradient
+                id="graphMediumGradient"
+                x1="0"
+                y1="1"
+                x2="0"
+                y2="0"
+              >
+                <stop
+                  offset="0%"
+                  stopColor="var(--graph-medium-start)"
+                />
+
+                <stop
+                  offset="100%"
+                  stopColor="var(--graph-medium-end)"
+                />
+              </linearGradient>
+
+              <linearGradient
+                id="graphHardGradient"
+                x1="0"
+                y1="1"
+                x2="0"
+                y2="0"
+              >
+                <stop
+                  offset="0%"
+                  stopColor="var(--graph-hard-start)"
+                />
+
+                <stop
+                  offset="100%"
+                  stopColor="var(--graph-hard-end)"
+                />
+              </linearGradient>
+            </defs>
+
             <CartesianGrid
               vertical={false}
-              stroke="rgba(255,255,255,.06)"
+              stroke="var(--graph-grid)"
             />
 
             <XAxis
@@ -423,20 +636,15 @@ const Graph = () => {
                 right: 8,
               }}
               ticks={[
-                "1",
-                "2",
-                "5",
-                "9",
-                "13",
-                "17",
-                "21",
-                "25",
-                "29",
+                ...xAxisTicks,
               ]}
               tick={{
                 fill:
-                  "#8a8a8a",
-                fontSize: 12,
+                  "var(--graph-axis)",
+                fontSize:
+                  isNarrowScreen
+                    ? 11
+                    : 12,
               }}
             />
 
@@ -447,15 +655,18 @@ const Graph = () => {
               allowDecimals={false}
               tick={{
                 fill:
-                  "#8a8a8a",
-                fontSize: 12,
+                  "var(--graph-axis)",
+                fontSize:
+                  isNarrowScreen
+                    ? 11
+                    : 12,
               }}
             />
 
             <Tooltip
               cursor={{
                 fill:
-                  "rgba(255,255,255,.04)",
+                  "var(--graph-cursor)",
               }}
               content={
                 <CustomTooltip />
@@ -465,43 +676,65 @@ const Graph = () => {
             <Bar
               dataKey="Easy"
               stackId="solved"
-              fill="#00b8a3"
+              fill="url(#graphEasyGradient)"
+              stroke="var(--graph-separator)"
+              strokeWidth={1}
+              background={{
+                fill:
+                  "var(--graph-track)",
+                radius: [
+                  6,
+                  6,
+                  0,
+                  0,
+                ],
+              }}
               radius={[
                 0,
                 0,
-                5,
-                5,
+                0,
+                0,
               ]}
               barSize={
-                8
+                isNarrowScreen
+                  ? 7
+                  : 10
               }
             />
 
             <Bar
               dataKey="Medium"
               stackId="solved"
-              fill="#ffc01e"
+              fill="url(#graphMediumGradient)"
+              stroke="var(--graph-separator)"
+              strokeWidth={1}
               barSize={
-                8
+                isNarrowScreen
+                  ? 7
+                  : 10
               }
             />
 
             <Bar
               dataKey="Hard"
               stackId="solved"
-              fill="#ff375f"
+              fill="url(#graphHardGradient)"
+              stroke="var(--graph-separator)"
+              strokeWidth={1}
               radius={[
-                5,
-                5,
+                6,
+                6,
                 0,
                 0,
               ]}
               barSize={
-                8
+                isNarrowScreen
+                  ? 7
+                  : 10
               }
             />
           </BarChart>
-        </ResponsiveContainer>
+        ) : null}
       </div>
 
       <div className="graph-footer">

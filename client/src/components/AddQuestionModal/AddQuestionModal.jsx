@@ -40,14 +40,18 @@ const AddQuestionModal = ({
     async (e) => {
       e.preventDefault();
 
+      if (!title.trim())
+        return;
+
       try {
         await addQuestion(
           topicId,
           {
-            title,
+            title: title.trim(),
             difficulty,
-            sourceLink,
-            notes,
+            sourceLink:
+              sourceLink.trim(),
+            notes: notes.trim(),
           }
         );
 
@@ -72,13 +76,21 @@ const AddQuestionModal = ({
       }
     >
       <div className="question-form-header">
-        <h4>
-          Add Question
-        </h4>
+        <div className="question-form-heading">
+          <span className="question-form-icon">
+            <FaPlus />
+          </span>
 
-        <span>
-          Add a problem to this topic
-        </span>
+          <div>
+            <h4>
+              Add Question
+            </h4>
+
+            <span>
+              Add a problem to this topic
+            </span>
+          </div>
+        </div>
       </div>
 
       <div className="question-form-grid">
@@ -87,6 +99,7 @@ const AddQuestionModal = ({
           <input
             placeholder="2574. Left and Right Sum Differences"
             value={title}
+            required
             onChange={(e) =>
               setTitle(
                 e.target.value
@@ -138,7 +151,7 @@ const AddQuestionModal = ({
 
         <label>
           <span>Notes</span>
-          <input
+          <textarea
             placeholder="Optional reminder"
             value={notes}
             onChange={(e) =>
@@ -152,6 +165,7 @@ const AddQuestionModal = ({
 
       <button
         type="submit"
+        disabled={!title.trim()}
       >
         <FaPlus />
         Add Question

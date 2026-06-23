@@ -66,8 +66,7 @@ const Login = () => {
           <h1>Login</h1>
 
           <p>
-            Continue tracking your DSA
-            progress.
+            Sign in to continue tracking your progress.
           </p>
         </div>
 

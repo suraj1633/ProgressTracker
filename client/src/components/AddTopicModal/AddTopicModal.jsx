@@ -11,6 +11,7 @@ import {
   useProgress,
 } from "../../context/ProgressContext";
 
+import "../AddQuestionModal/AddQuestionModal.css";
 import "./AddTopicModal.css";
 
 const AddTopicModal = () => {
@@ -35,8 +36,9 @@ const AddTopicModal = () => {
 
       try {
         await createTopic({
-          title,
-          description,
+          title: title.trim(),
+          description:
+            description.trim(),
         });
 
         setTitle("");
@@ -49,22 +51,31 @@ const AddTopicModal = () => {
     };
 
   return (
-    <div className="topic-modal">
-      <div className="topic-modal-header">
-        <h2>
-          Add Topic
-        </h2>
+    <form
+      className="question-form topic-modal"
+      onSubmit={
+        handleSubmit
+      }
+    >
+      <div className="question-form-header">
+        <div className="question-form-heading">
+          <span className="question-form-icon">
+            <FaPlus />
+          </span>
 
-        <span>
-          Create a new practice section
-        </span>
+          <div>
+            <h4>
+              Add Topic
+            </h4>
+
+            <span>
+              Create a new practice section
+            </span>
+          </div>
+        </div>
       </div>
 
-      <form
-        onSubmit={
-          handleSubmit
-        }
-      >
+      <div className="question-form-grid topic-modal-grid">
         <label>
           <span>Topic name</span>
           <input
@@ -94,15 +105,16 @@ const AddTopicModal = () => {
             }
           />
         </label>
+      </div>
 
-        <button
-          type="submit"
-        >
-          <FaPlus />
-          Add Topic
-        </button>
-      </form>
-    </div>
+      <button
+        type="submit"
+        disabled={!title.trim()}
+      >
+        <FaPlus />
+        Add Topic
+      </button>
+    </form>
   );
 };
 

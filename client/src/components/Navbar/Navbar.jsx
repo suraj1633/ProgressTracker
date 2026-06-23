@@ -150,21 +150,27 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
-      <div className="navbar-logo">
-        <img
-          src={logo}
-          alt="DSA Tracker"
-          className="navbar-logo-img"
-        />
+        <Link
+          to="/"
+          className="navbar-logo"
+          aria-label="Dashboard"
+          title="Dashboard"
+        >
+          <img
+            src={logo}
+            alt=""
+            className="navbar-logo-img"
+            aria-hidden="true"
+          />
 
-        <div className="logo-text">
-          <span>DSA</span> Tracker
+          <div className="logo-text">
+            <span>DSA</span> Tracker
+          </div>
+        </Link>
+
+        <div className="navbar-links">
+          {navItems}
         </div>
-      </div>
-
-      <div className="navbar-links">
-        {navItems}
-      </div>
       </nav>
 
       <nav
