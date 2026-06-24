@@ -1,5 +1,56 @@
 import nodemailer from "nodemailer";
 
+const sendWithResend = async (
+  email,
+  otp
+) => {
+  const apiKey =
+    process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    return false;
+  }
+
+  const from =
+    process.env.RESEND_FROM ||
+    process.env.SMTP_FROM ||
+    "DSA Tracker <onboarding@resend.dev>";
+
+  console.log(
+    `Sending OTP email to ${email} through Resend API`
+  );
+
+  const response = await fetch(
+    "https://api.resend.com/emails",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to: email,
+        subject:
+          "Verify your DSA Tracker account",
+        text: `Your verification code is ${otp}. It expires in 10 minutes.`,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const body =
+      await response.text();
+
+    throw new Error(
+      `Resend email failed (${response.status}): ${body}`
+    );
+  }
+
+  return true;
+};
+
 const createTransporter = () => {
   const {
     SMTP_HOST,
@@ -58,6 +109,16 @@ const createTransporter = () => {
 
 export const sendOtpEmail =
   async (email, otp) => {
+    const sentWithResend =
+      await sendWithResend(
+        email,
+        otp
+      );
+
+    if (sentWithResend) {
+      return;
+    }
+
     const transporter =
       createTransporter();
 
