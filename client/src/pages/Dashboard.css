@@ -7,6 +7,13 @@
   background:
     linear-gradient(
       180deg,
+      rgba(14, 14, 14, .98),
+      #080808 58%
+    );
+
+  background:
+    linear-gradient(
+      180deg,
       color-mix(
         in srgb,
         var(--theme-bg) 92%,
@@ -17,6 +24,13 @@
 }
 
 .app .dashboard-layout {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(14, 14, 14, .98),
+      #080808 58%
+    );
+
   background:
     linear-gradient(
       180deg,

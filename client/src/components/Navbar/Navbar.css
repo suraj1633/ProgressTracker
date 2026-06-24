@@ -15,12 +15,7 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 
-  background:
-    color-mix(
-      in srgb,
-      var(--theme-bg) 72%,
-      transparent
-    );
+  background: rgba(8, 8, 8, .88);
 
   border-bottom: 1px solid
     rgba(255, 255, 255, 0.06);
@@ -285,12 +280,7 @@
       rgba(255, 255, 255, 0.08);
     border-radius: 22px;
 
-    background:
-      color-mix(
-        in srgb,
-        var(--theme-bg) 74%,
-        transparent
-      );
+    background: rgba(8, 8, 8, .9);
 
     box-shadow:
       var(--theme-glass-shadow);

@@ -203,31 +203,15 @@
     --theme-glass-bg:
             linear-gradient(
                     145deg,
-                    color-mix(
-                            in srgb,
-                            var(--theme-surface-a) 76%,
-                            transparent
-                    ),
-                    color-mix(
-                            in srgb,
-                            var(--theme-surface-b) 82%,
-                            transparent
-                    )
+                    rgba(24, 24, 24, .94),
+                    rgba(10, 10, 10, .95)
             );
 
     --theme-glass-bg-soft:
             linear-gradient(
                     145deg,
-                    color-mix(
-                            in srgb,
-                            var(--theme-surface-a) 58%,
-                            transparent
-                    ),
-                    color-mix(
-                            in srgb,
-                            var(--theme-surface-b) 70%,
-                            transparent
-                    )
+                    rgba(24, 24, 24, .78),
+                    rgba(10, 10, 10, .86)
             );
 
     --theme-glass-highlight:
@@ -675,11 +659,7 @@
 .app .navbar,
 .app .mobile-bottom-nav {
     background:
-            color-mix(
-                    in srgb,
-                    var(--theme-bg) 72%,
-                    transparent
-            );
+            rgba(8, 8, 8, .88);
     border-color: var(--theme-border-soft);
     box-shadow:
             var(--theme-glass-shadow);
