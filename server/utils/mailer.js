@@ -18,11 +18,18 @@ const createTransporter = () => {
     return null;
   }
 
+  const port =
+    Number(SMTP_PORT);
+
+  const secure =
+    SMTP_SECURE
+      ? SMTP_SECURE === "true"
+      : port === 465;
+
   return nodemailer.createTransport({
     host: SMTP_HOST,
-    port: Number(SMTP_PORT),
-    secure:
-      SMTP_SECURE === "true",
+    port,
+    secure,
     connectionTimeout: Number(
       process.env.SMTP_CONNECTION_TIMEOUT_MS ||
         10000
@@ -39,6 +46,12 @@ const createTransporter = () => {
       user: SMTP_USER,
       pass: SMTP_PASS,
     },
+    tls: {
+      minVersion: "TLSv1.2",
+      rejectUnauthorized:
+        process.env.SMTP_REJECT_UNAUTHORIZED !==
+        "false",
+    },
   });
 };
 
@@ -49,11 +62,15 @@ export const sendOtpEmail =
 
     if (!transporter) {
       console.log(
-        `OTP for ${email}: ${otp}`
+        `OTP email not configured. OTP for ${email}: ${otp}`
       );
 
       return;
     }
+
+    console.log(
+      `Sending OTP email to ${email} through ${process.env.SMTP_HOST}:${process.env.SMTP_PORT}`
+    );
 
     await transporter.sendMail({
       from:

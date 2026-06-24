@@ -58,7 +58,16 @@ const sendSignupOtp = async (
     );
   } catch (error) {
     console.error(
-      `OTP email failed for ${email}: ${error.message}`
+      "OTP email failed",
+      {
+        email,
+        message: error.message,
+        code: error.code,
+        command: error.command,
+        responseCode:
+          error.responseCode,
+        response: error.response,
+      }
     );
 
     const deliveryError =
