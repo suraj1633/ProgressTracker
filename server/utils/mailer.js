@@ -109,6 +109,14 @@ const createTransporter = () => {
 
 export const sendOtpEmail =
   async (email, otp) => {
+    console.log(
+      `Email provider: ${
+        process.env.RESEND_API_KEY
+          ? "resend"
+          : "smtp"
+      }`
+    );
+
     const sentWithResend =
       await sendWithResend(
         email,
