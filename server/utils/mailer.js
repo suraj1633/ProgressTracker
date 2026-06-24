@@ -1,5 +1,72 @@
 import nodemailer from "nodemailer";
 
+const sendWithBrevo = async (
+  email,
+  otp
+) => {
+  const apiKey =
+    process.env.BREVO_API_KEY;
+
+  if (!apiKey) {
+    return false;
+  }
+
+  const senderEmail =
+    process.env.BREVO_SENDER_EMAIL;
+
+  if (!senderEmail) {
+    throw new Error(
+      "BREVO_SENDER_EMAIL is required when BREVO_API_KEY is set"
+    );
+  }
+
+  const senderName =
+    process.env.BREVO_SENDER_NAME ||
+    "DSA Tracker";
+
+  console.log(
+    `Sending OTP email to ${email} through Brevo API`
+  );
+
+  const response = await fetch(
+    "https://api.brevo.com/v3/smtp/email",
+    {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "api-key": apiKey,
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        sender: {
+          name: senderName,
+          email: senderEmail,
+        },
+        to: [
+          {
+            email,
+          },
+        ],
+        subject:
+          "Verify your DSA Tracker account",
+        textContent: `Your verification code is ${otp}. It expires in 10 minutes.`,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const body =
+      await response.text();
+
+    throw new Error(
+      `Brevo email failed (${response.status}): ${body}`
+    );
+  }
+
+  return true;
+};
+
 const sendWithResend = async (
   email,
   otp
@@ -111,11 +178,23 @@ export const sendOtpEmail =
   async (email, otp) => {
     console.log(
       `Email provider: ${
-        process.env.RESEND_API_KEY
+        process.env.BREVO_API_KEY
+          ? "brevo"
+          : process.env.RESEND_API_KEY
           ? "resend"
           : "smtp"
       }`
     );
+
+    const sentWithBrevo =
+      await sendWithBrevo(
+        email,
+        otp
+      );
+
+    if (sentWithBrevo) {
+      return;
+    }
 
     const sentWithResend =
       await sendWithResend(
