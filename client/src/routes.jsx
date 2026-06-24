@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 import Analytics from "./pages/Analytics";
 import Tips from "./pages/Tips";
 import TopicPage from "./pages/TopicPage";
@@ -17,6 +18,11 @@ const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
         <Route
           path="/login"
           element={<Login />}
@@ -31,7 +37,7 @@ const AppRoutes = () => {
           element={<ProtectedRoute />}
         >
           <Route
-            path="/"
+            path="/dashboard"
             element={<Dashboard />}
           />
 

@@ -37,10 +37,10 @@
             #ffffff;
 
     --text-secondary:
-            #b7a08d;
+            #d5dbe6;
 
     --text-muted:
-            #907b68;
+            #9fa8b8;
 
     /* =========================
        ORANGE THEME
@@ -1012,4 +1012,6 @@
 :root,
 .app {
     --theme-page-bg: #080808 !important;
+    --theme-text-soft: #d5dbe6;
+    --theme-text-muted: #9fa8b8;
 }

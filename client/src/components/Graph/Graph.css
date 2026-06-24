@@ -1,22 +1,22 @@
 .graph-card {
   --graph-easy:
-    #2dd4bf;
+    #00b8a3;
   --graph-easy-start:
-    #0f766e;
+    #00b8a3;
   --graph-easy-end:
-    #5eead4;
+    #00b8a3;
   --graph-medium:
-    #f59e0b;
+    #ffc01e;
   --graph-medium-start:
-    #b45309;
+    #ffc01e;
   --graph-medium-end:
-    #fcd34d;
+    #ffc01e;
   --graph-hard:
-    #fb7185;
+    #ff375f;
   --graph-hard-start:
-    #be123c;
+    #ff375f;
   --graph-hard-end:
-    #fda4af;
+    #ff375f;
   --graph-axis:
     var(--theme-text-muted);
   --graph-grid:

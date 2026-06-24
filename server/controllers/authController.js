@@ -47,6 +47,31 @@ const createOtp = () => {
   return otp;
 };
 
+const sendSignupOtp = async (
+  email,
+  otp
+) => {
+  try {
+    await sendOtpEmail(
+      email,
+      otp
+    );
+  } catch (error) {
+    console.error(
+      `OTP email failed for ${email}: ${error.message}`
+    );
+
+    const deliveryError =
+      new Error(
+        "Unable to send OTP email right now. Please try again later."
+      );
+
+    deliveryError.statusCode = 503;
+
+    throw deliveryError;
+  }
+};
+
 export const signup =
   async (req, res) => {
     try {
@@ -118,7 +143,7 @@ export const signup =
         }
       );
 
-      await sendOtpEmail(
+      await sendSignupOtp(
         cleanEmail,
         otp
       );
@@ -129,7 +154,9 @@ export const signup =
         email: cleanEmail,
       });
     } catch (error) {
-      return res.status(500).json({
+      return res.status(
+        error.statusCode || 500
+      ).json({
         message: error.message,
       });
     }
@@ -251,7 +278,7 @@ export const resendOtp =
         );
 
       await pendingUser.save();
-      await sendOtpEmail(
+      await sendSignupOtp(
         cleanEmail,
         otp
       );
@@ -261,7 +288,9 @@ export const resendOtp =
           "OTP sent to your email",
       });
     } catch (error) {
-      return res.status(500).json({
+      return res.status(
+        error.statusCode || 500
+      ).json({
         message: error.message,
       });
     }

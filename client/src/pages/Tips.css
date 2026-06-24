@@ -1,11 +1,60 @@
 .tips-page {
   height: calc(100vh - 76px);
   min-height: 0;
+  position: relative;
+  isolation: isolate;
   overflow: hidden;
-  background: var(--theme-page-bg);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(
+        in srgb,
+        var(--theme-bg) 92%,
+        #ffffff
+      ),
+      #080808 58%
+    );
+}
+
+.tips-page::before,
+.tips-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.tips-page::before {
+  opacity: 0.16;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.055) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.045) 1px,
+      transparent 1px
+    );
+  background-size: 72px 72px;
+  mask-image:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.75),
+      transparent 78%
+    );
+  animation: app-page-grid-drift 34s linear infinite;
+}
+
+.tips-page::after {
+  display: none;
 }
 
 .tips-content {
+  position: relative;
+  z-index: 1;
+
   width: 100%;
   max-width: 1180px;
   height: 100%;

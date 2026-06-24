@@ -35,7 +35,10 @@ const Login = () => {
 
   if (user) {
     return (
-      <Navigate to="/" replace />
+      <Navigate
+        to="/dashboard"
+        replace
+      />
     );
   }
 
@@ -47,7 +50,7 @@ const Login = () => {
 
       try {
         await login(form);
-        navigate("/");
+        navigate("/dashboard");
       } catch (err) {
         setError(
           err.response?.data

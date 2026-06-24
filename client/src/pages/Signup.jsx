@@ -46,7 +46,10 @@ const Signup = () => {
 
   if (user) {
     return (
-      <Navigate to="/" replace />
+      <Navigate
+        to="/dashboard"
+        replace
+      />
     );
   }
 
@@ -101,7 +104,7 @@ const Signup = () => {
           email: form.email,
           otp: form.otp,
         });
-        navigate("/");
+        navigate("/dashboard");
       } catch (err) {
         setError(
           err.response?.data

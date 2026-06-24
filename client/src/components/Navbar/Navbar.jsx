@@ -25,16 +25,28 @@ import {
 
 import "./Navbar.css";
 
+const getProfileImageKey = (
+  user
+) =>
+  user?.email
+    ? `profileImage:${user.email}`
+    : "profileImage";
+
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } =
+    useAuth();
   const [
     activeTheme,
     setActiveTheme,
   ] = useState(
     getActiveStreakThemeClass
   );
+  const [
+    profileImage,
+    setProfileImage,
+  ] = useState(null);
 
   useEffect(() => {
     const syncLogo = () => {
@@ -58,6 +70,43 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const syncProfileImage =
+      () => {
+        setProfileImage(
+          localStorage.getItem(
+            getProfileImageKey(
+              user
+            )
+          )
+        );
+      };
+
+    syncProfileImage();
+
+    window.addEventListener(
+      "profile-image-updated",
+      syncProfileImage
+    );
+
+    window.addEventListener(
+      "storage",
+      syncProfileImage
+    );
+
+    return () => {
+      window.removeEventListener(
+        "profile-image-updated",
+        syncProfileImage
+      );
+
+      window.removeEventListener(
+        "storage",
+        syncProfileImage
+      );
+    };
+  }, [user]);
+
   const logo =
     getLogoForTheme(
       activeTheme
@@ -71,11 +120,12 @@ const Navbar = () => {
   const navItems = (
     <>
       <Link
-        to="/"
+        to="/dashboard"
         title="Dashboard"
         aria-label="Dashboard"
         className={
-          location.pathname === "/"
+          location.pathname ===
+          "/dashboard"
             ? "active-link"
             : ""
         }
@@ -128,7 +178,16 @@ const Navbar = () => {
             : ""
         }
       >
-        <HiOutlineUserCircle />
+        {profileImage ? (
+          <img
+            src={profileImage}
+            alt=""
+            className="navbar-profile-image"
+            aria-hidden="true"
+          />
+        ) : (
+          <HiOutlineUserCircle />
+        )}
 
         Profile
       </Link>
@@ -151,7 +210,7 @@ const Navbar = () => {
     <>
       <nav className="navbar">
         <Link
-          to="/"
+          to="/dashboard"
           className="navbar-logo"
           aria-label="Dashboard"
           title="Dashboard"

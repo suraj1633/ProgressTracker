@@ -168,6 +168,16 @@
   font-size: 20px;
 }
 
+.navbar-profile-image {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .navbar-links a:hover,
 .mobile-bottom-nav a:hover,
 .mobile-bottom-nav .navbar-logout:hover {
@@ -304,6 +314,11 @@
   .mobile-bottom-nav .navbar-logout svg {
     flex: 0 0 auto;
     font-size: 23px;
+  }
+
+  .mobile-bottom-nav .navbar-profile-image {
+    width: 28px;
+    height: 28px;
   }
 
   .mobile-bottom-nav a:hover,
