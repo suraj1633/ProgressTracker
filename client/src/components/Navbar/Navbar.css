@@ -15,7 +15,13 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 
-  background: rgba(8, 8, 8, .88);
+  background-color: #080808 !important;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(8, 8, 8, .98),
+      rgba(8, 8, 8, .94)
+    ) !important;
 
   border-bottom: 1px solid
     rgba(255, 255, 255, 0.06);
@@ -280,7 +286,13 @@
       rgba(255, 255, 255, 0.08);
     border-radius: 22px;
 
-    background: rgba(8, 8, 8, .9);
+    background-color: #080808 !important;
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(8, 8, 8, .98),
+        rgba(8, 8, 8, .94)
+      ) !important;
 
     box-shadow:
       var(--theme-glass-shadow);
