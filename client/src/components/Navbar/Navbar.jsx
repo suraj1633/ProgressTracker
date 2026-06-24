@@ -114,7 +114,9 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/", {
+      replace: true,
+    });
   };
 
   const navItems = (

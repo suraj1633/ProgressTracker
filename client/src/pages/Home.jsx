@@ -3,6 +3,10 @@ import {
   Navigate,
 } from "react-router-dom";
 import {
+  useEffect,
+  useState,
+} from "react";
+import {
   HiArrowRight,
   HiArrowRightOnRectangle,
   HiClock,
@@ -11,7 +15,12 @@ import {
 } from "react-icons/hi2";
 
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/logo_streak-theme-starter.svg";
+import {
+  getActiveStreakThemeClass,
+} from "../utils/streakTheme";
+import {
+  getLogoForTheme,
+} from "../utils/streakLogos";
 
 import "../components/Navbar/Navbar.css";
 import "./Home.css";
@@ -19,6 +28,39 @@ import "./Home.css";
 const Home = () => {
   const { user, loading } =
     useAuth();
+  const [
+    activeTheme,
+    setActiveTheme,
+  ] = useState(
+    getActiveStreakThemeClass
+  );
+
+  useEffect(() => {
+    const syncLogo = () => {
+      setActiveTheme(
+        getActiveStreakThemeClass()
+      );
+    };
+
+    syncLogo();
+
+    window.addEventListener(
+      "streak-theme-applied",
+      syncLogo
+    );
+
+    return () => {
+      window.removeEventListener(
+        "streak-theme-applied",
+        syncLogo
+      );
+    };
+  }, []);
+
+  const logo =
+    getLogoForTheme(
+      activeTheme
+    );
 
   if (loading) {
     return (

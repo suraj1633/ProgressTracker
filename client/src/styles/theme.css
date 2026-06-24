@@ -999,4 +999,38 @@
     --theme-page-bg: #080808 !important;
     --theme-text-soft: #d5dbe6;
     --theme-text-muted: #9fa8b8;
+    --text-secondary: #d5dbe6;
+    --text-muted: #9fa8b8;
+}
+
+.app p,
+.app .dashboard-header p,
+.app .section-title p,
+.app .profile-header p,
+.app .profile-title p,
+.app .analytics-title-block p,
+.app .analytics-consistency p,
+.app .tips-header p,
+.app .tips-library-header p,
+.app .tips-form-title p,
+.app .home-copy p,
+.app .heatmap-header p,
+.app .graph-caption,
+.app .stats-title,
+.app .stats-subtitle,
+.app .month-label,
+.app .weekday-labels,
+.app .heatmap-legend,
+.app .auth-switch {
+    color: var(--theme-text-soft);
+}
+
+.app .weekday-labels,
+.app .heatmap-legend,
+.app .analytics-side-header span,
+.app .analytics-consistency span,
+.app .tips-field span,
+.app .home-preview-top span,
+.app .home-preview-stats span {
+    color: var(--theme-text-muted);
 }

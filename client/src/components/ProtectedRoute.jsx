@@ -20,7 +20,7 @@ const ProtectedRoute = () => {
   if (!user) {
     return (
       <Navigate
-        to="/login"
+        to="/"
         replace
       />
     );
