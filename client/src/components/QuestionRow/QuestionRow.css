@@ -118,7 +118,7 @@
 
 .question-title {
   min-width: 0;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 15px;
   font-weight: 800;
   line-height: 1.45;

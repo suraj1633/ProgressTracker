@@ -4,6 +4,7 @@
 
 .dropdown-trigger {
   width: 100%;
+  min-width: 0;
 
   height: 44px;
 
@@ -30,11 +31,11 @@
 
   padding: 0 14px;
 
-  color: #d8d8d8;
+  color: var(--text-secondary);
 
   font-size: 14px;
 
-  font-weight: 500;
+  font-weight: 700;
 
   cursor: pointer;
 
@@ -57,6 +58,17 @@
     var(--theme-border);
 }
 
+.dropdown-trigger span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-trigger svg {
+  flex: 0 0 auto;
+}
+
 .dropdown-trigger:focus-visible {
   border-color: var(--theme-border);
   box-shadow: 0 0 0 3px var(--theme-accent-soft);
@@ -64,12 +76,6 @@
 
 .dropdown-menu {
   position: absolute;
-
-  top: calc(100% + 10px);
-
-  left: 0;
-
-  width: 100%;
 
   border-radius: 14px;
 
@@ -86,7 +92,9 @@
   border: 1px solid
     var(--theme-border-soft);
 
-  overflow: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
 
   backdrop-filter:
     blur(20px);
@@ -97,21 +105,41 @@
     0 30px 70px
       rgba(0,0,0,.5);
 
-  z-index: 999;
+  z-index: 90;
+}
+
+.dropdown-menu-portal {
+  min-width: 180px;
+  max-height: 260px;
+}
+
+.dropdown-menu::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 
 .dropdown-item {
   width: 100%;
+  min-width: 0;
 
   border: none;
 
   background: transparent;
 
-  color: #d5d5d5;
+  color: var(--text-secondary);
 
   font-size: 14px;
 
   height: 46px;
+  flex: 0 0 46px;
 
   padding: 0 20px;
 
@@ -131,6 +159,13 @@
 .dropdown-item:hover {
   background:
     var(--theme-accent-soft);
+}
+
+.dropdown-item span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dropdown-item:focus-visible {

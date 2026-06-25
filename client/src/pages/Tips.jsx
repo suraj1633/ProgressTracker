@@ -508,12 +508,6 @@ const Tips = () => {
                                 tip.topicId
                               ] || "General"}
                             </span>
-
-                            <time>
-                              {formatDate(
-                                tip.updatedAt
-                              )}
-                            </time>
                           </div>
 
                           <h3>
@@ -525,6 +519,12 @@ const Tips = () => {
                             {tip.body?.trim() ||
                               "No details added yet."}
                           </p>
+
+                          <time>
+                            {formatDate(
+                              tip.updatedAt
+                            )}
+                          </time>
                         </div>
 
                         <div className="tip-card-actions">

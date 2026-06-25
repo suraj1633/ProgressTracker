@@ -7,11 +7,28 @@ import {
   addQuestion,
 } from "../../services/topicApi";
 
+import Dropdown from "../Graph/Dropdown";
+
 import {
   useProgress,
 } from "../../context/ProgressContext";
 
 import "./AddQuestionModal.css";
+
+const difficultyOptions = [
+  {
+    value: "Easy",
+    label: "Easy",
+  },
+  {
+    value: "Medium",
+    label: "Medium",
+  },
+  {
+    value: "Hard",
+    label: "Hard",
+  },
+];
 
 const AddQuestionModal = ({
   topicId,
@@ -108,31 +125,16 @@ const AddQuestionModal = ({
           />
         </label>
 
-        <label>
+        <div className="question-form-field question-difficulty-field">
           <span>Difficulty</span>
-          <select
-            value={
-              difficulty
-            }
-            onChange={(e) =>
-              setDifficulty(
-                e.target.value
-              )
-            }
-          >
-            <option>
-              Easy
-            </option>
 
-            <option>
-              Medium
-            </option>
-
-            <option>
-              Hard
-            </option>
-          </select>
-        </label>
+          <Dropdown
+            value={difficulty}
+            width="100%"
+            options={difficultyOptions}
+            onChange={setDifficulty}
+          />
+        </div>
 
         <label>
           <span>Source link</span>

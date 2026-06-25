@@ -11,16 +11,16 @@
     display: grid;
     grid-template-rows:
     auto 1fr;
-    gap: 20px;
+    gap: 18px;
 
-    padding: 20px;
+    padding: 22px;
 
     overflow: hidden;
 
     border:
             1px solid
             rgba(255, 255, 255, .075);
-    border-radius: 18px;
+    border-radius: 16px;
 
     background: var(--theme-glass-bg-soft);
 
@@ -350,10 +350,10 @@
 }
 
 .stats-title {
-    color: #b8ada3;
+    color: var(--text-muted);
 
     font-size: 13px;
-    font-weight: 850;
+    font-weight: 800;
     line-height: 1.35;
 
     overflow-wrap: anywhere;
@@ -370,7 +370,7 @@
     border:
             1px solid
             rgba(255, 255, 255, .08);
-    border-radius: 13px;
+    border-radius: 12px;
 
     background:
             linear-gradient(
@@ -389,9 +389,9 @@
 }
 
 .stats-value {
-    color: #ffffff;
+    color: var(--text-primary);
 
-    font-size: 48px;
+    font-size: clamp(38px, 3.4vw, 48px);
     font-weight: 900;
     line-height: .95;
     letter-spacing: 0;
@@ -413,7 +413,7 @@
     background:
             rgba(255, 255, 255, .04);
 
-    color: #a9a09a;
+    color: var(--text-muted);
 
     font-size: 12px;
     font-weight: 800;

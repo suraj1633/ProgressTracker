@@ -4,22 +4,7 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(14, 14, 14, .98),
-      #080808 58%
-    );
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(
-        in srgb,
-        var(--theme-bg) 92%,
-        #ffffff
-      ),
-      #080808 58%
-    );
+  background: #080808;
 }
 
 .tips-page::before,
@@ -236,11 +221,8 @@
 .tips-field input::placeholder,
 .tips-field textarea::placeholder,
 .tips-search input::placeholder {
-  color: color-mix(
-    in srgb,
-    var(--theme-text-muted) 72%,
-    #777777
-  );
+  color: var(--text-faint);
+  opacity: 1;
 }
 
 .tips-field input:focus,
@@ -319,6 +301,8 @@
 }
 
 .tips-toolbar {
+  position: relative;
+  z-index: 20;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(170px, 220px);
   gap: 12px;
@@ -374,6 +358,8 @@
 
 .tips-filter,
 .tips-field:has(.dropdown) {
+  position: relative;
+  z-index: 30;
   overflow: visible;
   border: 0;
   background: transparent;
@@ -393,6 +379,8 @@
 .tips-filter .dropdown-menu,
 .tips-field .dropdown-menu {
   min-width: 190px;
+  max-height: min(320px, calc(100vh - 190px));
+  overflow-y: auto;
 }
 
 .tips-list {
@@ -404,13 +392,21 @@
 }
 
 .tip-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px;
+  position: relative;
+  display: block;
+  min-height: 118px;
   padding: 15px;
   border: 1px solid var(--theme-border-soft);
   border-radius: 14px;
   background: rgba(255, 255, 255, .032);
+}
+
+.tip-card-main {
+  min-width: 0;
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  align-content: start;
 }
 
 .tip-card.is-editing {
@@ -419,11 +415,9 @@
 }
 
 .tip-card-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  min-width: 0;
   margin-bottom: 8px;
+  padding-right: 100px;
 }
 
 .tip-card-meta span {
@@ -436,14 +430,8 @@
   white-space: nowrap;
 }
 
-.tip-card-meta time {
-  flex: 0 0 auto;
-  color: var(--theme-text-muted);
-  font-size: 12px;
-  font-weight: 700;
-}
-
 .tip-card h3 {
+  padding-right: 100px;
   color: #ffffff;
   font-size: 17px;
   font-weight: 850;
@@ -452,18 +440,28 @@
 }
 
 .tip-card p {
-  display: -webkit-box;
   margin-top: 8px;
-  overflow: hidden;
   color: #d0d0d0;
   font-size: 14px;
   line-height: 1.55;
   overflow-wrap: anywhere;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  white-space: normal;
+}
+
+.tip-card time {
+  justify-self: end;
+  align-self: end;
+  margin-top: 14px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
 }
 
 .tip-card-actions {
+  position: absolute;
+  top: 15px;
+  right: 15px;
   display: inline-flex;
   align-items: flex-start;
   gap: 8px;
@@ -552,6 +550,7 @@
     min-height: 0;
     height: auto;
     display: block;
+    overflow: visible;
   }
 
   .tips-empty {
@@ -620,12 +619,12 @@
     min-width: 0;
   }
 
-  .tip-card {
-    grid-template-columns: 1fr;
-  }
-
   .tip-card-actions {
     justify-content: flex-end;
+  }
+
+  .tip-card time {
+    justify-self: end;
   }
 }
 

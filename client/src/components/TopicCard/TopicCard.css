@@ -1,4 +1,6 @@
 .topic-card {
+  position: relative;
+
   background:
     var(--theme-glass-bg);
 
@@ -6,11 +8,11 @@
     1px solid
     var(--theme-border-soft);
 
-  border-radius: 22px;
+  border-radius: 20px;
 
-  padding: 26px;
+  padding: 24px;
 
-  margin-bottom: 26px;
+  margin-bottom: 18px;
 
   box-shadow:
     var(--theme-glass-shadow);
@@ -39,22 +41,18 @@
 }
 
 .topic-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 24px;
-
   cursor: pointer;
 }
 
 .topic-click {
   min-width: 0;
-  flex: 1;
+  width: 100%;
   cursor: pointer;
 }
 
 .topic-title-row {
   min-width: 0;
+  padding-right: 176px;
 
   display: flex;
   align-items: center;
@@ -64,11 +62,11 @@
 .topic-title-row h3 {
   min-width: 0;
 
-  color: #d8d8d8;
+  color: var(--text-primary);
 
-  font-size: 28px;
+  font-size: clamp(22px, 2vw, 27px);
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.18;
 
   overflow-wrap: anywhere;
 }
@@ -94,19 +92,22 @@
 }
 
 .topic-header p {
-  max-width: 760px;
+  width: 100%;
 
   margin-top: 10px;
 
-  color: #9d9d9d;
+  color: var(--text-secondary);
 
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 650;
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .topic-actions {
-  flex: 0 0 auto;
+  position: absolute;
+  top: 24px;
+  right: 24px;
 
   display: flex;
   align-items: center;
@@ -133,7 +134,7 @@
   background:
     rgba(255, 255, 255, .035);
 
-  color: #e9d8c7;
+  color: var(--text-muted);
 
   cursor: pointer;
 }
@@ -205,7 +206,7 @@
   display: flex;
   align-items: center;
 
-  color: #9d9d9d;
+  color: var(--text-muted);
 
   font-size: 18px;
   font-weight: 700;
@@ -217,14 +218,11 @@
     padding: 18px;
   }
 
-  .topic-header {
-    gap: 16px;
-  }
-
   .topic-title-row {
     align-items: flex-start;
     flex-direction: column;
     gap: 10px;
+    padding-right: 154px;
   }
 
   .topic-title-row h3 {
@@ -236,6 +234,8 @@
   }
 
   .topic-actions {
+    top: 18px;
+    right: 18px;
     width: auto;
     flex-direction: row;
     align-items: flex-end;
@@ -262,12 +262,8 @@
     font-size: 21px;
   }
 
-  .topic-header {
-    flex-direction: column;
-  }
-
   .topic-actions {
-    width: 100%;
+    width: auto;
     justify-content: flex-end;
   }
 }

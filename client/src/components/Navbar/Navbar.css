@@ -43,7 +43,7 @@
   flex: 0 0 auto;
   min-width: max-content;
   text-decoration: none;
-  color: #ffffff;
+  color: var(--text-primary);
   border-radius: 16px;
   outline-offset: 5px;
   transition:
@@ -83,7 +83,7 @@
   font-size: 1.35rem;
   font-weight: 800;
 
-  color: white;
+  color: var(--text-primary);
 
   letter-spacing: 0;
   line-height: 1;
@@ -151,10 +151,10 @@
 
   text-decoration: none;
 
-  color: #9b9b9b;
+  color: var(--text-muted);
 
   font-size: 0.92rem;
-  font-weight: 600;
+  font-weight: 700;
 
   transition: all 0.25s ease;
 
@@ -182,7 +182,7 @@
 .navbar-links a:hover,
 .mobile-bottom-nav a:hover,
 .mobile-bottom-nav .navbar-logout:hover {
-  color: white;
+  color: var(--text-primary);
 
   background:
     rgba(255, 255, 255, 0.05);
@@ -192,7 +192,7 @@
 
 
 .navbar-logout:hover{
-  color: white;
+  color: var(--text-primary);
   background: rgb(152 1 1 / 0.75);
 
   transform: translateY(-2px);
@@ -205,7 +205,7 @@
 /* ACTIVE LINK */
 
 .active-link {
-  color: white !important;
+  color: var(--text-primary) !important;
 
   background:
     linear-gradient(
@@ -338,7 +338,7 @@
   }
 
   .mobile-bottom-nav .navbar-logout:hover svg {
-    color: white;
+    color: var(--text-primary);
   }
 }
 

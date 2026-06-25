@@ -4,22 +4,7 @@
   isolation: isolate;
   overflow-x: hidden;
   padding: 44px 20px 80px;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(14, 14, 14, .98),
-      #080808 58%
-    );
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(
-        in srgb,
-        var(--theme-bg) 92%,
-        #ffffff
-      ),
-      #080808 58%
-    );
+  background: #080808;
 }
 
 .profile-page::before,

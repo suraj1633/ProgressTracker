@@ -2,7 +2,9 @@ import {
   useState,
   useRef,
   useEffect,
+  useCallback,
 } from "react";
+import { createPortal } from "react-dom";
 
 import "./Dropdown.css";
 
@@ -36,8 +38,61 @@ const Dropdown = ({
     setOpen,
   ] = useState(false);
 
+  const [
+    menuStyle,
+    setMenuStyle,
+  ] = useState({});
+
   const ref =
     useRef(null);
+
+  const menuRef =
+    useRef(null);
+
+  const updateMenuPosition = useCallback(() => {
+    if (!ref.current)
+      return false;
+
+    const rect =
+      ref.current.getBoundingClientRect();
+
+    const gap = 8;
+    const menuHeight = 260;
+    const viewportPadding = 12;
+    const spaceBelow =
+      window.innerHeight -
+      rect.bottom -
+      viewportPadding;
+
+    setMenuStyle({
+      left: `${Math.max(
+        viewportPadding,
+        Math.min(
+          rect.left + window.scrollX,
+          window.innerWidth -
+            rect.width -
+            viewportPadding +
+            window.scrollX
+        )
+      )}px`,
+      top: `${
+        rect.bottom +
+        window.scrollY +
+        gap
+      }px`,
+      bottom: "auto",
+      width: `${rect.width}px`,
+      maxHeight: `${Math.min(
+        menuHeight,
+        Math.max(
+          160,
+          spaceBelow - gap
+        )
+      )}px`,
+    });
+
+    return true;
+  }, []);
 
   useEffect(() => {
     const close = (
@@ -47,8 +102,22 @@ const Dropdown = ({
         ref.current &&
         !ref.current.contains(
           e.target
+        ) &&
+        (
+          !menuRef.current ||
+          !menuRef.current.contains(
+            e.target
+          )
         )
       ) {
+        setOpen(false);
+      }
+    };
+
+    const closeOnEscape = (
+      e
+    ) => {
+      if (e.key === "Escape") {
         setOpen(false);
       }
     };
@@ -57,13 +126,45 @@ const Dropdown = ({
       "mousedown",
       close
     );
+    document.addEventListener(
+      "keydown",
+      closeOnEscape
+    );
 
-    return () =>
+    return () => {
       document.removeEventListener(
         "mousedown",
         close
       );
+      document.removeEventListener(
+        "keydown",
+        closeOnEscape
+      );
+    };
   }, []);
+
+  useEffect(() => {
+    if (!open)
+      return;
+
+    updateMenuPosition();
+
+    const closeOnResize = () => {
+      setOpen(false);
+    };
+
+    window.addEventListener(
+      "resize",
+      closeOnResize
+    );
+
+    return () => {
+      window.removeEventListener(
+        "resize",
+        closeOnResize
+      );
+    };
+  }, [open, updateMenuPosition]);
 
   return (
     <div
@@ -76,11 +177,15 @@ const Dropdown = ({
       <button
         type="button"
         className="dropdown-trigger"
-        onClick={() =>
+        onClick={() => {
+          if (!open) {
+            updateMenuPosition();
+          }
+
           setOpen(
             !open
-          )
-        }
+          );
+        }}
       >
         <span>
           {selectedLabel}
@@ -102,43 +207,49 @@ const Dropdown = ({
         </svg>
       </button>
 
-      {open && (
-        <div className="dropdown-menu">
-          {normalizedOptions.map(
-            (
-              option
-            ) => (
-              <button
-                type="button"
-                key={
-                  option.value
-                }
-                className={`dropdown-item ${
-                  value ===
-                  option.value
-                    ? "selected"
-                    : ""
-                }`}
-                onClick={() => {
-                  onChange(
+      {open &&
+        createPortal(
+          <div
+            ref={menuRef}
+            className="dropdown-menu dropdown-menu-portal"
+            style={menuStyle}
+          >
+            {normalizedOptions.map(
+              (
+                option
+              ) => (
+                <button
+                  type="button"
+                  key={
                     option.value
-                  );
-
-                  setOpen(
-                    false
-                  );
-                }}
-              >
-                <span>
-                  {
-                    option.label
                   }
-                </span>
-              </button>
-            )
-          )}
-        </div>
-      )}
+                  className={`dropdown-item ${
+                    value ===
+                    option.value
+                      ? "selected"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    onChange(
+                      option.value
+                    );
+
+                    setOpen(
+                      false
+                    );
+                  }}
+                >
+                  <span>
+                    {
+                      option.label
+                    }
+                  </span>
+                </button>
+              )
+            )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

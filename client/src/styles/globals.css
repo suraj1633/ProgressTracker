@@ -2,7 +2,7 @@
    GOOGLE FONT
 ========================= */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap");
 
 /* =========================
    RESET
@@ -24,13 +24,15 @@ html {
 
 body {
   font-family:
+    "Plus Jakarta Sans",
     "Inter",
+    "Segoe UI",
     sans-serif;
 
   background:
     #080808;
 
-  color: white;
+  color: var(--text-primary);
 
   min-height: 100vh;
 
@@ -53,7 +55,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: white;
+  color: var(--text-primary);
 
   font-weight: 700;
 
@@ -63,7 +65,7 @@ h6 {
 p {
   line-height: 1.6;
 
-  color: var(--theme-text-soft);
+  color: var(--text-secondary);
 }
 
 a {
@@ -102,6 +104,12 @@ textarea,
 select {
   outline: none;
   accent-color: var(--theme-accent);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-faint);
+  opacity: 1;
 }
 
 input::selection,
