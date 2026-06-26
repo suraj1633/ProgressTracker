@@ -118,7 +118,12 @@
 
 .question-title {
   min-width: 0;
-  color: var(--text-primary);
+  color:
+    color-mix(
+            in srgb,
+            var(--theme-text-soft) 82%,
+            #ffffff
+    );
   font-size: 15px;
   font-weight: 800;
   line-height: 1.45;
@@ -126,12 +131,7 @@
 }
 
 .question-row.is-completed .question-title {
-  color:
-    color-mix(
-      in srgb,
-      var(--theme-text-soft) 82%,
-      #ffffff
-    );
+  color: var(--text-primary);
 }
 
 .question-meta {
