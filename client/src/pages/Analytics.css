@@ -105,9 +105,9 @@
 
 .analytics-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
-  gap: 16px;
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+  gap: 18px;
+  align-items: stretch;
   min-height: 0;
   overflow: hidden;
 }
@@ -115,22 +115,31 @@
 .analytics-chart-panel {
   min-width: 0;
   min-height: 0;
+  display: flex;
+}
+
+.analytics-chart-panel .graph-card {
+  height: 100%;
+  min-height: 0;
 }
 
 .analytics-side-panel {
   min-width: 0;
   width: 100%;
-  max-width: 300px;
+  max-width: 380px;
   justify-self: end;
-  padding: 16px;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  padding: 20px;
   border-radius: var(--radius-md);
 }
 
 .analytics-side-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 18px;
 }
 
 .analytics-side-header strong,
@@ -143,8 +152,10 @@
 
 .analytics-difficulty-list {
   display: grid;
-  gap: 9px;
-  margin-top: 14px;
+  grid-template-rows: repeat(3, minmax(52px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+  min-height: 0;
 }
 
 .difficulty-row {
@@ -152,8 +163,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 44px;
-  padding: 0 14px;
+  min-height: 0;
+  padding: 0 16px;
   border: 1px solid var(--theme-border-soft);
   border-radius: 14px;
   background: rgba(255, 255, 255, .035);
@@ -167,28 +178,30 @@
 .difficulty-row strong {
   color: #ffffff;
   font-size: 18px;
+  line-height: 1;
 }
 
 .difficulty-row.easy span {
-  color: #2dd4bf;
+  color: var(--difficulty-easy);
 }
 
 .difficulty-row.medium span {
-  color: #f59e0b;
+  color: var(--difficulty-medium);
 }
 
 .difficulty-row.hard span {
-  color: #fb7185;
+  color: var(--difficulty-hard);
 }
 
 .analytics-side-divider {
   height: 1px;
-  margin: 14px 0;
+  margin: 18px 0;
   background: var(--theme-border-soft);
 }
 
 .analytics-consistency p {
-  margin-top: 8px;
+  margin-top: 10px;
+  margin-bottom: 0;
   color: var(--theme-text-soft);
   font-size: 13px;
   line-height: 1.5;
@@ -196,7 +209,7 @@
 
 .analytics-consistency strong {
   display: block;
-  margin-top: 9px;
+  margin-top: 12px;
 }
 
 @media (max-width: 1120px) {
@@ -216,7 +229,13 @@
     overflow: visible;
   }
 
+  .analytics-chart-panel {
+    display: block;
+  }
+
   .analytics-side-panel {
+    height: auto;
+    display: block;
     max-width: none;
     justify-self: stretch;
   }

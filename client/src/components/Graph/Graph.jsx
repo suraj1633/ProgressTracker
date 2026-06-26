@@ -8,6 +8,7 @@ import {
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -17,6 +18,9 @@ import {
 import {
   useProgress,
 } from "../../context/ProgressContext";
+import {
+  useAuth,
+} from "../../context/AuthContext";
 
 import Dropdown from "./Dropdown";
 
@@ -42,6 +46,42 @@ const difficultyKeys = [
   "Medium",
   "Hard",
 ];
+
+const roundedTopRadius = [
+  6,
+  6,
+  0,
+  0,
+];
+
+const squareRadius = [
+  0,
+  0,
+  0,
+  0,
+];
+
+const getStackRadius = (
+  item,
+  key
+) => {
+  if (!item[key]) {
+    return squareRadius;
+  }
+
+  if (
+    key === "Hard" ||
+    (key === "Medium" &&
+      !item.Hard) ||
+    (key === "Easy" &&
+      !item.Medium &&
+      !item.Hard)
+  ) {
+    return roundedTopRadius;
+  }
+
+  return squareRadius;
+};
 
 const useElementSize = () => {
   const ref = useRef(null);
@@ -187,26 +227,49 @@ const formatShortDate = (
   ]} ${date.getDate()}`;
 
 const getRangeDates = ({
-  year,
-  month,
+  startDate,
+  endDate,
 }) => {
-  const daysInMonth =
+  const dates = [];
+  const cursor =
+    new Date(startDate);
+
+  while (cursor <= endDate) {
+    dates.push(
+      new Date(cursor)
+    );
+
+    cursor.setDate(
+      cursor.getDate() + 1
+    );
+  }
+
+  return dates;
+};
+
+const getPreviousMonthSameDate = (
+  date
+) => {
+  const year =
+    date.getFullYear();
+  const month =
+    date.getMonth();
+  const day =
+    date.getDate();
+  const previousMonthLastDay =
     new Date(
       year,
       month,
       0
     ).getDate();
 
-  return Array.from(
-    {
-      length: daysInMonth,
-    },
-    (_, index) =>
-      new Date(
-        year,
-        month - 1,
-        index + 1
-      )
+  return new Date(
+    year,
+    month - 1,
+    Math.min(
+      day,
+      previousMonthLastDay
+    )
   );
 };
 
@@ -272,8 +335,8 @@ const Graph = () => {
   const {
     analytics,
     fetchAnalytics,
-    heatmapData,
   } = useProgress();
+  const { user } = useAuth();
 
   const isNarrowScreen =
     useIsNarrowScreen();
@@ -293,75 +356,253 @@ const Graph = () => {
     useState(
       today.getFullYear()
     );
+  const [
+    selectedMonth,
+    setSelectedMonth,
+  ] = useState(
+    String(today.getMonth() + 1)
+  );
 
-  const [month, setMonth] =
-    useState(
-      today.getMonth() + 1
-    );
+  const currentYear =
+    today.getFullYear();
+  const currentMonth =
+    today.getMonth() + 1;
+
+  const joinedYear =
+    useMemo(() => {
+      const joinedDate =
+        user?.createdAt
+          ? new Date(user.createdAt)
+          : today;
+
+      if (
+        Number.isNaN(
+          joinedDate.getTime()
+        )
+      ) {
+        return currentYear;
+      }
+
+      return Math.min(
+        joinedDate.getFullYear(),
+        currentYear
+      );
+    }, [
+      currentYear,
+      today,
+      user?.createdAt,
+    ]);
+  const joinedMonth =
+    useMemo(() => {
+      const joinedDate =
+        user?.createdAt
+          ? new Date(user.createdAt)
+          : today;
+
+      if (
+        Number.isNaN(
+          joinedDate.getTime()
+        )
+      ) {
+        return currentMonth;
+      }
+
+      return joinedDate.getMonth() + 1;
+    }, [
+      currentMonth,
+      today,
+      user?.createdAt,
+    ]);
 
   const yearOptions =
     useMemo(() => {
-      const dataYears =
-        heatmapData
-          .map((item) =>
-            parseDateKey(
-              item.date
-            ).getFullYear()
-          )
-          .filter(Boolean);
-
-      const minYear =
-        Math.min(
-          today.getFullYear(),
-          ...dataYears
-        );
-
-      const maxYear =
-        Math.max(
-          today.getFullYear(),
-          ...dataYears
-        );
-
       return Array.from(
         {
           length:
-            maxYear -
-            minYear +
+            currentYear -
+            joinedYear +
             1,
         },
         (_, index) =>
           String(
-            maxYear -
+            currentYear -
               index
           )
       );
     }, [
-      heatmapData,
-      today,
+      currentYear,
+      joinedYear,
     ]);
-
   const monthOptions =
     useMemo(
-      () =>
-        MONTH_NAMES,
-      []
+      () => {
+        const startMonth =
+          year === joinedYear
+            ? joinedMonth
+            : 1;
+        const endMonth =
+          year === currentYear
+            ? currentMonth
+            : 12;
+
+        return MONTH_NAMES.slice(
+          startMonth - 1,
+          endMonth
+        ).map(
+          (monthName, index) => ({
+            value: String(
+              startMonth + index
+            ),
+            label: monthName,
+          })
+        );
+      },
+      [
+        currentMonth,
+        currentYear,
+        joinedMonth,
+        joinedYear,
+        year,
+      ]
     );
 
-  const selectedMonthLabel =
-    MONTH_NAMES[
-      month - 1
-    ];
+  const selectedMonthNumber =
+    Number(selectedMonth);
+  const isCurrentMonthView =
+    year === currentYear &&
+    selectedMonthNumber ===
+      currentMonth;
+  const activeRange =
+    useMemo(() => {
+      if (isCurrentMonthView) {
+        const startDate =
+          getPreviousMonthSameDate(
+            today
+          );
+        const endDate =
+          new Date(today);
+        const endExclusive =
+          new Date(endDate);
+
+        startDate.setHours(
+          0,
+          0,
+          0,
+          0
+        );
+        endDate.setHours(
+          0,
+          0,
+          0,
+          0
+        );
+        endExclusive.setDate(
+          endExclusive.getDate() +
+            1
+        );
+        endExclusive.setHours(
+          0,
+          0,
+          0,
+          0
+        );
+
+        return {
+          startDate,
+          endDate,
+          endExclusive,
+        };
+      }
+
+      return {
+        startDate:
+          new Date(
+            year,
+            selectedMonthNumber - 1,
+            1
+          ),
+        endDate:
+          new Date(
+            year,
+            selectedMonthNumber,
+            0
+          ),
+        endExclusive:
+          new Date(
+            year,
+            selectedMonthNumber,
+            1
+          ),
+      };
+    }, [
+      isCurrentMonthView,
+      selectedMonthNumber,
+      today,
+      year,
+    ]);
+  const selectedRangeLabel =
+    isCurrentMonthView
+      ? `${formatShortDate(
+          activeRange.startDate
+        )} - ${formatShortDate(
+          activeRange.endDate
+        )}`
+      : `${MONTH_NAMES[
+          selectedMonthNumber - 1
+        ]} ${year}`;
+
+  useEffect(() => {
+    if (!monthOptions.length) {
+      return;
+    }
+
+    const isValidMonth =
+      monthOptions.some(
+        (option) =>
+          option.value ===
+          selectedMonth
+      );
+
+    if (!isValidMonth) {
+      setSelectedMonth(
+        monthOptions[0].value
+      );
+    }
+  }, [
+    monthOptions,
+    selectedMonth,
+  ]);
 
   useEffect(() => {
     fetchAnalytics(
-      "month",
+      isCurrentMonthView
+        ? "range"
+        : "month",
       year,
-      month
+      isCurrentMonthView
+        ? undefined
+        : selectedMonthNumber,
+      undefined,
+      isCurrentMonthView
+        ? {
+            startDate:
+              toDateKey(
+                activeRange.startDate
+              ),
+            endDate:
+              toDateKey(
+                activeRange.endExclusive
+              ),
+          }
+        : undefined
     );
     // Keep analytics requests tied to selected controls only.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    month,
+    activeRange.endExclusive,
+    activeRange.startDate,
+    isCurrentMonthView,
+    selectedMonthNumber,
     year,
   ]);
 
@@ -382,8 +623,10 @@ const Graph = () => {
         );
 
       return getRangeDates({
-        year,
-        month,
+        startDate:
+          activeRange.startDate,
+        endDate:
+          activeRange.endDate,
       }).map((date) => {
         const dateKey =
           toDateKey(date);
@@ -407,8 +650,8 @@ const Graph = () => {
         return {
           date: dateKey,
           label:
-            String(
-              date.getDate()
+            formatShortDate(
+              date
             ),
           tooltipLabel:
             formatShortDate(
@@ -425,7 +668,8 @@ const Graph = () => {
       });
     }, [
       analytics,
-      month,
+      activeRange.endDate,
+      activeRange.startDate,
       year,
     ]);
 
@@ -461,36 +705,50 @@ const Graph = () => {
 
   const xAxisTicks =
     useMemo(() => {
-      if (isNarrowScreen) {
-        return [
-          "1",
-          "7",
-          "14",
-          "21",
-          "28",
-        ];
-      }
+      const rangeDates =
+        getRangeDates({
+          startDate:
+            activeRange.startDate,
+          endDate:
+            activeRange.endDate,
+        });
+      const tickEvery =
+        isNarrowScreen
+          ? 10
+          : 7;
+      const ticks =
+        rangeDates
+          .filter(
+            (_, index) =>
+              index % tickEvery === 0 ||
+              index ===
+                rangeDates.length - 1
+          )
+          .map((date) =>
+            formatShortDate(date)
+          );
 
-      return [
-        "1",
-        "2",
-        "5",
-        "9",
-        "13",
-        "17",
-        "21",
-        "25",
-        "29",
-      ];
-    }, [isNarrowScreen]);
+      return ticks.filter(
+        (
+          tick,
+          index,
+          ticks
+        ) =>
+          ticks.indexOf(tick) ===
+          index
+      );
+    }, [
+      activeRange.endDate,
+      activeRange.startDate,
+      isNarrowScreen,
+    ]);
 
   return (
     <div className="graph-card">
       <div className="graph-header">
         <div className="graph-title-block">
           <span className="graph-kicker">
-            {selectedMonthLabel}{" "}
-            {year}
+            {selectedRangeLabel}
           </span>
 
           <div className="graph-total">
@@ -522,24 +780,15 @@ const Graph = () => {
 
           <Dropdown
             value={
-              selectedMonthLabel
+              selectedMonth
             }
-            width={110}
+            width={115}
             options={
               monthOptions
             }
-            onChange={(
-              value
-            ) => {
-              const nextMonth =
-                MONTH_NAMES.indexOf(
-                  value
-                ) + 1;
-
-              setMonth(
-                nextMonth
-              );
-            }}
+            onChange={
+              setSelectedMonth
+            }
           />
         </div>
       </div>
@@ -557,8 +806,8 @@ const Graph = () => {
             margin={{
               top: 14,
               right: 0,
-              left: -18,
-              bottom: 0,
+              left: 0,
+              bottom: 4,
             }}
             barCategoryGap={
               isNarrowScreen
@@ -632,8 +881,8 @@ const Graph = () => {
               axisLine={false}
               tickLine={false}
               padding={{
-                left: 8,
-                right: 8,
+                left: 22,
+                right: 22,
               }}
               ticks={[
                 ...xAxisTicks,
@@ -650,6 +899,8 @@ const Graph = () => {
 
             <YAxis
               orientation="right"
+              width={0}
+              mirror
               axisLine={false}
               tickLine={false}
               allowDecimals={false}
@@ -660,6 +911,7 @@ const Graph = () => {
                   isNarrowScreen
                     ? 11
                     : 12,
+                dx: -4,
               }}
             />
 
@@ -677,18 +929,8 @@ const Graph = () => {
               dataKey="Easy"
               stackId="solved"
               fill="url(#graphEasyGradient)"
-              stroke="var(--graph-separator)"
-              strokeWidth={1}
-              background={{
-                fill:
-                  "var(--graph-track)",
-                radius: [
-                  6,
-                  6,
-                  0,
-                  0,
-                ],
-              }}
+              stroke="none"
+              strokeWidth={0}
               radius={[
                 0,
                 0,
@@ -697,42 +939,73 @@ const Graph = () => {
               ]}
               barSize={
                 isNarrowScreen
-                  ? 7
-                  : 10
+                  ? 6
+                  : 8
               }
-            />
+            >
+              {chartData.map(
+                (item) => (
+                  <Cell
+                    key={`easy-${item.date}`}
+                    radius={getStackRadius(
+                      item,
+                      "Easy"
+                    )}
+                  />
+                )
+              )}
+            </Bar>
 
             <Bar
               dataKey="Medium"
               stackId="solved"
               fill="url(#graphMediumGradient)"
-              stroke="var(--graph-separator)"
-              strokeWidth={1}
+              stroke="none"
+              strokeWidth={0}
               barSize={
                 isNarrowScreen
-                  ? 7
-                  : 10
+                  ? 6
+                  : 8
               }
-            />
+            >
+              {chartData.map(
+                (item) => (
+                  <Cell
+                    key={`medium-${item.date}`}
+                    radius={getStackRadius(
+                      item,
+                      "Medium"
+                    )}
+                  />
+                )
+              )}
+            </Bar>
 
             <Bar
               dataKey="Hard"
               stackId="solved"
               fill="url(#graphHardGradient)"
-              stroke="var(--graph-separator)"
-              strokeWidth={1}
-              radius={[
-                6,
-                6,
-                0,
-                0,
-              ]}
+              stroke="none"
+              strokeWidth={0}
+              radius={roundedTopRadius}
               barSize={
                 isNarrowScreen
-                  ? 7
-                  : 10
+                  ? 6
+                  : 8
               }
-            />
+            >
+              {chartData.map(
+                (item) => (
+                  <Cell
+                    key={`hard-${item.date}`}
+                    radius={getStackRadius(
+                      item,
+                      "Hard"
+                    )}
+                  />
+                )
+              )}
+            </Bar>
           </BarChart>
         ) : null}
       </div>

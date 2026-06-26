@@ -82,6 +82,33 @@
     --danger:
             #ff6b6b;
 
+    --difficulty-easy:
+            #00b8a3;
+
+    --difficulty-medium:
+            #ffc01e;
+
+    --difficulty-hard:
+            #ff375f;
+
+    --difficulty-easy-soft:
+            rgba(0, 184, 163, .14);
+
+    --difficulty-medium-soft:
+            rgba(255, 192, 30, .14);
+
+    --difficulty-hard-soft:
+            rgba(255, 55, 95, .14);
+
+    --difficulty-easy-border:
+            rgba(0, 184, 163, .24);
+
+    --difficulty-medium-border:
+            rgba(255, 192, 30, .24);
+
+    --difficulty-hard-border:
+            rgba(255, 55, 95, .25);
+
     /* =========================
        SHADOWS
     ========================= */

@@ -91,7 +91,8 @@ FETCH ANALYTICS
       type = "month",
       year,
       month,
-      week
+      week,
+      range
     ) => {
       try {
         const data =
@@ -99,7 +100,8 @@ FETCH ANALYTICS
             type,
             year,
             month,
-            week
+            week,
+            range
           );
 
         setAnalytics(data);
@@ -256,4 +258,3 @@ export const useProgress =
     useContext(
       ProgressContext
     );
-

@@ -8,37 +8,19 @@
 }
 
 .difficulty-pill.easy {
-  background: rgba(
-    35,
-    209,
-    139,
-    0.14
-  );
-
-  border-color: rgba(35, 209, 139, .24);
-  color: #7ff0b9;
+  background: var(--difficulty-easy-soft);
+  border-color: var(--difficulty-easy-border);
+  color: var(--difficulty-easy);
 }
 
 .difficulty-pill.medium {
-  background: rgba(
-    247,
-    181,
-    0,
-    0.14
-  );
-
-  border-color: rgba(247, 181, 0, .24);
-  color: #ffd66b;
+  background: var(--difficulty-medium-soft);
+  border-color: var(--difficulty-medium-border);
+  color: var(--difficulty-medium);
 }
 
 .difficulty-pill.hard {
-  background: rgba(
-    255,
-    75,
-    92,
-    0.14
-  );
-
-  border-color: rgba(255, 75, 92, .25);
-  color: #ff9aa7;
+  background: var(--difficulty-hard-soft);
+  border-color: var(--difficulty-hard-border);
+  color: var(--difficulty-hard);
 }

@@ -1,22 +1,22 @@
 .graph-card {
   --graph-easy:
-    #00b8a3;
+    var(--difficulty-easy);
   --graph-easy-start:
-    #00b8a3;
+    var(--difficulty-easy);
   --graph-easy-end:
-    #00b8a3;
+    var(--difficulty-easy);
   --graph-medium:
-    #ffc01e;
+    var(--difficulty-medium);
   --graph-medium-start:
-    #ffc01e;
+    var(--difficulty-medium);
   --graph-medium-end:
-    #ffc01e;
+    var(--difficulty-medium);
   --graph-hard:
-    #ff375f;
+    var(--difficulty-hard);
   --graph-hard-start:
-    #ff375f;
+    var(--difficulty-hard);
   --graph-hard-end:
-    #ff375f;
+    var(--difficulty-hard);
   --graph-axis:
     var(--theme-text-muted);
   --graph-grid:
@@ -46,7 +46,7 @@
 
   width: 100%;
   min-width: 0;
-  padding: 22px;
+  padding: 20px;
   border: 1px solid var(--theme-border-soft);
   border-top-color: var(--theme-border);
   border-radius: var(--radius-md);
@@ -60,14 +60,17 @@
 
 .graph-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .graph-title-block {
+  flex: 1 1 auto;
   min-width: 120px;
+  text-align: left;
 }
 
 .graph-kicker {
@@ -96,25 +99,39 @@
 
 .top-right-controls {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  margin-left: auto;
+}
+
+.top-right-controls .dropdown {
+  flex: 0 0 auto;
+  width: 115px !important;
 }
 
 .chart-shell {
-  width: 100%;
+  width: min(100%, 940px);
   min-width: 0;
-  margin-top: 14px;
-  height: clamp(230px, 42vh, 340px);
-  min-height: 220px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 12px;
+  height: clamp(225px, 38vh, 315px);
+  min-height: 215px;
   overflow: hidden;
 }
 
 .graph-footer {
   display: flex;
   align-items: center;
-  gap: 22px;
-  margin-top: 14px;
+  justify-content: flex-start;
+  gap: 18px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--theme-border-soft);
   color: var(--text-muted);
   font-size: 14px;
   font-weight: 600;
@@ -204,19 +221,6 @@
     border-radius: 18px;
   }
 
-  .graph-header {
-    align-items: stretch;
-  }
-
-  .top-right-controls {
-    width: 100%;
-  }
-
-  .top-right-controls > * {
-    flex: 1 1 140px;
-    min-width: 0;
-  }
-
   .graph-total {
     font-size: 34px;
   }
@@ -236,6 +240,20 @@
 @media (max-width: 430px) {
   .graph-card {
     padding: 14px;
+  }
+
+  .graph-header {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .top-right-controls {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .top-right-controls .dropdown {
+    width: 100% !important;
   }
 
   .chart-shell {

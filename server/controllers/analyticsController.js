@@ -8,10 +8,12 @@ GET /api/analytics
 
 Query params:
 
-type=week | month
+type=week | month | year
 year=2026
 month=5
 week=22
+startDate=2026-05-26
+endDate=2026-06-27
 */
 
 export const getAnalytics =
@@ -22,6 +24,8 @@ export const getAnalytics =
         year,
         month,
         week,
+        startDate: rangeStart,
+        endDate: rangeEnd,
       } = req.query;
 
       const selectedYear =
@@ -40,11 +44,51 @@ export const getAnalytics =
 
       /*
       ==========================
-      MONTH MODE
+      RANGE MODE
       ==========================
       */
 
       if (
+        type === "range" &&
+        rangeStart &&
+        rangeEnd
+      ) {
+        startDate =
+          new Date(rangeStart);
+
+        endDate =
+          new Date(rangeEnd);
+      }
+
+      /*
+      ==========================
+      YEAR MODE
+      ==========================
+      */
+
+      else if (type === "year") {
+        startDate =
+          new Date(
+            selectedYear,
+            0,
+            1
+          );
+
+        endDate =
+          new Date(
+            selectedYear + 1,
+            0,
+            1
+          );
+      }
+
+      /*
+      ==========================
+      MONTH MODE
+      ==========================
+      */
+
+      else if (
         type === "month" ||
         !selectedWeek
       ) {

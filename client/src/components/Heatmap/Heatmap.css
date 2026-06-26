@@ -38,25 +38,12 @@
   font-weight: 850;
 }
 
-.heatmap-info {
-  display: inline-grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
-  border: 1px solid var(--theme-border);
-  border-radius: 999px;
-  color: var(--theme-text-muted);
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1;
-}
-
 .heatmap-meta-row {
   display: flex;
   align-items: center;
   gap: 26px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .heatmap-meta-row p {
@@ -74,6 +61,7 @@
 .heatmap-selector {
   position: relative;
   z-index: 20;
+  margin-left: auto;
 }
 
 .heatmap-selector-button {
@@ -191,9 +179,9 @@
 
 .heatmap-scroll {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: visible;
   overflow-y: visible;
-  padding-bottom: 2px;
+  padding: 8px 0 10px;
   scrollbar-width: none;
 }
 
@@ -202,42 +190,56 @@
 }
 
 .heatmap-months {
+  --heat-cell-size: clamp(13px, 1.05vw, 18px);
+  --heat-cell-gap: clamp(2px, .16vw, 3px);
   display: flex;
   align-items: flex-start;
-  gap: 20px;
-  width: max-content;
-  min-width: 100%;
+  justify-content: space-between;
+  gap: 0;
+  width: 100%;
+  min-width: 0;
 }
 
 .heatmap-month {
   display: grid;
-  justify-items: start;
-  gap: 10px;
+  justify-items: center;
+  gap: 7px;
+  min-width: 0;
 }
 
 .heatmap-month-grid {
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(7, 14px);
-  grid-auto-columns: 14px;
-  gap: 4px;
-  min-height: 122px;
+  grid-template-rows:
+    repeat(
+      7,
+      var(--heat-cell-size)
+    );
+  grid-auto-columns:
+    var(--heat-cell-size);
+  gap: var(--heat-cell-gap);
+  width: max-content;
+  min-height:
+    calc(
+      (7 * var(--heat-cell-size)) +
+      (6 * var(--heat-cell-gap))
+    );
 }
 
 .heatmap-month-label {
-  min-height: 20px;
-  color: var(--theme-text-soft);
-  font-size: 20px;
-  font-weight: 500;
+  min-height: 14px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 700;
   line-height: 1;
 }
 
 .heat-cell {
   position: relative;
   display: block;
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
+  width: var(--heat-cell-size);
+  height: var(--heat-cell-size);
+  border-radius: 3px;
   border: 1px solid var(--theme-border-soft);
   background: rgba(255, 255, 255, .055);
   outline: none;
@@ -284,19 +286,17 @@
   box-shadow:
     0 0 0 3px var(--theme-accent-soft),
     0 0 18px var(--theme-accent-muted);
-  transform: scale(1.18);
+  transform: scale(1.28);
 }
 
-.heat-cell[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 10px);
+.heatmap-tooltip {
+  position: fixed;
+  z-index: 999;
   width: max-content;
-  max-width: min(230px, 72vw);
-  padding: 8px 10px;
+  max-width: 142px;
+  padding: 6px 8px;
   border: 1px solid var(--theme-border);
-  border-radius: 8px;
+  border-radius: 7px;
   background:
     color-mix(
       in srgb,
@@ -306,54 +306,21 @@
   color: var(--theme-accent);
   font-size: 12px;
   font-weight: 800;
-  line-height: 1.2;
-  opacity: 0;
+  line-height: 1.15;
   pointer-events: none;
-  transform:
-    translateX(-50%)
-    translateY(4px);
-  transition:
-    opacity .16s ease,
-    transform .16s ease;
+  text-align: center;
   white-space: nowrap;
-  box-shadow: 0 14px 36px rgba(0, 0, 0, .4);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .38);
 }
 
-.heat-cell[data-tooltip]::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 5px);
-  width: 8px;
-  height: 8px;
-  border-right: 1px solid var(--theme-border);
-  border-bottom: 1px solid var(--theme-border);
-  background:
-    color-mix(
-      in srgb,
-      var(--theme-surface-a) 94%,
-      #000000
-    );
-  opacity: 0;
-  pointer-events: none;
+.heatmap-tooltip.is-top {
   transform:
     translateX(-50%)
-    rotate(45deg);
-  transition: opacity .16s ease;
+    translateY(-100%);
 }
 
-.heat-cell[data-tooltip]:hover::after,
-.heat-cell[data-tooltip]:hover::before,
-.heat-cell[data-tooltip]:focus-visible::after,
-.heat-cell[data-tooltip]:focus-visible::before {
-  opacity: 1;
-}
-
-.heat-cell[data-tooltip]:hover::after,
-.heat-cell[data-tooltip]:focus-visible::after {
-  transform:
-    translateX(-50%)
-    translateY(0);
+.heatmap-tooltip.is-bottom {
+  transform: translateX(-50%);
 }
 
 @media (max-width: 700px) {
@@ -375,6 +342,10 @@
     gap: 14px 20px;
   }
 
+  .heatmap-selector {
+    margin-left: auto;
+  }
+
   .heatmap-meta-row p {
     font-size: 14px;
   }
@@ -389,11 +360,46 @@
     width: 124px;
   }
 
+  .heatmap-scroll {
+    overflow-x: auto;
+    padding: 8px 6px 10px;
+  }
+
   .heatmap-months {
-    gap: 18px;
+    --heat-cell-size: 12px;
+    --heat-cell-gap: 3px;
+    justify-content: space-between;
+    gap: 12px;
+    width: max-content;
+    min-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .heatmap-month-grid {
+    grid-template-rows:
+      repeat(
+        7,
+        var(--heat-cell-size)
+      );
+    grid-auto-columns:
+      var(--heat-cell-size);
+    gap: var(--heat-cell-gap);
+    min-height:
+      calc(
+        (7 * var(--heat-cell-size)) +
+        (6 * var(--heat-cell-gap))
+      );
+  }
+
+  .heat-cell {
+    width: var(--heat-cell-size);
+    height: var(--heat-cell-size);
+    border-radius: 3px;
   }
 
   .heatmap-month-label {
-    font-size: 18px;
+    font-size: 12px;
   }
+
 }

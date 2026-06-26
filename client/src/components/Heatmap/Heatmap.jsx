@@ -4,12 +4,16 @@ import {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 
 import Dropdown from "../Graph/Dropdown";
 
 import {
   useProgress,
 } from "../../context/ProgressContext";
+import {
+  useAuth,
+} from "../../context/AuthContext";
 
 import "./Heatmap.css";
 
@@ -51,6 +55,25 @@ const parseDateKey = (dateKey) => {
   );
 };
 
+const formatTooltipDate = (
+  dateKey
+) =>
+  new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }
+  ).format(parseDateKey(dateKey));
+
+const formatTooltip = (cell) =>
+  `${cell.count} ${
+    cell.count === 1
+      ? "sub"
+      : "subs"
+  }, ${formatTooltipDate(cell.date)}`;
+
 const getLevel = (count) => {
   if (!count) return 0;
   if (count >= 5) return 4;
@@ -64,8 +87,12 @@ const getDateRange = (
   today
 ) => {
   if (selectedRange === "current") {
+    const currentYear =
+      today.getFullYear();
     const startDate =
       new Date(today);
+    const metricStartDate =
+      new Date(currentYear, 0, 1);
 
     startDate.setFullYear(
       startDate.getFullYear() - 1
@@ -74,16 +101,23 @@ const getDateRange = (
     return {
       startDate,
       endDate: today,
-      label:
-        "in the past one year",
+      metricStartDate,
+      metricEndDate: today,
+      label: `in ${currentYear}`,
     };
   }
 
   const year = Number(selectedRange);
+  const yearStart =
+    new Date(year, 0, 1);
+  const yearEnd =
+    new Date(year, 11, 31);
 
   return {
-    startDate: new Date(year, 0, 1),
-    endDate: new Date(year, 11, 31),
+    startDate: yearStart,
+    endDate: yearEnd,
+    metricStartDate: yearStart,
+    metricEndDate: yearEnd,
     label: `in ${year}`,
   };
 };
@@ -231,8 +265,12 @@ const getMaxStreak = (
 const Heatmap = () => {
   const { heatmapData } =
     useProgress();
+  const { user } = useAuth();
   const heatmapScrollRef =
     useRef(null);
+  const [tooltip,
+    setTooltip] =
+    useState(null);
   const [selectedRange,
     setSelectedRange] =
     useState("current");
@@ -255,51 +293,66 @@ const Heatmap = () => {
     useMemo(() => {
       const currentYear =
         today.getFullYear();
-      const years =
-        new Set([
-          currentYear,
-          currentYear - 1,
-          currentYear - 2,
-          currentYear - 3,
-        ]);
-
-      heatmapData.forEach(
-        (item) => {
-          const date =
-            parseDateKey(item.date);
-
-          if (
-            !Number.isNaN(
-              date.getTime()
-            )
-          ) {
-            years.add(
-              date.getFullYear()
-            );
-          }
-        }
-      );
+      const joinedDate =
+        user?.createdAt
+          ? new Date(user.createdAt)
+          : today;
+      const joinedYear =
+        Number.isNaN(
+          joinedDate.getTime()
+        )
+          ? currentYear
+          : joinedDate.getFullYear();
+      const pastYearCount =
+        Math.max(
+          0,
+          currentYear - joinedYear
+        );
+      const pastYears =
+        Array.from(
+          {
+            length: pastYearCount,
+          },
+          (_, index) =>
+            currentYear - index - 1
+        );
 
       return [
         {
           value: "current",
           label: "Current",
         },
-        ...Array.from(years)
-          .sort((a, b) => b - a)
-          .map((year) => ({
+        ...pastYears.map((year) => ({
             value: String(year),
             label: String(year),
           })),
       ];
     }, [
-      heatmapData,
       today,
+      user?.createdAt,
     ]);
+
+  useEffect(() => {
+    const isValidRange =
+      yearOptions.some(
+        (option) =>
+          option.value ===
+          selectedRange
+      );
+
+    if (!isValidRange) {
+      setSelectedRange("current");
+    }
+  }, [
+    selectedRange,
+    yearOptions,
+  ]);
 
   const {
     startDate,
     endDate,
+    metricStartDate,
+    metricEndDate,
     label: rangeLabel,
   } = useMemo(
     () =>
@@ -326,7 +379,7 @@ const Heatmap = () => {
       );
     }, [heatmapData]);
 
-  const rangeEntries =
+  const metricEntries =
     useMemo(() => {
       return heatmapData.filter(
         (item) => {
@@ -334,15 +387,16 @@ const Heatmap = () => {
             parseDateKey(item.date);
 
           return (
-            itemDate >= startDate &&
-            itemDate <= endDate
+            itemDate >=
+              metricStartDate &&
+            itemDate <= metricEndDate
           );
         }
       );
     }, [
       heatmapData,
-      startDate,
-      endDate,
+      metricStartDate,
+      metricEndDate,
     ]);
 
   const monthBlocks =
@@ -361,39 +415,88 @@ const Heatmap = () => {
     );
 
   const total =
-    rangeEntries.reduce(
+    metricEntries.reduce(
       (sum, item) =>
         sum + item.count,
       0
     );
   const activeDays =
-    rangeEntries.filter(
+    metricEntries.filter(
       (item) => item.count > 0
     ).length;
   const maxStreak =
     getMaxStreak(
-      rangeEntries,
-      startDate,
-      endDate
+      metricEntries,
+      metricStartDate,
+      metricEndDate
     );
 
   useEffect(() => {
     const heatmap =
       heatmapScrollRef.current;
 
-    if (!heatmap)
+    if (
+      !heatmap ||
+      !window.matchMedia(
+        "(max-width: 700px)"
+      ).matches
+    ) {
       return;
+    }
 
-    window.requestAnimationFrame(
-      () => {
-        heatmap.scrollLeft =
-          heatmap.scrollWidth;
-      }
-    );
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(
+        () => {
+          heatmap.scrollLeft =
+            heatmap.scrollWidth;
+        }
+      );
+    });
   }, [
     selectedRange,
     monthBlocks.length,
   ]);
+
+  const showTooltip = (
+    cell,
+    event
+  ) => {
+    if (!cell) return;
+
+    const rect =
+      event.currentTarget.getBoundingClientRect();
+    const tooltipWidth = 142;
+    const viewportGap = 8;
+    const center =
+      rect.left + rect.width / 2;
+    const left = Math.min(
+      window.innerWidth -
+        tooltipWidth / 2 -
+        viewportGap,
+      Math.max(
+        tooltipWidth / 2 +
+          viewportGap,
+        center
+      )
+    );
+    const hasRoomAbove =
+      rect.top > 48;
+
+    setTooltip({
+      text: formatTooltip(cell),
+      left,
+      top: hasRoomAbove
+        ? rect.top - 8
+        : rect.bottom + 8,
+      placement: hasRoomAbove
+        ? "top"
+        : "bottom",
+    });
+  };
+
+  const hideTooltip = () => {
+    setTooltip(null);
+  };
 
   return (
     <section className="heatmap-card">
@@ -405,14 +508,6 @@ const Heatmap = () => {
             </strong>{" "}
             submissions {rangeLabel}
           </h2>
-
-          <span
-            className="heatmap-info"
-            aria-label="Heatmap shows solved question activity"
-            title="Heatmap shows solved question activity"
-          >
-            i
-          </span>
         </div>
 
         <div className="heatmap-meta-row">
@@ -445,7 +540,13 @@ const Heatmap = () => {
         className="heatmap-scroll"
         ref={heatmapScrollRef}
       >
-        <div className="heatmap-months">
+        <div
+          className="heatmap-months"
+          style={{
+            "--month-count":
+              monthBlocks.length,
+          }}
+        >
           {monthBlocks.map(
             (month) => (
               <div
@@ -470,16 +571,48 @@ const Heatmap = () => {
                         }
                         data-tooltip={
                           cell
-                            ? `${cell.count} solved on ${cell.date}`
+                            ? formatTooltip(
+                                cell
+                              )
                             : undefined
                         }
                         aria-label={
                           cell
-                            ? `${cell.count} solved on ${cell.date}`
+                            ? formatTooltip(
+                                cell
+                              )
                             : undefined
                         }
                         tabIndex={
                           cell ? 0 : undefined
+                        }
+                        onMouseEnter={
+                          cell
+                            ? (event) =>
+                                showTooltip(
+                                  cell,
+                                  event
+                                )
+                            : undefined
+                        }
+                        onMouseLeave={
+                          cell
+                            ? hideTooltip
+                            : undefined
+                        }
+                        onFocus={
+                          cell
+                            ? (event) =>
+                                showTooltip(
+                                  cell,
+                                  event
+                                )
+                            : undefined
+                        }
+                        onBlur={
+                          cell
+                            ? hideTooltip
+                            : undefined
                         }
                       />
                     )
@@ -494,6 +627,19 @@ const Heatmap = () => {
           )}
         </div>
       </div>
+      {tooltip &&
+        createPortal(
+          <div
+            className={`heatmap-tooltip is-${tooltip.placement}`}
+            style={{
+              left: `${tooltip.left}px`,
+              top: `${tooltip.top}px`,
+            }}
+          >
+            {tooltip.text}
+          </div>,
+          document.body
+        )}
     </section>
   );
 };

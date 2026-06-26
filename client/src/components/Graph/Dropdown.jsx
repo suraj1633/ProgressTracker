@@ -59,18 +59,34 @@ const Dropdown = ({
     const gap = 8;
     const menuHeight = 260;
     const viewportPadding = 12;
+    const menuWidth =
+      Math.max(
+        rect.width,
+        180
+      );
+    const preferredLeft =
+      rect.right +
+      window.scrollX -
+      menuWidth;
+    const bottomReservedSpace =
+      window.matchMedia(
+        "(max-width: 700px)"
+      ).matches
+        ? 96
+        : 0;
     const spaceBelow =
       window.innerHeight -
       rect.bottom -
-      viewportPadding;
+      viewportPadding -
+      bottomReservedSpace;
 
     setMenuStyle({
       left: `${Math.max(
         viewportPadding,
         Math.min(
-          rect.left + window.scrollX,
+          preferredLeft,
           window.innerWidth -
-            rect.width -
+            menuWidth -
             viewportPadding +
             window.scrollX
         )
@@ -81,11 +97,11 @@ const Dropdown = ({
         gap
       }px`,
       bottom: "auto",
-      width: `${rect.width}px`,
+      width: `${menuWidth}px`,
       maxHeight: `${Math.min(
         menuHeight,
         Math.max(
-          160,
+          120,
           spaceBelow - gap
         )
       )}px`,

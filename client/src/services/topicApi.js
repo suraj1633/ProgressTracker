@@ -113,7 +113,8 @@ export const getAnalytics =
     type = "month",
     year,
     month,
-    week
+    week,
+    range = {}
   ) => {
     const params =
       new URLSearchParams({
@@ -138,6 +139,20 @@ export const getAnalytics =
       params.append(
         "week",
         week
+      );
+    }
+
+    if (range.startDate) {
+      params.append(
+        "startDate",
+        range.startDate
+      );
+    }
+
+    if (range.endDate) {
+      params.append(
+        "endDate",
+        range.endDate
       );
     }
 
