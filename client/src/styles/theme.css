@@ -178,8 +178,7 @@
     --theme-surface-a:
             rgba(25, 25, 25, .98);
 
-    --theme-surface-b:
-            rgba(12, 12, 12, .98);
+    --theme-surface-b: rgb(7 7 7 / 0.98);
 
     --theme-page-bg:
             radial-gradient(
@@ -218,8 +217,7 @@
     --theme-border:
             rgba(255, 135, 56, .13);
 
-    --theme-border-soft:
-            rgba(255, 255, 255, .075);
+    --theme-border-soft: rgb(255 255 255 / 0.07);
 
     --theme-text-soft:
             #dfe7f3;

@@ -258,7 +258,7 @@
   background:
     color-mix(
       in srgb,
-      var(--theme-surface-b) 82%,
+      var(--theme-surface-b) 90%,
       #ffffff
     );
 }
