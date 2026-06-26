@@ -239,21 +239,11 @@
 
 @media (max-width: 430px) {
   .graph-card {
-    padding: 14px;
+    padding: 20px;
   }
 
   .graph-header {
-    align-items: stretch;
     flex-wrap: wrap;
-  }
-
-  .top-right-controls {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .top-right-controls .dropdown {
-    width: 100% !important;
   }
 
   .chart-shell {
