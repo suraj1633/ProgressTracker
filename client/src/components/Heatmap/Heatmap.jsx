@@ -511,19 +511,21 @@ const Heatmap = () => {
         </div>
 
         <div className="heatmap-meta-row">
-          <p>
-            Total active days:{" "}
-            <strong>
-              {activeDays}
-            </strong>
-          </p>
+          <div className="heatmap-meta-stats">
+            <p>
+              Total active days:{" "}
+              <strong>
+                {activeDays}
+              </strong>
+            </p>
 
-          <p>
-            Max streak:{" "}
-            <strong>
-              {maxStreak}
-            </strong>
-          </p>
+            <p>
+              Max streak:{" "}
+              <strong className="heatmap-max-streak-value">
+                {maxStreak}
+              </strong>
+            </p>
+          </div>
 
           <div className="heatmap-selector">
             <Dropdown

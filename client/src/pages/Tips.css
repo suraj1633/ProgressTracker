@@ -7,6 +7,16 @@
   background: #080808;
 }
 
+.app .tips-page {
+  background:
+    radial-gradient(
+      circle at 12% 0,
+      var(--theme-accent-soft),
+      transparent 30%
+    ),
+    #080808;
+}
+
 .tips-page::before,
 .tips-page::after {
   content: "";
@@ -64,10 +74,11 @@
 }
 
 .tips-header h1 {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: clamp(30px, 4vw, 40px);
   font-weight: 900;
   line-height: 1.05;
+  letter-spacing: 0;
 }
 
 .tips-header p,
@@ -89,7 +100,7 @@
   border: 1px solid var(--theme-border-soft);
   border-radius: 999px;
   background: rgba(255, 255, 255, .035);
-  color: var(--theme-text-soft);
+  color: var(--text-muted);
   font-size: 13px;
   font-weight: 850;
 }
@@ -203,6 +214,10 @@
       #000000
     );
   color: #f5f5f5;
+  transition:
+    border-color .18s ease,
+    background .18s ease,
+    box-shadow .18s ease;
 }
 
 .tips-field input {
@@ -269,6 +284,11 @@
   border-radius: 11px;
   font-size: 14px;
   font-weight: 850;
+  transition:
+    border-color .18s ease,
+    background .18s ease,
+    color .18s ease,
+    box-shadow .18s ease;
 }
 
 .tips-primary-button {
@@ -293,6 +313,7 @@
 
 .tips-secondary-button:hover {
   border-color: var(--theme-border);
+  background: var(--theme-accent-soft);
   color: #ffffff;
 }
 
@@ -389,6 +410,26 @@
   display: grid;
   align-content: start;
   gap: 10px;
+  padding-right: 2px;
+  scrollbar-color: var(--theme-accent-soft) transparent;
+  scrollbar-width: thin;
+}
+
+.tips-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tips-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tips-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: var(--theme-accent-soft);
+}
+
+.tips-list::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-border);
 }
 
 .tip-card {
@@ -398,7 +439,33 @@
   padding: 15px;
   border: 1px solid var(--theme-border-soft);
   border-radius: 14px;
-  background: rgba(255, 255, 255, .032);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, .04),
+      color-mix(in srgb, var(--theme-accent-soft) 26%, transparent)
+    );
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, .18),
+    inset 0 1px 0 rgba(255, 255, 255, .06);
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    background .18s ease,
+    box-shadow .18s ease;
+}
+
+.tip-card:hover {
+  border-color: var(--theme-border);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, .05),
+      color-mix(in srgb, var(--theme-accent-soft) 46%, transparent)
+    );
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, .2),
+    inset 0 1px 0 rgba(255, 255, 255, .075);
 }
 
 .tip-card-main {
@@ -412,6 +479,9 @@
 .tip-card.is-editing {
   border-color: var(--theme-border);
   background: var(--theme-accent-soft);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, .22),
+    inset 0 1px 0 rgba(255, 255, 255, .08);
 }
 
 .tip-card-meta {
@@ -441,7 +511,7 @@
 
 .tip-card p {
   margin-top: 8px;
-  color: #d0d0d0;
+  color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.55;
   overflow-wrap: anywhere;
@@ -475,6 +545,10 @@
   background: rgba(255, 255, 255, .05);
   color: var(--theme-text-soft);
   font-size: 17px;
+  transition:
+    border-color .18s ease,
+    background .18s ease,
+    color .18s ease;
 }
 
 .tip-card-actions button:hover {
@@ -497,7 +571,12 @@
   padding: 38px 18px;
   border: 1px dashed var(--theme-border-soft);
   border-radius: 14px;
-  background: rgba(255, 255, 255, .025);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, .035),
+      color-mix(in srgb, var(--theme-accent-soft) 34%, transparent)
+    );
   text-align: center;
 }
 

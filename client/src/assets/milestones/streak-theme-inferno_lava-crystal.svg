@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Simple Lava Crystal Badge Icon</title>
+  <desc id="desc">A simpler lava crystal SVG icon with a main crystal and two side shards.</desc>
+  <defs>
+    <linearGradient id="mainGrad" x1="128" y1="24" x2="128" y2="228" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFE0B6"/>
+      <stop offset="0.22" stop-color="#FFB769"/>
+      <stop offset="0.55" stop-color="#FF8A3A"/>
+      <stop offset="1" stop-color="#B33421"/>
+    </linearGradient>
+    <linearGradient id="sideGrad" x1="64" y1="96" x2="192" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF0D6"/>
+      <stop offset="0.28" stop-color="#FFC56D"/>
+      <stop offset="0.65" stop-color="#FF7C34"/>
+      <stop offset="1" stop-color="#8E2A22"/>
+    </linearGradient>
+    <radialGradient id="glowGrad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(128 172) rotate(90) scale(64 78)">
+      <stop offset="0" stop-color="#FFD85F" stop-opacity="0.92"/>
+      <stop offset="0.45" stop-color="#FF9A36" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#FF762E" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#FFF1D0" flood-opacity="0.8"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#FF9E42" flood-opacity="0.45"/>
+    </filter>
+    <style>
+      .main { fill: url(#mainGrad); stroke: #FFD9AF; stroke-opacity: .72; stroke-width: 2.2; stroke-linejoin: round; }
+      .side { fill: url(#sideGrad); stroke: #FFD7B6; stroke-opacity: .62; stroke-width: 1.9; stroke-linejoin: round; }
+      .shine { stroke: #FFF4DF; stroke-opacity: .5; stroke-width: 1.2; stroke-linecap: round; fill: none; }
+    </style>
+  </defs>
+
+  <ellipse cx="128" cy="176" rx="66" ry="50" fill="url(#glowGrad)"/>
+
+  <g filter="url(#glow)">
+    <!-- left shard -->
+    <path class="side" d="M70 112L103 134L93 198L54 171Z"/>
+    <path class="shine" d="M72 115L96 135L87 190"/>
+
+    <!-- right shard -->
+    <path class="side" d="M153 134L186 110L202 170L163 198Z"/>
+    <path class="shine" d="M160 133L184 117L194 168"/>
+
+    <!-- main center crystal -->
+    <path class="main" d="M116 22L145 42L166 132L145 218H111L90 132L96 44Z"/>
+    <path class="shine" d="M116 28L126 44L122 198M126 44L145 42M126 44L164 131M126 44L92 132"/>
+
+    <!-- bottom tip -->
+    <path class="side" d="M118 218H138L144 232L128 242L112 232Z"/>
+  </g>
+</svg>

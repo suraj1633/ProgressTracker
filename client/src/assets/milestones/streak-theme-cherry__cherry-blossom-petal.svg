@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="title desc">
+<title id="title">streak-theme-cherry — cherry blossom petal</title>
+<desc id="desc">Clean detailed SVG icon of cherry blossom petal for streak-theme-cherry.</desc>
+<defs>
+  <linearGradient id="mainGrad" x1="60" y1="48" x2="190" y2="202" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFA4D6"/>
+    <stop offset="0.45" stop-color="#FF5EB7"/>
+    <stop offset="0.78" stop-color="#FFD7EC"/>
+    <stop offset="1" stop-color="#FFF4FA"/>
+  </linearGradient>
+  <linearGradient id="accentGrad" x1="96" y1="62" x2="156" y2="132" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#FFFFFF" stop-opacity="0.95"/>
+    <stop offset="0.38" stop-color="#FFA4D6" stop-opacity="0.95"/>
+    <stop offset="1" stop-color="#FF5EB7" stop-opacity="0.25"/>
+  </linearGradient>
+  <radialGradient id="glowGrad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(128 128) rotate(90) scale(86 86)">
+    <stop stop-color="#FFA4D6" stop-opacity="0.95"/>
+    <stop offset="0.58" stop-color="#FF5EB7" stop-opacity="0.35"/>
+    <stop offset="1" stop-color="#FFF4FA" stop-opacity="0.01"/>
+  </radialGradient>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#FFA4D6" flood-opacity="0.72"/>
+    <feDropShadow dx="0" dy="0" stdDeviation="11" flood-color="#FF5EB7" flood-opacity="0.35"/>
+    <feDropShadow dx="0" dy="0" stdDeviation="22" flood-color="#FFD7EC" flood-opacity="0.14"/>
+  </filter>
+  <filter id="soft" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="4" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <style>
+    .obj { filter: url(#glow); }
+    .main { fill: url(#mainGrad); }
+    .accent { fill: url(#accentGrad); }
+    .halo { fill: url(#glowGrad); filter: url(#soft); opacity: .65; }
+    .line { stroke: #FFF; stroke-opacity: .78; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    .thin { stroke-width: 2.4; opacity: .68; }
+    .shine { stroke: #FFF; stroke-opacity: .52; stroke-width: 8; stroke-linecap: round; fill: none; }
+  </style>
+</defs>
+<g class="obj"><ellipse class="halo" cx="128" cy="128" rx="52" ry="66"/><path class="main" d="M128 48C148 58 162 79 162 102C162 129 148 152 128 174C108 152 94 129 94 102C94 79 108 58 128 48Z"/><path class="accent" d="M128 70C140 79 148 92 148 106C148 123 140 138 128 154C116 138 108 123 108 106C108 92 116 79 128 70Z" opacity=".65"/><path class="line" d="M128 78C128 105 128 129 128 174"/></g></svg>

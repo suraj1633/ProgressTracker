@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Lightning Badge Icon</title>
+  <desc id="desc">A simple clean SVG badge icon inspired by a branching lightning strike.</desc>
+  <defs>
+    <linearGradient id="boltGrad" x1="128" y1="18" x2="128" y2="238" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8F5FF"/>
+      <stop offset="0.3" stop-color="#E6DAFF"/>
+      <stop offset="0.68" stop-color="#C3A9FF"/>
+      <stop offset="1" stop-color="#8E6CFF"/>
+    </linearGradient>
+    <radialGradient id="glowGrad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(128 128) rotate(90) scale(110 64)">
+      <stop offset="0" stop-color="#D9C7FF" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#A987FF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#F7F0FF" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#D4BFFF" flood-opacity="0.62"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#A57FFF" flood-opacity="0.3"/>
+    </filter>
+    <style>
+      .main { stroke: url(#boltGrad); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .branch { stroke: url(#boltGrad); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; fill: none; opacity: .96; }
+      .thin { stroke-width: 2.5; opacity: .85; }
+    </style>
+  </defs>
+
+  <ellipse cx="128" cy="132" rx="54" ry="102" fill="url(#glowGrad)"/>
+
+  <g filter="url(#glow)">
+    <!-- main strike -->
+    <path class="main" d="M122 18L138 56L118 96L134 132L114 172L126 210L116 238"/>
+
+    <!-- upper branches -->
+    <path class="branch" d="M132 58L162 44L184 26"/>
+    <path class="branch thin" d="M132 58L154 66L172 76"/>
+    <path class="branch" d="M124 62L98 48L74 34"/>
+    <path class="branch thin" d="M124 62L106 74L90 88"/>
+
+    <!-- middle branches -->
+    <path class="branch" d="M130 126L156 112L182 98"/>
+    <path class="branch thin" d="M130 126L149 136L168 148"/>
+    <path class="branch" d="M122 126L96 112L74 98"/>
+    <path class="branch thin" d="M122 126L102 138L86 152"/>
+
+    <!-- lower branches -->
+    <path class="branch" d="M118 176L144 186L168 202"/>
+    <path class="branch thin" d="M118 176L134 198L146 218"/>
+    <path class="branch" d="M118 176L94 190L76 204"/>
+    <path class="branch thin" d="M118 176L104 198L92 220"/>
+  </g>
+</svg>

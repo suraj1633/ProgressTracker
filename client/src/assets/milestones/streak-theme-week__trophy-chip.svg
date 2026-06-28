@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="title desc">
+<title id="title">streak-theme-week — trophy chip</title>
+<desc id="desc">Clean detailed SVG icon of trophy chip for streak-theme-week.</desc>
+<defs>
+  <linearGradient id="mainGrad" x1="60" y1="48" x2="190" y2="202" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFE16E"/>
+    <stop offset="0.45" stop-color="#F2B100"/>
+    <stop offset="0.78" stop-color="#FFF1AB"/>
+    <stop offset="1" stop-color="#FFFBE1"/>
+  </linearGradient>
+  <linearGradient id="accentGrad" x1="96" y1="62" x2="156" y2="132" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#FFFFFF" stop-opacity="0.95"/>
+    <stop offset="0.38" stop-color="#FFE16E" stop-opacity="0.95"/>
+    <stop offset="1" stop-color="#F2B100" stop-opacity="0.25"/>
+  </linearGradient>
+  <radialGradient id="glowGrad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(128 128) rotate(90) scale(86 86)">
+    <stop stop-color="#FFE16E" stop-opacity="0.95"/>
+    <stop offset="0.58" stop-color="#F2B100" stop-opacity="0.35"/>
+    <stop offset="1" stop-color="#FFFBE1" stop-opacity="0.01"/>
+  </radialGradient>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#FFE16E" flood-opacity="0.72"/>
+    <feDropShadow dx="0" dy="0" stdDeviation="11" flood-color="#F2B100" flood-opacity="0.35"/>
+    <feDropShadow dx="0" dy="0" stdDeviation="22" flood-color="#FFF1AB" flood-opacity="0.14"/>
+  </filter>
+  <filter id="soft" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="4" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <style>
+    .obj { filter: url(#glow); }
+    .main { fill: url(#mainGrad); }
+    .accent { fill: url(#accentGrad); }
+    .halo { fill: url(#glowGrad); filter: url(#soft); opacity: .65; }
+    .line { stroke: #FFF; stroke-opacity: .78; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    .thin { stroke-width: 2.4; opacity: .68; }
+    .shine { stroke: #FFF; stroke-opacity: .52; stroke-width: 8; stroke-linecap: round; fill: none; }
+  </style>
+</defs>
+<g class="obj"><rect x="72" y="72" width="112" height="112" rx="24" class="main"/><rect x="92" y="92" width="72" height="72" rx="16" fill="url(#accentGrad)" opacity=".25"/><path class="line" d="M104 105H152M104 151H152M104 128H152"/><path class="main" d="M112 114H144V126C144 136 137 144 128 146C119 144 112 136 112 126V114Z" opacity=".95"/><path class="line thin" d="M112 118C104 118 101 122 101 127C101 133 106 137 112 137M144 118C152 118 155 122 155 127C155 133 150 137 144 137"/></g></svg>

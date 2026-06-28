@@ -41,9 +41,18 @@
 .heatmap-meta-row {
   display: flex;
   align-items: center;
-  gap: 26px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: nowrap;
   width: 100%;
+}
+
+.heatmap-meta-stats {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .heatmap-meta-row p {
@@ -51,6 +60,7 @@
   color: var(--theme-text-soft);
   font-size: 16px;
   line-height: 1.35;
+  white-space: nowrap;
 }
 
 .heatmap-meta-row strong {
@@ -58,10 +68,15 @@
   font-weight: 850;
 }
 
+.heatmap-meta-row .heatmap-max-streak-value {
+  color: var(--theme-accent);
+}
+
 .heatmap-selector {
   position: relative;
   z-index: 20;
-  margin-left: auto;
+  flex: 0 0 auto;
+  margin-left: 0;
 }
 
 .heatmap-selector-button {
@@ -339,7 +354,16 @@
   }
 
   .heatmap-meta-row {
+    align-items: flex-start;
+    justify-content: space-between;
     gap: 14px 20px;
+    flex-wrap: nowrap;
+  }
+
+  .heatmap-meta-stats {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 
   .heatmap-selector {
@@ -402,4 +426,14 @@
     font-size: 12px;
   }
 
+}
+
+@media (max-width: 430px) {
+  .heatmap-meta-row {
+    flex-wrap: wrap;
+  }
+
+  .heatmap-selector {
+    width: 124px;
+  }
 }
