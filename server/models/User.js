@@ -25,6 +25,32 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    platformLinks: {
+      leetcode: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+
+      codeforces: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+
+      codechef: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+
+      github: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+    },
   },
   {
     timestamps: true,

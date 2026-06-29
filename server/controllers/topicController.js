@@ -49,12 +49,22 @@ export const getTopics = async (
     const topics =
       await Topic.find({
         userId: req.user._id,
-      }).populate({
-        path: "questions",
-        match: {
-          userId: req.user._id,
-        },
-      });
+      })
+        .sort({
+          createdAt: -1,
+        })
+        .populate({
+          path: "questions",
+          match: {
+            userId: req.user._id,
+          },
+          options: {
+            sort: {
+              createdAt: 1,
+            },
+          },
+        })
+        .lean();
 
     res.status(200).json(topics);
   } catch (error) {
@@ -91,7 +101,9 @@ export const addQuestion =
         await Topic.findOne({
           _id: topicId,
           userId: req.user._id,
-        });
+        }).select(
+          "_id totalQuestions completedQuestions"
+        );
 
       if (!topic) {
         return res.status(404).json({
@@ -111,13 +123,37 @@ export const addQuestion =
           topicId,
         });
 
-      topic.questions.push(
-        question._id
+      const nextTotalQuestions =
+        topic.totalQuestions + 1;
+
+      const nextProgressPercentage =
+        nextTotalQuestions === 0
+          ? 0
+          : (
+              (topic.completedQuestions /
+                nextTotalQuestions) *
+              100
+            ).toFixed(2);
+
+      await Topic.updateOne(
+        {
+          _id: topicId,
+          userId: req.user._id,
+        },
+        {
+          $push: {
+            questions:
+              question._id,
+          },
+          $inc: {
+            totalQuestions: 1,
+          },
+          $set: {
+            progressPercentage:
+              nextProgressPercentage,
+          },
+        }
       );
-
-      topic.totalQuestions += 1;
-
-      await topic.save();
 
       res.status(201).json(
         question
@@ -173,15 +209,16 @@ export const toggleQuestion =
       question.completed =
         !question.completed;
 
-      if (
-        question.completed
-      ) {
+      let logOperation;
+
+      if (question.completed) {
         question.completedAt =
           new Date();
 
         topic.completedQuestions += 1;
 
-        await ProgressLog.create({
+        logOperation =
+          ProgressLog.create({
           questionId:
             question._id,
           userId: req.user._id,
@@ -196,7 +233,8 @@ export const toggleQuestion =
 
         topic.completedQuestions -= 1;
 
-        await ProgressLog.deleteOne({
+        logOperation =
+          ProgressLog.deleteOne({
           questionId:
             question._id,
           userId: req.user._id,
@@ -210,9 +248,11 @@ export const toggleQuestion =
           100
         ).toFixed(2);
 
-      await question.save();
-
-      await topic.save();
+      await Promise.all([
+        question.save(),
+        topic.save(),
+        logOperation,
+      ]);
 
       res.status(200).json({
         question,
@@ -463,12 +503,6 @@ GET /api/topics/stats
 export const getDashboardStats =
   async (req, res) => {
     try {
-      const questions =
-        await Question.find({
-          userId: req.user._id,
-          completed: true,
-        });
-
       const today =
         new Date();
 
@@ -477,47 +511,71 @@ export const getDashboardStats =
           .toISOString()
           .split("T")[0];
 
-      let solvedToday = 0;
+      const tomorrow =
+        new Date(today);
 
-      questions.forEach(
-        (question) => {
-          if (
-            !question.completedAt
-          )
-            return;
-
-          const completedDate =
-            question.completedAt
-              .toISOString()
-              .split("T")[0];
-
-          if (
-            completedDate ===
-            todayString
-          ) {
-            solvedToday++;
-          }
-        }
+      tomorrow.setDate(
+        tomorrow.getDate() + 1
       );
 
-      const sortedDates =
-        questions
-          .filter(
-            (q) =>
-              q.completedAt
-          )
-          .map((q) =>
-            q.completedAt
+      const todayStart =
+        new Date(
+          `${todayString}T00:00:00.000Z`
+        );
+
+      const tomorrowStart =
+        new Date(
+          `${
+            tomorrow
               .toISOString()
               .split("T")[0]
-          );
+          }T00:00:00.000Z`
+        );
+
+      const [
+        solvedToday,
+        streakDates,
+      ] = await Promise.all([
+        ProgressLog.countDocuments({
+          userId: req.user._id,
+          completedAt: {
+            $gte: todayStart,
+            $lt: tomorrowStart,
+          },
+        }),
+        ProgressLog.aggregate([
+          {
+            $match: {
+              userId: req.user._id,
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format:
+                    "%Y-%m-%d",
+                  date:
+                    "$completedAt",
+                },
+              },
+            },
+          },
+          {
+            $sort: {
+              _id: 1,
+            },
+          },
+        ]),
+      ]);
 
       const uniqueDates =
-        [
-          ...new Set(
-            sortedDates
-          ),
-        ].sort();
+        streakDates.map(
+          (item) => item._id
+        );
+
+      const uniqueDateSet =
+        new Set(uniqueDates);
 
       let streak = 0;
 
@@ -531,7 +589,7 @@ export const getDashboardStats =
             .split("T")[0];
 
         if (
-          uniqueDates.includes(
+          uniqueDateSet.has(
             formatted
           )
         ) {

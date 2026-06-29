@@ -14,11 +14,261 @@
           content="width=device-width, initial-scale=1.0"
   />
 
+  <script>
+    (function () {
+      try {
+        var theme =
+          localStorage.getItem(
+            "activeStreakTheme"
+          );
+
+        if (
+          /^streak-theme-[a-z0-9-]+$/.test(
+            theme || ""
+          )
+        ) {
+          document.documentElement.classList.add(
+            theme
+          );
+        }
+      } catch (error) {
+        document.documentElement.classList.add(
+          "streak-theme-starter"
+        );
+      }
+    })();
+  </script>
+
+  <style>
+    :root {
+      --boot-accent: #ff8738;
+      --boot-accent-soft: rgba(255, 135, 56, .14);
+      --boot-border: rgba(255, 135, 56, .2);
+      --boot-bg:
+        radial-gradient(circle at 14% 0, rgba(255, 135, 56, .14), transparent 28%),
+        #080808;
+    }
+
+    :root.streak-theme-spark {
+      --boot-accent: #ff9f43;
+      --boot-accent-soft: rgba(255, 159, 67, .14);
+      --boot-border: rgba(255, 159, 67, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(255, 159, 67, .14), transparent 29%), #080808;
+    }
+
+    :root.streak-theme-week {
+      --boot-accent: #ffb020;
+      --boot-accent-soft: rgba(255, 176, 32, .14);
+      --boot-border: rgba(255, 176, 32, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(255, 176, 32, .14), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-bonfire {
+      --boot-accent: #ff7a1a;
+      --boot-accent-soft: rgba(255, 122, 26, .15);
+      --boot-border: rgba(255, 122, 26, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(255, 122, 26, .15), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-inferno {
+      --boot-accent: #ff4500;
+      --boot-accent-soft: rgba(255, 69, 0, .14);
+      --boot-border: rgba(255, 69, 0, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(255, 69, 0, .16), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-mint {
+      --boot-accent: #86efac;
+      --boot-accent-soft: rgba(134, 239, 172, .14);
+      --boot-border: rgba(134, 239, 172, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(134, 239, 172, .16), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-forest {
+      --boot-accent: #22c55e;
+      --boot-accent-soft: rgba(34, 197, 94, .14);
+      --boot-border: rgba(34, 197, 94, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(34, 197, 94, .15), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-diamond,
+    :root.streak-theme-month {
+      --boot-accent: #7dd3fc;
+      --boot-accent-soft: rgba(125, 211, 252, .14);
+      --boot-border: rgba(125, 211, 252, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(125, 211, 252, .16), transparent 30%), #050505;
+    }
+
+    :root.streak-theme-blue-flare {
+      --boot-accent: #38bdf8;
+      --boot-accent-soft: rgba(56, 189, 248, .14);
+      --boot-border: rgba(56, 189, 248, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(56, 189, 248, .14), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-frost {
+      --boot-accent: #67e8f9;
+      --boot-accent-soft: rgba(103, 232, 249, .14);
+      --boot-border: rgba(103, 232, 249, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(103, 232, 249, .16), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-quarter {
+      --boot-accent: #fef08a;
+      --boot-accent-soft: rgba(254, 240, 138, .14);
+      --boot-border: rgba(254, 240, 138, .22);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(254, 240, 138, .14), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-golden-flare,
+    :root.streak-theme-obsidian {
+      --boot-accent: #ffd700;
+      --boot-accent-soft: rgba(255, 215, 0, .14);
+      --boot-border: rgba(255, 215, 0, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(255, 215, 0, .16), transparent 30%), #050505;
+    }
+
+    :root.streak-theme-storm {
+      --boot-accent: #818cf8;
+      --boot-accent-soft: rgba(129, 140, 248, .14);
+      --boot-border: rgba(129, 140, 248, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(129, 140, 248, .16), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-cosmic {
+      --boot-accent: #e879f9;
+      --boot-accent-soft: rgba(232, 121, 249, .14);
+      --boot-border: rgba(232, 121, 249, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(232, 121, 249, .16), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-violet-flare,
+    :root.streak-theme-two-month {
+      --boot-accent: #a78bfa;
+      --boot-accent-soft: rgba(167, 139, 250, .14);
+      --boot-border: rgba(167, 139, 250, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(167, 139, 250, .16), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-cherry {
+      --boot-accent: #ff8fb1;
+      --boot-accent-soft: rgba(255, 143, 177, .14);
+      --boot-border: rgba(255, 143, 177, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(255, 143, 177, .15), transparent 30%), #080808;
+    }
+
+    :root.streak-theme-crimson {
+      --boot-accent: #dc2626;
+      --boot-accent-soft: rgba(220, 38, 38, .14);
+      --boot-border: rgba(220, 38, 38, .2);
+      --boot-bg: radial-gradient(circle at 12% 0, rgba(220, 38, 38, .16), transparent 30%), #080808;
+    }
+
+    html,
+    body,
+    #root {
+      min-height: 100%;
+      margin: 0;
+      background: #080808;
+    }
+
+    body {
+      background: var(--boot-bg);
+      color: #f8fbff;
+    }
+
+    .boot-loader {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: var(--boot-bg);
+      font-family: "Segoe UI", Arial, sans-serif;
+      overflow: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .boot-loader,
+    .boot-loader * {
+      box-sizing: border-box;
+    }
+
+    .boot-loader::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px);
+      background-size: 42px 42px;
+      opacity: .42;
+      mask-image: radial-gradient(circle at 50% 42%, rgba(0, 0, 0, .72), transparent 68%);
+    }
+
+    .boot-loader-card {
+      width: 152px;
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-top-color: var(--boot-border);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(24, 24, 24, .94), rgba(10, 10, 10, .95));
+      box-shadow:
+        0 24px 70px rgba(0, 0, 0, .3),
+        inset 0 1px 0 rgba(255, 255, 255, .065);
+    }
+
+    .boot-loader-mark {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--boot-border);
+      border-radius: 16px;
+      background: linear-gradient(145deg, var(--boot-accent-soft), rgba(255, 255, 255, .035));
+      box-shadow: 0 0 28px var(--boot-accent-soft);
+    }
+
+    .boot-loader-mark::after {
+      content: "";
+      width: 28px;
+      height: 28px;
+      border: 3px solid var(--boot-accent-soft);
+      border-top-color: var(--boot-accent);
+      border-radius: 50%;
+      animation: boot-loader-spin .75s linear infinite;
+    }
+
+    .boot-loader span {
+      color: var(--boot-accent);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    @keyframes boot-loader-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
   <title>DSA Progress Tracker</title>
 </head>
 
 <body>
-<div id="root"></div>
+<div id="root">
+  <div class="boot-loader">
+    <div class="boot-loader-card">
+      <div class="boot-loader-mark"></div>
+      <span>Loading</span>
+    </div>
+  </div>
+</div>
 
 <script
         type="module"

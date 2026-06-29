@@ -4,10 +4,18 @@ import { useProgress } from "../context/ProgressContext";
 import { useEffect, useState } from "react";
 import {
   HiCheckBadge,
+  HiCheck,
+  HiPencilSquare,
   HiOutlineCamera,
   HiOutlineTrash,
   HiXMark,
 } from "react-icons/hi2";
+import {
+  SiCodechef,
+  SiCodeforces,
+  SiGithub,
+  SiLeetcode,
+} from "react-icons/si";
 import {
   getActiveStreakThemeClass,
   getStreakThemeClass,
@@ -29,7 +37,7 @@ const formatDate = (value) =>
         : "Not available";
 
 const MILESTONE_NAMES_BY_THEME = {
-  "streak-theme-starter": "Origin Spark",
+  "streak-theme-starter": "Starter Milestone",
   "streak-theme-spark": "Volt Ember",
   "streak-theme-week": "Trophy Initiate",
   "streak-theme-bonfire": "Bonfire Vanguard",
@@ -57,6 +65,42 @@ const getMilestoneLabel = (themeClass) =>
 
 const getProgressPercent = (solved, total) =>
     total > 0 ? Math.min(Math.max((solved / total) * 100, 0), 100) : 0;
+
+const PLATFORM_LINKS = [
+  {
+    key: "leetcode",
+    label: "LeetCode",
+    placeholder: "https://leetcode.com/u/username",
+    Icon: SiLeetcode,
+  },
+  {
+    key: "codeforces",
+    label: "Codeforces",
+    placeholder: "https://codeforces.com/profile/username",
+    Icon: SiCodeforces,
+  },
+  {
+    key: "codechef",
+    label: "CodeChef",
+    placeholder: "https://www.codechef.com/users/username",
+    Icon: SiCodechef,
+  },
+  {
+    key: "github",
+    label: "GitHub",
+    placeholder: "https://github.com/username",
+    Icon: SiGithub,
+  },
+];
+
+const getDefaultPlatformLinks = (user) =>
+    PLATFORM_LINKS.reduce(
+        (links, platform) => ({
+          ...links,
+          [platform.key]: user?.platformLinks?.[platform.key] || "",
+        }),
+        {}
+    );
 
 const getActiveAppStreak = (fallback = 0) => {
   if (typeof document === "undefined") return fallback;
@@ -145,7 +189,7 @@ const DonutGauge = ({ solved, total, completionPct, easePct, medPct, hardPct }) 
 };
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const { dashboardStats, difficultyCounts, overallProgress, topics } = useProgress();
   const storageKey = getProfileImageKey(user);
   const [profileImage, setProfileImage] = useState(() => localStorage.getItem(storageKey));
@@ -155,6 +199,14 @@ const Profile = () => {
   const [cropY, setCropY] = useState(0);
   const [pendingImageSize, setPendingImageSize] = useState(null);
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false);
+  const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || "",
+    email: user?.email || "",
+    platformLinks: getDefaultPlatformLinks(user),
+  });
+  const [profileSaveError, setProfileSaveError] = useState("");
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   useEffect(() => {
     setProfileImage(localStorage.getItem(storageKey));
@@ -313,21 +365,139 @@ const Profile = () => {
     window.dispatchEvent(new Event("profile-image-updated"));
   };
 
+  const openProfileEditor = () => {
+    setProfileForm({
+      name: user?.name || "",
+      email: user?.email || "",
+      platformLinks: getDefaultPlatformLinks(user),
+    });
+    setProfileSaveError("");
+    setIsProfileEditorOpen(true);
+  };
+
+  const closeProfileEditor = () => {
+    if (isSavingProfile) return;
+
+    setIsProfileEditorOpen(false);
+    setProfileSaveError("");
+  };
+
+  const handleProfileFieldChange = (event) => {
+    const { name, value } = event.target;
+
+    setProfileForm((currentForm) => ({
+      ...currentForm,
+      [name]: value,
+    }));
+  };
+
+  const handlePlatformFieldChange = (event) => {
+    const { name, value } = event.target;
+
+    setProfileForm((currentForm) => ({
+      ...currentForm,
+      platformLinks: {
+        ...currentForm.platformLinks,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleProfileSubmit = async (event) => {
+    event.preventDefault();
+
+    const nextName = profileForm.name.trim();
+    const nextEmail = profileForm.email.trim().toLowerCase();
+    const nextPlatformLinks =
+        PLATFORM_LINKS.reduce(
+            (links, platform) => ({
+              ...links,
+              [platform.key]:
+                  profileForm.platformLinks?.[platform.key]?.trim() || "",
+            }),
+            {}
+        );
+
+    if (!nextName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nextEmail)) {
+      setProfileSaveError("Enter a valid name and email.");
+      return;
+    }
+
+    const hasInvalidPlatformLink =
+        Object.values(nextPlatformLinks).some((link) => {
+          if (!link) return false;
+
+          try {
+            const url = new URL(link);
+
+            return !["http:", "https:"].includes(url.protocol);
+          } catch {
+            return true;
+          }
+        });
+
+    if (hasInvalidPlatformLink) {
+      setProfileSaveError("Platform links must be valid URLs.");
+      return;
+    }
+
+    setIsSavingProfile(true);
+    setProfileSaveError("");
+
+    try {
+      await updateProfile({
+        name: nextName,
+        email: nextEmail,
+        platformLinks: nextPlatformLinks,
+      });
+
+      if (profileImage && user?.email && nextEmail !== user.email) {
+        localStorage.setItem(
+          `profileImage:${nextEmail}`,
+          profileImage
+        );
+        localStorage.removeItem(storageKey);
+      }
+
+      window.dispatchEvent(new Event("profile-image-updated"));
+      setIsProfileEditorOpen(false);
+    } catch (error) {
+      setProfileSaveError(
+        error.response?.data?.message ||
+          "Unable to update profile right now."
+      );
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
   return (
       <>
         <Navbar />
         <div className="profile-page">
           <main className="profile-content">
 
-            <div className="analytics-header-section text-external">
-              <h1>Profile</h1>
-              <p>View and manage your account information.</p>
+            <div className="analytics-header-section text-external profile-header-row">
+              <div>
+                <h1>Profile</h1>
+                <p>View and manage your account information.</p>
+              </div>
             </div>
 
             <div className="profile-unified-block-card horizontal-split">
 
               {/* Left Column - Sidebar Info */}
               <div className="profile-left-sidebar-col">
+                <button
+                    type="button"
+                    className="profile-edit-button profile-sidebar-edit-button"
+                    onClick={openProfileEditor}
+                    aria-label="Edit profile"
+                    title="Edit profile"
+                >
+                  <HiPencilSquare />
+                </button>
+
                 <div className="profile-avatar-inner-card">
                   <div className="profile-avatar-menu-wrap">
                     <button
@@ -373,19 +543,20 @@ const Profile = () => {
 
                 </div>
 
-                <div className="profile-streak-showcase visual-match">
-                  <div className="milestone-icon-wrapper">
+                <div className="profile-starter-milestone-card">
+                  <div className="starter-milestone-icon-shell">
                     <img
                         src={milestoneIcon}
                         alt=""
-                        className="profile-milestone-svg"
+                        className="starter-milestone-icon"
                         aria-hidden="true"
                     />
                   </div>
-                  <div className="milestone-details-wrapper">
-                    <span className="milestone-title-tag">{milestoneLabel}</span>
-                    <span className="milestone-counter-tag">
-                      Streak: <span className="milestone-streak-value">{activeMilestone.streak} D</span>
+                  <div className="starter-milestone-copy">
+                    <span className="starter-milestone-kicker">Milestone</span>
+                    <strong>{milestoneLabel}</strong>
+                    <span>
+                      Streak <b>{activeMilestone.streak} D</b>
                     </span>
                   </div>
                 </div>
@@ -453,6 +624,29 @@ const Profile = () => {
                   <div className="meta-info-item">
                     <label>System Registration Timestamp</label>
                     <strong>{formatDate(user?.createdAt)}</strong>
+                  </div>
+                  <div className="meta-info-item platform-meta-item">
+                    <label>Platform Profiles</label>
+                    <div className="platform-link-list">
+                      {PLATFORM_LINKS.some((platform) => user?.platformLinks?.[platform.key]) ? (
+                          PLATFORM_LINKS.map((platform) =>
+                              user?.platformLinks?.[platform.key] ? (
+                                  <a
+                                      key={platform.key}
+                                      href={user.platformLinks[platform.key]}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      aria-label={platform.label}
+                                      title={platform.label}
+                                  >
+                                    <platform.Icon aria-hidden="true" />
+                                  </a>
+                              ) : null
+                          )
+                      ) : (
+                          <span>No platform links</span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -524,6 +718,74 @@ const Profile = () => {
                   </button>
                 </div>
               </div>
+            </div>
+        )}
+
+        {isProfileEditorOpen && (
+            <div className="profile-cropper-backdrop" role="dialog" aria-modal="true" aria-label="Edit profile information">
+              <form className="profile-editor-modal" onSubmit={handleProfileSubmit}>
+                <div className="profile-cropper-header">
+                  <h2>Edit profile</h2>
+                  <button type="button" className="profile-crop-close" onClick={closeProfileEditor} aria-label="Close edit profile dialog">
+                    <HiXMark />
+                  </button>
+                </div>
+
+                <div className="profile-editor-fields">
+                  <label>
+                    <span>Name</span>
+                    <input
+                        type="text"
+                        name="name"
+                        value={profileForm.name}
+                        onChange={handleProfileFieldChange}
+                        maxLength="80"
+                        autoComplete="name"
+                        required
+                    />
+                  </label>
+                  <label>
+                    <span>Email</span>
+                    <input
+                        type="email"
+                        name="email"
+                        value={profileForm.email}
+                        onChange={handleProfileFieldChange}
+                        autoComplete="email"
+                        required
+                    />
+                  </label>
+                  <div className="profile-editor-platforms">
+                    <span className="profile-editor-section-title">Platform profiles</span>
+                    {PLATFORM_LINKS.map((platform) => (
+                        <label key={platform.key}>
+                          <span>{platform.label}</span>
+                          <input
+                              type="url"
+                              name={platform.key}
+                              value={profileForm.platformLinks?.[platform.key] || ""}
+                              onChange={handlePlatformFieldChange}
+                              placeholder={platform.placeholder}
+                          />
+                        </label>
+                    ))}
+                  </div>
+                </div>
+
+                {profileSaveError && (
+                    <p className="profile-editor-error">{profileSaveError}</p>
+                )}
+
+                <div className="profile-cropper-actions">
+                  <button type="button" className="profile-crop-secondary" onClick={closeProfileEditor} disabled={isSavingProfile}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="profile-crop-primary" disabled={isSavingProfile}>
+                    <HiCheck />
+                    <span>{isSavingProfile ? "Saving" : "Save changes"}</span>
+                  </button>
+                </div>
+              </form>
             </div>
         )}
       </>

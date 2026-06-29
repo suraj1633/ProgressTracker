@@ -51,3 +51,14 @@ export const getProfile =
 
     return response.data;
   };
+
+export const updateProfile =
+  async (payload) => {
+    const response =
+      await API.put(
+        "/auth/me",
+        payload
+      );
+
+    return response.data;
+  };

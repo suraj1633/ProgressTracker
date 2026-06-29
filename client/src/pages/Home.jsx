@@ -15,6 +15,7 @@ import {
 } from "react-icons/hi2";
 
 import { useAuth } from "../context/AuthContext";
+import RouteLoader from "../components/RouteLoader/RouteLoader";
 import {
   getActiveStreakThemeClass,
 } from "../utils/streakTheme";
@@ -63,11 +64,7 @@ const Home = () => {
     );
 
   if (loading) {
-    return (
-      <div className="route-loader">
-        Loading...
-      </div>
-    );
+    return <RouteLoader />;
   }
 
   if (user) {

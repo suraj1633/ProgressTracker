@@ -57,6 +57,17 @@ const questionSchema = new mongoose.Schema(
   }
 );
 
+questionSchema.index({
+  userId: 1,
+  topicId: 1,
+});
+
+questionSchema.index({
+  userId: 1,
+  completed: 1,
+  completedAt: -1,
+});
+
 const Question = mongoose.model(
   "Question",
   questionSchema

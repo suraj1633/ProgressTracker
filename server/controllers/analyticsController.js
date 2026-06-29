@@ -145,58 +145,91 @@ export const getAnalytics =
         );
       }
 
-      const logs =
-        await ProgressLog.find({
-          userId: req.user._id,
-          completedAt: {
-            $gte:
-              startDate,
-            $lt: endDate,
-          },
-        });
-
-      const groupedData =
-        {};
-
-      logs.forEach((log) => {
-        const dateKey =
-          new Date(
-            log.completedAt
-          )
-            .toISOString()
-            .split("T")[0];
-
-        if (
-          !groupedData[
-            dateKey
-          ]
-        ) {
-          groupedData[
-            dateKey
-          ] = {
-            date: dateKey,
-            Easy: 0,
-            Medium: 0,
-            Hard: 0,
-            total: 0,
-          };
-        }
-
-        groupedData[
-          dateKey
-        ][
-          log.difficulty
-        ] += 1;
-
-        groupedData[
-          dateKey
-        ].total += 1;
-      });
-
       const analytics =
-        Object.values(
-          groupedData
-        );
+        await ProgressLog.aggregate([
+          {
+            $match: {
+              userId: req.user._id,
+              completedAt: {
+                $gte:
+                  startDate,
+                $lt: endDate,
+              },
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format:
+                    "%Y-%m-%d",
+                  date:
+                    "$completedAt",
+                },
+              },
+              Easy: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: [
+                        "$difficulty",
+                        "Easy",
+                      ],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+              Medium: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: [
+                        "$difficulty",
+                        "Medium",
+                      ],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+              Hard: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: [
+                        "$difficulty",
+                        "Hard",
+                      ],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+              total: {
+                $sum: 1,
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              date: "$_id",
+              Easy: 1,
+              Medium: 1,
+              Hard: 1,
+              total: 1,
+            },
+          },
+          {
+            $sort: {
+              date: 1,
+            },
+          },
+        ]);
 
       res.status(200).json(
         analytics
@@ -219,37 +252,41 @@ GET /api/analytics/heatmap
 export const getHeatmapData =
   async (req, res) => {
     try {
-      const logs =
-        await ProgressLog.find({
-          userId: req.user._id,
-        });
-
-      const heatmapMap = {};
-
-      logs.forEach((log) => {
-        const date =
-          log.completedAt
-            .toISOString()
-            .split("T")[0];
-
-        heatmapMap[date] =
-          (heatmapMap[
-            date
-          ] || 0) + 1;
-      });
-
       const result =
-        Object.entries(
-          heatmapMap
-        ).map(
-          ([
-            date,
-            count,
-          ]) => ({
-            date,
-            count,
-          })
-        );
+        await ProgressLog.aggregate([
+          {
+            $match: {
+              userId: req.user._id,
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format:
+                    "%Y-%m-%d",
+                  date:
+                    "$completedAt",
+                },
+              },
+              count: {
+                $sum: 1,
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              date: "$_id",
+              count: 1,
+            },
+          },
+          {
+            $sort: {
+              date: 1,
+            },
+          },
+        ]);
 
       res.json(result);
     } catch (error) {

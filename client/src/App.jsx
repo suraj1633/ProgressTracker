@@ -6,6 +6,8 @@ import {
 import { useProgress } from "./context/ProgressContext";
 import {
   getStreakThemeClass,
+  getStoredStreakThemeClass,
+  persistActiveStreakThemeClass,
   STREAK_THEME_CLASSES,
 } from "./utils/streakTheme";
 import {
@@ -26,7 +28,10 @@ const normalizeStreak = (
 };
 
 function App() {
-  const { dashboardStats } =
+  const {
+    dashboardStats,
+    loading: progressLoading,
+  } =
     useProgress();
 
   const dashboardStreak =
@@ -55,10 +60,16 @@ function App() {
       ? manualStreakChange.streak
       : dashboardStreak;
 
-  const themeClass =
+  const resolvedThemeClass =
     getStreakThemeClass(
       streak
     );
+
+  const themeClass =
+    progressLoading &&
+    !hasCurrentManualStreak
+      ? getStoredStreakThemeClass()
+      : resolvedThemeClass;
 
   useEffect(() => {
     const handleStreakThemeChange =
@@ -101,6 +112,10 @@ function App() {
     );
 
     document.documentElement.classList.add(
+      themeClass
+    );
+
+    persistActiveStreakThemeClass(
       themeClass
     );
 

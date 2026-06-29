@@ -28,10 +28,9 @@ const QuestionRow = ({
   question,
 }) => {
   const {
-    fetchTopics,
-    fetchAnalytics,
-    fetchDashboardStats,
-    fetchHeatmap,
+    refreshActivityData,
+    updateQuestionInState,
+    removeQuestionFromState,
   } = useProgress();
 
   const [showNote, setShowNote] =
@@ -50,14 +49,20 @@ const QuestionRow = ({
   const handleToggle =
     async () => {
       try {
-        await toggleQuestion(
+        const {
+          question:
+            updatedQuestion,
+          topic: updatedTopic,
+        } = await toggleQuestion(
           question._id
         );
 
-        await fetchTopics();
-        await fetchAnalytics();
-        await fetchDashboardStats();
-        await fetchHeatmap();
+        updateQuestionInState(
+          updatedQuestion,
+          updatedTopic
+        );
+
+        await refreshActivityData();
       } catch (error) {
         console.error(error);
       }
@@ -70,10 +75,11 @@ const QuestionRow = ({
           question._id
         );
 
-        await fetchTopics();
-        await fetchAnalytics();
-        await fetchDashboardStats();
-        await fetchHeatmap();
+        removeQuestionFromState(
+          question._id
+        );
+
+        await refreshActivityData();
       } catch (error) {
         console.error(error);
       }
@@ -82,14 +88,17 @@ const QuestionRow = ({
   const handleSaveNote =
     async () => {
       try {
-        await updateQuestion(
+        const updatedQuestion =
+          await updateQuestion(
           question._id,
           {
             notes: note,
           }
         );
 
-        await fetchTopics();
+        updateQuestionInState(
+          updatedQuestion
+        );
 
         setShowNote(false);
       } catch (error) {

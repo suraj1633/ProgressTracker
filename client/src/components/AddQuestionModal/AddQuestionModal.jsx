@@ -50,7 +50,7 @@ const AddQuestionModal = ({
     useState("");
 
   const {
-    fetchTopics,
+    addQuestionToTopic,
   } = useProgress();
 
   const handleSubmit =
@@ -61,7 +61,8 @@ const AddQuestionModal = ({
         return;
 
       try {
-        await addQuestion(
+        const question =
+          await addQuestion(
           topicId,
           {
             title: title.trim(),
@@ -72,14 +73,17 @@ const AddQuestionModal = ({
           }
         );
 
+        addQuestionToTopic(
+          topicId,
+          question
+        );
+
         setTitle("");
         setDifficulty(
           "Easy"
         );
         setSourceLink("");
         setNotes("");
-
-        await fetchTopics();
       } catch (error) {
         console.error(error);
       }

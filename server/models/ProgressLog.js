@@ -34,6 +34,16 @@ const progressLogSchema =
     }
   );
 
+progressLogSchema.index({
+  userId: 1,
+  completedAt: -1,
+});
+
+progressLogSchema.index({
+  userId: 1,
+  questionId: 1,
+});
+
 const ProgressLog = mongoose.model(
   "ProgressLog",
   progressLogSchema

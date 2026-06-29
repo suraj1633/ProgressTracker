@@ -10,6 +10,7 @@ import {
   getProfile,
   login as loginRequest,
   signup as signupRequest,
+  updateProfile as updateProfileRequest,
   verifyOtp as verifyOtpRequest,
   resendOtp as resendOtpRequest,
 } from "../services/authApi";
@@ -99,6 +100,19 @@ export const AuthProvider = ({
     return data;
   };
 
+  const updateProfile = async (
+    payload
+  ) => {
+    const data =
+      await updateProfileRequest(
+        payload
+      );
+
+    setUser(data.user);
+
+    return data;
+  };
+
   const logout = () => {
     localStorage.removeItem(
       "authToken"
@@ -115,6 +129,7 @@ export const AuthProvider = ({
         verifyOtp,
         resendOtp,
         login,
+        updateProfile,
         logout,
       }}
     >

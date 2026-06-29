@@ -34,7 +34,48 @@ const toProfile = (user) => ({
   email: user.email,
   isVerified: user.isVerified,
   createdAt: user.createdAt,
+  platformLinks: {
+    leetcode: user.platformLinks?.leetcode || "",
+    codeforces: user.platformLinks?.codeforces || "",
+    codechef: user.platformLinks?.codechef || "",
+    github: user.platformLinks?.github || "",
+  },
 });
+
+const platformKeys = [
+  "leetcode",
+  "codeforces",
+  "codechef",
+  "github",
+];
+
+const cleanPlatformLinks = (
+  platformLinks = {}
+) =>
+  platformKeys.reduce(
+    (links, key) => ({
+      ...links,
+      [key]:
+        platformLinks[key]?.trim() ||
+        "",
+    }),
+    {}
+  );
+
+const isValidOptionalUrl = (value) => {
+  if (!value) return true;
+
+  try {
+    const url = new URL(value);
+
+    return [
+      "http:",
+      "https:",
+    ].includes(url.protocol);
+  } catch {
+    return false;
+  }
+};
 
 const createOtp = () => {
   const otp = String(
@@ -351,4 +392,81 @@ export const getProfile =
     return res.status(200).json({
       user: toProfile(req.user),
     });
+  };
+
+export const updateProfile =
+  async (req, res) => {
+    try {
+      const {
+        name,
+        email,
+        platformLinks,
+      } =
+        req.body;
+
+      const cleanName =
+        name?.trim();
+      const cleanEmail =
+        email?.trim().toLowerCase();
+
+      if (
+        !cleanName ||
+        !emailRegex.test(
+          cleanEmail || ""
+        )
+      ) {
+        return res.status(400).json({
+          message:
+            "Enter a valid name and email",
+        });
+      }
+
+      const existingUser =
+        await User.findOne({
+          email: cleanEmail,
+          _id: { $ne: req.user._id },
+        });
+
+      if (existingUser) {
+        return res.status(409).json({
+          message:
+            "Email is already registered",
+        });
+      }
+
+      const cleanLinks =
+        cleanPlatformLinks(
+          platformLinks
+        );
+
+      const hasInvalidLink =
+        Object.values(
+          cleanLinks
+        ).some(
+          (link) =>
+            !isValidOptionalUrl(link)
+        );
+
+      if (hasInvalidLink) {
+        return res.status(400).json({
+          message:
+            "Platform links must be valid URLs",
+        });
+      }
+
+      req.user.name = cleanName;
+      req.user.email = cleanEmail;
+      req.user.platformLinks =
+        cleanLinks;
+
+      await req.user.save();
+
+      return res.status(200).json({
+        user: toProfile(req.user),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: error.message,
+      });
+    }
   };

@@ -4,17 +4,14 @@ import {
 } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
+import RouteLoader from "./RouteLoader/RouteLoader";
 
 const ProtectedRoute = () => {
   const { user, loading } =
     useAuth();
 
   if (loading) {
-    return (
-      <div className="route-loader">
-        Loading...
-      </div>
-    );
+    return <RouteLoader />;
   }
 
   if (!user) {

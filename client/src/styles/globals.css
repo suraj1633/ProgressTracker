@@ -213,16 +213,6 @@ select {
     color .2s ease;
 }
 
-.route-loader {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  background: #080808;
-  color: var(--theme-accent);
-  font-size: 15px;
-  font-weight: 800;
-}
-
 @keyframes app-page-grid-drift {
   from {
     background-position: 0 0;

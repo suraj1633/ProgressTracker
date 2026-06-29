@@ -3,6 +3,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -57,11 +58,15 @@ FETCH TOPICS
           await getTopics();
 
         setTopics(data);
+
+        return data;
       } catch (error) {
         console.error(
           "Error fetching topics:",
           error
         );
+
+        return [];
       }
     };
 
@@ -75,8 +80,12 @@ FETCH TOPICS
         setDashboardStats(
           data
         );
+
+        return data;
       } catch (error) {
         console.error(error);
+
+        return null;
       }
     };
 
@@ -105,11 +114,15 @@ FETCH ANALYTICS
           );
 
         setAnalytics(data);
+
+        return data;
       } catch (error) {
         console.error(
           "Error fetching analytics:",
           error
         );
+
+        return [];
       }
     };
 
@@ -122,9 +135,157 @@ FETCH ANALYTICS
         setHeatmapData(
           data
         );
+
+        return data;
       } catch (error) {
         console.error(error);
+
+        return [];
       }
+    };
+
+  const refreshActivityData =
+    async () => {
+      await Promise.all([
+        fetchAnalytics(),
+        fetchDashboardStats(),
+        fetchHeatmap(),
+      ]);
+    };
+
+  const addTopicToState =
+    (topic) => {
+      setTopics((currentTopics) => [
+        {
+          ...topic,
+          questions:
+            topic.questions || [],
+        },
+        ...currentTopics,
+      ]);
+    };
+
+  const removeTopicFromState =
+    (topicId) => {
+      setTopics((currentTopics) =>
+        currentTopics.filter(
+          (topic) =>
+            topic._id !== topicId
+        )
+      );
+    };
+
+  const addQuestionToTopic =
+    (topicId, question) => {
+      setTopics((currentTopics) =>
+        currentTopics.map((topic) => {
+          if (topic._id !== topicId) {
+            return topic;
+          }
+
+          const totalQuestions =
+            (topic.totalQuestions || 0) +
+            1;
+
+          return {
+            ...topic,
+            totalQuestions,
+            progressPercentage:
+              totalQuestions === 0
+                ? 0
+                : (
+                    ((topic.completedQuestions ||
+                      0) /
+                      totalQuestions) *
+                    100
+                  ).toFixed(2),
+            questions: [
+              ...(topic.questions || []),
+              question,
+            ],
+          };
+        })
+      );
+    };
+
+  const updateQuestionInState =
+    (updatedQuestion, updatedTopic) => {
+      setTopics((currentTopics) =>
+        currentTopics.map((topic) => {
+          if (
+            topic._id !==
+            updatedQuestion.topicId
+          ) {
+            return topic;
+          }
+
+          return {
+            ...topic,
+            ...(updatedTopic || {}),
+            questions:
+              topic.questions?.map(
+                (question) =>
+                  question._id ===
+                  updatedQuestion._id
+                    ? updatedQuestion
+                    : question
+              ) || [],
+          };
+        })
+      );
+    };
+
+  const removeQuestionFromState =
+    (questionId) => {
+      setTopics((currentTopics) =>
+        currentTopics.map((topic) => {
+          const question =
+            topic.questions?.find(
+              (item) =>
+                item._id === questionId
+            );
+
+          if (!question) {
+            return topic;
+          }
+
+          const totalQuestions =
+            Math.max(
+              (topic.totalQuestions || 0) -
+                1,
+              0
+            );
+          const completedQuestions =
+            Math.max(
+              (topic.completedQuestions ||
+                0) -
+                (question.completed
+                  ? 1
+                  : 0),
+              0
+            );
+
+          return {
+            ...topic,
+            totalQuestions,
+            completedQuestions,
+            progressPercentage:
+              totalQuestions === 0
+                ? 0
+                : (
+                    (completedQuestions /
+                      totalQuestions) *
+                    100
+                  ).toFixed(2),
+            questions:
+              topic.questions.filter(
+                (item) =>
+                  item._id !==
+                  questionId
+              ),
+          };
+        })
+      );
     };
 
   /*
@@ -134,20 +295,24 @@ OVERALL PROGRESS
 */
 
   const overallProgress =
-    topics.reduce(
-      (acc, topic) => {
-        acc.total +=
-          topic.totalQuestions;
+    useMemo(
+      () =>
+        topics.reduce(
+          (acc, topic) => {
+            acc.total +=
+              topic.totalQuestions;
 
-        acc.completed +=
-          topic.completedQuestions;
+            acc.completed +=
+              topic.completedQuestions;
 
-        return acc;
-      },
-      {
-        total: 0,
-        completed: 0,
-      }
+            return acc;
+          },
+          {
+            total: 0,
+            completed: 0,
+          }
+        ),
+      [topics]
     );
 
   /*
@@ -157,28 +322,32 @@ DIFFICULTY COUNTS
 */
 
   const difficultyCounts =
-    topics.reduce(
-      (acc, topic) => {
-        topic.questions?.forEach(
-          (question) => {
-            if (
-              question.completed
-            ) {
-              acc[
-                question
-                  .difficulty
-              ] += 1;
-            }
-          }
-        );
+    useMemo(
+      () =>
+        topics.reduce(
+          (acc, topic) => {
+            topic.questions?.forEach(
+              (question) => {
+                if (
+                  question.completed
+                ) {
+                  acc[
+                    question
+                      .difficulty
+                  ] += 1;
+                }
+              }
+            );
 
-        return acc;
-      },
-      {
-        Easy: 0,
-        Medium: 0,
-        Hard: 0,
-      }
+            return acc;
+          },
+          {
+            Easy: 0,
+            Medium: 0,
+            Hard: 0,
+          }
+        ),
+      [topics]
     );
 
   /*
@@ -208,13 +377,12 @@ INITIAL LOAD
 
         setLoading(true);
 
-        await fetchTopics();
-
-        await fetchAnalytics();
-
-        await fetchDashboardStats();
-
-        await fetchHeatmap();
+        await Promise.all([
+          fetchTopics(),
+          fetchAnalytics(),
+          fetchDashboardStats(),
+          fetchHeatmap(),
+        ]);
 
         setLoading(false);
       };
@@ -235,6 +403,7 @@ INITIAL LOAD
 
         fetchTopics,
         fetchAnalytics,
+        refreshActivityData,
 
         overallProgress,
 
@@ -243,6 +412,11 @@ INITIAL LOAD
         dashboardStats,
 
         fetchDashboardStats,
+        addTopicToState,
+        removeTopicFromState,
+        addQuestionToTopic,
+        updateQuestionInState,
+        removeQuestionFromState,
 
         heatmapData,
         fetchHeatmap,
