@@ -75,7 +75,7 @@
 }
 
 .dropdown-menu {
-  position: absolute;
+  position: fixed;
 
   border-radius: 14px;
 
@@ -105,7 +105,7 @@
     0 30px 70px
       rgba(0,0,0,.5);
 
-  z-index: 90;
+  z-index: 10050;
 }
 
 .dropdown-menu-portal {
@@ -179,4 +179,3 @@
     var(--theme-accent-soft);
   color: var(--theme-accent);
 }
-

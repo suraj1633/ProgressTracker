@@ -1,11 +1,15 @@
 .route-loader {
-  position: relative;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
   isolation: isolate;
   overflow: hidden;
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
-  background: var(--theme-page-bg, #080808);
+  background-color: #080808 !important;
+  background-image: none !important;
   color: var(--theme-accent);
 }
 
@@ -45,8 +49,10 @@
   border: 1px solid var(--theme-border-soft);
   border-top-color: var(--theme-border);
   border-radius: 18px;
-  background: var(--theme-glass-bg);
-  box-shadow: var(--theme-glass-shadow);
+  background: rgba(18, 18, 18, 0.92);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .route-loader-logo-shell {

@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar/Navbar";
+import Dropdown from "../components/Graph/Dropdown";
 import { useAuth } from "../context/AuthContext";
 import { useProgress } from "../context/ProgressContext";
 import { useEffect, useState } from "react";
@@ -17,7 +18,6 @@ import {
   SiLeetcode,
 } from "react-icons/si";
 import {
-  getActiveStreakThemeClass,
   getStreakThemeClass,
 } from "../utils/streakTheme";
 import { getMilestoneIconForTheme } from "../utils/milestoneIcons";
@@ -37,7 +37,7 @@ const formatDate = (value) =>
         : "Not available";
 
 const MILESTONE_NAMES_BY_THEME = {
-  "streak-theme-starter": "Starter Milestone",
+  "streak-theme-starter": "Fresh Start",
   "streak-theme-spark": "Volt Ember",
   "streak-theme-week": "Trophy Initiate",
   "streak-theme-bonfire": "Bonfire Vanguard",
@@ -92,6 +92,12 @@ const PLATFORM_LINKS = [
     Icon: SiGithub,
   },
 ];
+
+const platformOptions =
+    PLATFORM_LINKS.map((platform) => ({
+      value: platform.key,
+      label: platform.label,
+    }));
 
 const getDefaultPlatformLinks = (user) =>
     PLATFORM_LINKS.reduce(
@@ -207,10 +213,30 @@ const Profile = () => {
   });
   const [profileSaveError, setProfileSaveError] = useState("");
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [
+    selectedProfilePlatform,
+    setSelectedProfilePlatform,
+  ] = useState(PLATFORM_LINKS[0].key);
 
   useEffect(() => {
     setProfileImage(localStorage.getItem(storageKey));
   }, [storageKey]);
+
+  useEffect(() => {
+    if (!isProfileEditorOpen) {
+      return undefined;
+    }
+
+    const previousOverflow =
+        document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow =
+          previousOverflow;
+    };
+  }, [isProfileEditorOpen]);
 
   const initial = user?.name?.[0]?.toUpperCase() || "U";
   const streak = dashboardStats?.streak || 0;
@@ -218,32 +244,34 @@ const Profile = () => {
   const totalQuestions = overallProgress?.total || 0;
   const overallCompletionPercent = getProgressPercent(solvedQuestions, totalQuestions);
   const streakThemeClass = getStreakThemeClass(streak);
+  const selectedPlatform =
+      PLATFORM_LINKS.find(
+          (platform) =>
+              platform.key === selectedProfilePlatform
+      ) || PLATFORM_LINKS[0];
   const [activeMilestone, setActiveMilestone] = useState(() => ({
     streak: getActiveAppStreak(streak),
-    themeClass: getActiveStreakThemeClass(),
+    themeClass: getStreakThemeClass(getActiveAppStreak(streak)),
   }));
 
   useEffect(() => {
-    const activeThemeClass = getActiveStreakThemeClass();
+    const activeStreak = getActiveAppStreak(streak);
 
     setActiveMilestone({
-      streak: getActiveAppStreak(streak),
-      themeClass:
-          activeThemeClass === "streak-theme-starter" &&
-          streakThemeClass !== "streak-theme-starter"
-              ? streakThemeClass
-              : activeThemeClass ||
-          streakThemeClass,
+      streak: activeStreak,
+      themeClass: getStreakThemeClass(activeStreak),
     });
   }, [streak, streakThemeClass]);
 
   useEffect(() => {
     const handleStreakThemeApplied = (event) => {
+      const activeStreak = getActiveAppStreak(
+          Number(event.detail?.streak) || streak
+      );
+
       setActiveMilestone({
-        streak: getActiveAppStreak(Number(event.detail?.streak) || streak),
-        themeClass:
-            event.detail?.themeClass ||
-            getActiveStreakThemeClass(),
+        streak: activeStreak,
+        themeClass: getStreakThemeClass(activeStreak),
       });
     };
 
@@ -371,6 +399,7 @@ const Profile = () => {
       email: user?.email || "",
       platformLinks: getDefaultPlatformLinks(user),
     });
+    setSelectedProfilePlatform(PLATFORM_LINKS[0].key);
     setProfileSaveError("");
     setIsProfileEditorOpen(true);
   };
@@ -392,13 +421,13 @@ const Profile = () => {
   };
 
   const handlePlatformFieldChange = (event) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
 
     setProfileForm((currentForm) => ({
       ...currentForm,
       platformLinks: {
         ...currentForm.platformLinks,
-        [name]: value,
+        [selectedProfilePlatform]: value,
       },
     }));
   };
@@ -724,51 +753,72 @@ const Profile = () => {
         {isProfileEditorOpen && (
             <div className="profile-cropper-backdrop" role="dialog" aria-modal="true" aria-label="Edit profile information">
               <form className="profile-editor-modal" onSubmit={handleProfileSubmit}>
-                <div className="profile-cropper-header">
-                  <h2>Edit profile</h2>
+                <div className="profile-editor-header">
+                  <div>
+                    <span>Profile settings</span>
+                    <h2>Edit profile</h2>
+                    <p>Update your account details and coding profiles.</p>
+                  </div>
                   <button type="button" className="profile-crop-close" onClick={closeProfileEditor} aria-label="Close edit profile dialog">
                     <HiXMark />
                   </button>
                 </div>
 
                 <div className="profile-editor-fields">
-                  <label>
-                    <span>Name</span>
-                    <input
-                        type="text"
-                        name="name"
-                        value={profileForm.name}
-                        onChange={handleProfileFieldChange}
-                        maxLength="80"
-                        autoComplete="name"
-                        required
-                    />
-                  </label>
-                  <label>
-                    <span>Email</span>
-                    <input
-                        type="email"
-                        name="email"
-                        value={profileForm.email}
-                        onChange={handleProfileFieldChange}
-                        autoComplete="email"
-                        required
-                    />
-                  </label>
+                  <div className="profile-editor-section">
+                    <span className="profile-editor-section-title">Account</span>
+
+                    <div className="profile-editor-grid">
+                      <label>
+                        <span>Name</span>
+                        <input
+                            type="text"
+                            name="name"
+                            value={profileForm.name}
+                            onChange={handleProfileFieldChange}
+                            maxLength="80"
+                            autoComplete="name"
+                            required
+                        />
+                      </label>
+                      <label>
+                        <span>Email</span>
+                        <input
+                            type="email"
+                            name="email"
+                            value={profileForm.email}
+                            onChange={handleProfileFieldChange}
+                            autoComplete="email"
+                            required
+                        />
+                      </label>
+                    </div>
+                  </div>
+
                   <div className="profile-editor-platforms">
                     <span className="profile-editor-section-title">Platform profiles</span>
-                    {PLATFORM_LINKS.map((platform) => (
-                        <label key={platform.key}>
-                          <span>{platform.label}</span>
-                          <input
-                              type="url"
-                              name={platform.key}
-                              value={profileForm.platformLinks?.[platform.key] || ""}
-                              onChange={handlePlatformFieldChange}
-                              placeholder={platform.placeholder}
-                          />
-                        </label>
-                    ))}
+
+                    <div className="profile-platform-picker">
+                      <label>
+                        <span>Platform</span>
+                        <Dropdown
+                            value={selectedProfilePlatform}
+                            width="100%"
+                            options={platformOptions}
+                            onChange={setSelectedProfilePlatform}
+                        />
+                      </label>
+
+                      <label>
+                        <span>{selectedPlatform.label} URL</span>
+                        <input
+                            type="url"
+                            value={profileForm.platformLinks?.[selectedPlatform.key] || ""}
+                            onChange={handlePlatformFieldChange}
+                            placeholder={selectedPlatform.placeholder}
+                        />
+                      </label>
+                    </div>
                   </div>
                 </div>
 

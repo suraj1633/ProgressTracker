@@ -51,7 +51,7 @@ export const getTopics = async (
         userId: req.user._id,
       })
         .sort({
-          createdAt: -1,
+          title: 1,
         })
         .populate({
           path: "questions",
@@ -60,7 +60,7 @@ export const getTopics = async (
           },
           options: {
             sort: {
-              createdAt: 1,
+              createdAt: -1,
             },
           },
         })

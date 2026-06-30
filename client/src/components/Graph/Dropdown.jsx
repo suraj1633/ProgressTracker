@@ -65,9 +65,7 @@ const Dropdown = ({
         180
       );
     const preferredLeft =
-      rect.right +
-      window.scrollX -
-      menuWidth;
+      rect.right - menuWidth;
     const bottomReservedSpace =
       window.matchMedia(
         "(max-width: 700px)"
@@ -87,13 +85,11 @@ const Dropdown = ({
           preferredLeft,
           window.innerWidth -
             menuWidth -
-            viewportPadding +
-            window.scrollX
+            viewportPadding
         )
       )}px`,
       top: `${
         rect.bottom +
-        window.scrollY +
         gap
       }px`,
       bottom: "auto",
@@ -173,11 +169,21 @@ const Dropdown = ({
       "resize",
       closeOnResize
     );
+    window.addEventListener(
+      "scroll",
+      updateMenuPosition,
+      true
+    );
 
     return () => {
       window.removeEventListener(
         "resize",
         closeOnResize
+      );
+      window.removeEventListener(
+        "scroll",
+        updateMenuPosition,
+        true
       );
     };
   }, [open, updateMenuPosition]);

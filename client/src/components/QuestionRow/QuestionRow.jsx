@@ -46,8 +46,17 @@ const QuestionRow = ({
       question.notes?.trim()
     );
 
+  const isPending =
+    Boolean(
+      question.isPending
+    );
+
   const handleToggle =
     async () => {
+      if (isPending) {
+        return;
+      }
+
       try {
         const {
           question:
@@ -70,6 +79,10 @@ const QuestionRow = ({
 
   const handleDelete =
     async () => {
+      if (isPending) {
+        return;
+      }
+
       try {
         await deleteQuestion(
           question._id
@@ -87,6 +100,10 @@ const QuestionRow = ({
 
   const handleSaveNote =
     async () => {
+      if (isPending) {
+        return;
+      }
+
       try {
         const updatedQuestion =
           await updateQuestion(
@@ -123,6 +140,7 @@ const QuestionRow = ({
             checked={
               question.completed
             }
+            disabled={isPending}
             onChange={
               handleToggle
             }
@@ -161,6 +179,7 @@ const QuestionRow = ({
           onClick={() =>
             setShowNote(true)
           }
+          disabled={isPending}
           aria-label={
             hasNote
               ? "Edit note"
@@ -203,6 +222,7 @@ const QuestionRow = ({
         <button
           className="row-action-btn delete-question-btn"
           onClick={handleDelete}
+          disabled={isPending}
           aria-label="Delete question"
           title="Delete question"
         >
