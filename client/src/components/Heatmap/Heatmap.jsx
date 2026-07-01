@@ -329,24 +329,16 @@ const Heatmap = () => {
       ];
     }, [
       today,
-      user?.createdAt,
+      user,
     ]);
 
-  useEffect(() => {
-    const isValidRange =
-      yearOptions.some(
-        (option) =>
-          option.value ===
-          selectedRange
-      );
-
-    if (!isValidRange) {
-      setSelectedRange("current");
-    }
-  }, [
-    selectedRange,
-    yearOptions,
-  ]);
+  const activeSelectedRange =
+    yearOptions.some(
+      (option) =>
+        option.value === selectedRange
+    )
+      ? selectedRange
+      : "current";
 
   const {
     startDate,
@@ -357,11 +349,11 @@ const Heatmap = () => {
   } = useMemo(
     () =>
       getDateRange(
-        selectedRange,
+        activeSelectedRange,
         today
       ),
     [
-      selectedRange,
+      activeSelectedRange,
       today,
     ]
   );
@@ -453,7 +445,7 @@ const Heatmap = () => {
       );
     });
   }, [
-    selectedRange,
+    activeSelectedRange,
     monthBlocks.length,
   ]);
 
@@ -529,7 +521,7 @@ const Heatmap = () => {
 
           <div className="heatmap-selector">
             <Dropdown
-              value={selectedRange}
+              value={activeSelectedRange}
               options={yearOptions}
               onChange={setSelectedRange}
               width={132}

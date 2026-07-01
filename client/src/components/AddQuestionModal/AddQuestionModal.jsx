@@ -51,66 +51,40 @@ const AddQuestionModal = ({
 
   const {
     addQuestionToTopic,
-    replaceQuestionInTopic,
-    removeQuestionFromState,
   } = useProgress();
 
   const handleSubmit =
     async (e) => {
       e.preventDefault();
 
-      const questionDraft = {
-        title: title.trim(),
-        difficulty,
-        sourceLink:
-          sourceLink.trim(),
-        notes: notes.trim(),
-      };
-
-      if (!questionDraft.title)
+      if (!title.trim())
         return;
-
-      const temporaryQuestion = {
-        _id:
-          globalThis.crypto?.randomUUID?.() ||
-          `temp-question-${Date.now()}-${Math.random()}`,
-        ...questionDraft,
-        topicId,
-        sourceIcon: "",
-        completed: false,
-        completedAt: null,
-        createdAt:
-          new Date().toISOString(),
-        isPending: true,
-      };
-
-      addQuestionToTopic(
-        topicId,
-        temporaryQuestion
-      );
-
-      setTitle("");
-      setDifficulty("Easy");
-      setSourceLink("");
-      setNotes("");
 
       try {
         const question =
           await addQuestion(
           topicId,
-          questionDraft
+          {
+            title: title.trim(),
+            difficulty,
+            sourceLink:
+              sourceLink.trim(),
+            notes: notes.trim(),
+          }
         );
 
-        replaceQuestionInTopic(
+        addQuestionToTopic(
           topicId,
-          temporaryQuestion._id,
           question
         );
-      } catch (error) {
-        removeQuestionFromState(
-          temporaryQuestion._id
-        );
 
+        setTitle("");
+        setDifficulty(
+          "Easy"
+        );
+        setSourceLink("");
+        setNotes("");
+      } catch (error) {
         console.error(error);
       }
     };

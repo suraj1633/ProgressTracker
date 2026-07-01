@@ -24,7 +24,7 @@ const AddTopicModal = () => {
   ] = useState("");
 
   const {
-    addTopicToState,
+    fetchTopics,
   } = useProgress();
 
   const handleSubmit =
@@ -35,17 +35,16 @@ const AddTopicModal = () => {
         return;
 
       try {
-        const topic =
-          await createTopic({
+        await createTopic({
           title: title.trim(),
           description:
             description.trim(),
         });
 
-        addTopicToState(topic);
-
         setTitle("");
         setDescription("");
+
+        await fetchTopics();
       } catch (error) {
         console.error(error);
       }

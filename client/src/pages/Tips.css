@@ -74,21 +74,29 @@
 }
 
 .tips-header h1 {
+  margin: 0;
   color: var(--text-primary);
-  font-size: clamp(30px, 4vw, 40px);
+  font-size: clamp(26px, 2.6vw, 32px);
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: 0;
 }
 
-.tips-header p,
+.tips-header p {
+  margin: 8px 0 0;
+  color: var(--theme-text-soft);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
 .tips-library-header p,
 .tips-form-title p {
-  margin-top: 8px;
+  margin: 8px 0 0;
   color: var(--theme-text-soft);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 1.35;
 }
 
 .tips-header span {
@@ -609,7 +617,7 @@
   .tips-content {
     height: auto;
     display: block;
-    padding: 34px 24px 72px;
+    padding: 24px 24px 72px;
   }
 
   .tips-layout {
@@ -641,7 +649,7 @@
 @media (max-width: 768px) {
   .tips-content {
     padding:
-      18px
+      24px
       16px
       calc(124px + env(safe-area-inset-bottom));
   }
@@ -651,100 +659,19 @@
   }
 
   .tips-header h1 {
-    font-size: 28px;
+    font-size: 24px;
     line-height: 1.05;
   }
 
   .tips-header p {
     max-width: 340px;
-    margin-top: 6px;
-    font-size: 13px;
+    margin: 8px 0 0;
+    font-size: 12px;
     line-height: 1.35;
   }
 
   .tips-toolbar {
     grid-template-columns: 1fr;
-  }
-
-  .tips-form {
-    padding: 16px;
-    border-radius: 16px;
-  }
-
-  .tips-form-title {
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 18px;
-  }
-
-  .tips-form-icon {
-    width: 48px;
-    height: 48px;
-    flex-basis: 48px;
-    border-radius: 16px;
-    font-size: 24px;
-  }
-
-  .tips-form-title h2 {
-    font-size: 30px;
-    line-height: 1.05;
-  }
-
-  .tips-form-title p {
-    display: none;
-  }
-
-  .tips-field {
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .tips-field span {
-    font-size: 15px;
-  }
-
-  .tips-field input {
-    height: 52px;
-    padding: 0 16px;
-    border-radius: 14px;
-    font-size: 20px;
-  }
-
-  .tips-field .dropdown-trigger {
-    height: 54px;
-    min-height: 54px;
-    border-radius: 14px;
-    padding: 0 20px;
-    font-size: 16px;
-  }
-
-  .tips-field textarea {
-    height: 176px;
-    min-height: 176px;
-    padding: 16px;
-    border-radius: 14px;
-    font-size: 20px;
-    line-height: 1.45;
-  }
-
-  .tips-form-actions {
-    display: grid;
-    grid-template-columns:
-      minmax(0, 274px)
-      minmax(0, 1fr);
-    justify-content: start;
-    gap: 10px;
-    margin-top: 12px;
-    padding-top: 12px;
-  }
-
-  .tips-primary-button,
-  .tips-secondary-button {
-    width: 100%;
-    min-width: 0;
-    height: 52px;
-    border-radius: 14px;
-    font-size: 19px;
   }
 }
 
@@ -832,7 +759,7 @@
     grid-template-rows: auto auto;
     align-content: start;
     padding:
-      12px
+      24px
       12px
       calc(96px + env(safe-area-inset-bottom));
   }
@@ -844,14 +771,14 @@
   }
 
   .tips-header h1 {
-    font-size: 28px;
+    font-size: 24px;
     line-height: 1.05;
   }
 
   .tips-header p {
     max-width: 320px;
-    margin-top: 5px;
-    font-size: 13px;
+    margin: 8px 0 0;
+    font-size: 12px;
     line-height: 1.35;
   }
 
@@ -977,7 +904,7 @@
 
 @media (max-width: 520px) and (max-height: 700px) {
   .tips-content {
-    padding-top: 8px;
+    padding-top: 24px;
   }
 
   .tips-header {
@@ -993,166 +920,51 @@
       calc(
         100svh - 72px - 58px
       );
-    padding: 10px;
   }
 
   .tips-field textarea {
-    height: clamp(82px, 18svh, 118px);
+    height: 104px;
   }
 }
 
 @media (max-width: 520px) {
   .tips-form {
-    max-height: none;
-    padding: 16px;
-    border-radius: 16px;
+    max-height: calc(100svh - 72px - 88px);
+    padding: 14px;
+    display: grid;
+    grid-template-rows: auto auto auto auto auto;
+    border-radius: 18px;
+    overflow: hidden;
   }
 
   .tips-form-title {
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
-    margin-bottom: 18px;
+    margin-bottom: 8px;
   }
 
   .tips-form-icon {
-    width: 48px;
-    height: 48px;
-    flex-basis: 48px;
-    border-radius: 16px;
-    font-size: 24px;
-  }
-
-  .tips-form-title h2 {
-    font-size: 30px;
-    line-height: 1.05;
-  }
-
-  .tips-form-title p {
-    display: none;
-  }
-
-  .tips-field {
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .tips-field span {
-    font-size: 15px;
-  }
-
-  .tips-field input {
-    height: 52px;
-    padding: 0 16px;
-    border-radius: 14px;
-    font-size: 20px;
-  }
-
-  .tips-field .dropdown-trigger {
-    height: 54px;
-    min-height: 54px;
-    border-radius: 14px;
-    padding: 0 20px;
-    font-size: 16px;
-  }
-
-  .tips-field textarea {
-    height: 176px;
-    min-height: 176px;
-    padding: 16px;
-    border-radius: 14px;
-    font-size: 20px;
-    line-height: 1.45;
-  }
-
-  .tips-form-actions {
-    display: grid;
-    grid-template-columns:
-      minmax(0, 274px)
-      minmax(0, 1fr);
-    gap: 10px;
-    margin-top: 12px;
-    padding-top: 12px;
-  }
-
-  .tips-primary-button,
-  .tips-secondary-button {
-    width: 100%;
-    min-width: 0;
-    height: 52px;
-    border-radius: 14px;
-    font-size: 19px;
-  }
-}
-
-@media (max-width: 768px) {
-  .tips-page {
-    height: auto;
-    min-height: calc(100svh - 72px);
-    overflow: visible;
-  }
-
-  .tips-content {
-    height: auto;
-    min-height: 0;
-    display: block;
-    padding:
-      8px
-      8px
-      calc(84px + env(safe-area-inset-bottom));
-  }
-
-  .tips-header {
-    display: none;
-  }
-
-  .tips-layout {
-    min-height: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .tips-form {
-    min-height: 0;
-    height: auto;
-    max-height: none;
-    padding: 12px;
-    border-radius: 16px;
-    grid-template-rows:
-      auto
-      auto
-      auto
-      auto
-      auto
-      auto;
-    overflow: visible;
-  }
-
-  .tips-form-title {
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .tips-form-icon {
-    width: 38px;
-    height: 38px;
-    flex-basis: 38px;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
     border-radius: 12px;
     font-size: 20px;
   }
 
   .tips-form-title h2 {
-    font-size: 25px;
-    line-height: 1.05;
+    font-size: 20px;
+    line-height: 1.15;
   }
 
   .tips-form-title p {
-    display: none;
+    display: block;
+    margin: 5px 0 0;
+    font-size: 12px;
+    line-height: 1.25;
   }
 
   .tips-field {
-    gap: 5px;
+    gap: 6px;
     margin-top: 8px;
   }
 
@@ -1163,32 +975,31 @@
 
   .tips-field input {
     height: 40px;
-    padding: 0 12px;
+    padding: 0 13px;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .tips-field .dropdown-trigger {
-    height: 42px;
-    min-height: 42px;
-    border-radius: 12px;
-    padding: 0 13px;
+    height: 44px;
+    min-height: 44px;
+    border-radius: 14px;
     font-size: 14px;
   }
 
   .tips-field textarea {
-    height: 108px;
-    min-height: 108px;
-    padding: 11px 12px;
+    height: 126px;
+    min-height: 0;
+    padding: 10px 13px;
     border-radius: 12px;
-    font-size: 15px;
-    line-height: 1.4;
+    font-size: 14px;
+    line-height: 1.55;
   }
 
   .tips-form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 10px;
     margin-top: 8px;
     padding-top: 8px;
   }
@@ -1197,16 +1008,9 @@
   .tips-secondary-button {
     width: auto;
     min-width: 104px;
-    height: 42px;
-    padding: 0 18px;
-    border-radius: 12px;
-    font-size: 15px;
-  }
-
-  .tips-library {
-    display: block;
-    height: auto;
-    min-height: 0;
-    overflow: visible;
+    height: 40px;
+    padding: 0 15px;
+    border-radius: 11px;
+    font-size: 14px;
   }
 }

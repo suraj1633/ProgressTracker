@@ -13,6 +13,7 @@ const Dropdown = ({
   options,
   onChange,
   width = 140,
+  portal = true,
 }) => {
   const normalizedOptions =
     options.map((option) =>
@@ -48,6 +49,8 @@ const Dropdown = ({
 
   const menuRef =
     useRef(null);
+  const portalRef =
+    useRef(portal);
 
   const updateMenuPosition = useCallback(() => {
     if (!ref.current)
@@ -57,7 +60,6 @@ const Dropdown = ({
       ref.current.getBoundingClientRect();
 
     const gap = 8;
-    const menuHeight = 260;
     const viewportPadding = 12;
     const menuWidth =
       Math.max(
@@ -65,7 +67,8 @@ const Dropdown = ({
         180
       );
     const preferredLeft =
-      rect.right - menuWidth;
+      rect.right -
+      menuWidth;
     const bottomReservedSpace =
       window.matchMedia(
         "(max-width: 700px)"
@@ -77,6 +80,17 @@ const Dropdown = ({
       rect.bottom -
       viewportPadding -
       bottomReservedSpace;
+    const maxHeight =
+      Math.min(
+        168,
+        Math.max(
+          120,
+          spaceBelow - gap
+        )
+      );
+    const menuTop =
+      rect.bottom +
+      gap;
 
     setMenuStyle({
       left: `${Math.max(
@@ -88,23 +102,18 @@ const Dropdown = ({
             viewportPadding
         )
       )}px`,
-      top: `${
-        rect.bottom +
-        gap
-      }px`,
+      top: `${menuTop}px`,
       bottom: "auto",
       width: `${menuWidth}px`,
-      maxHeight: `${Math.min(
-        menuHeight,
-        Math.max(
-          120,
-          spaceBelow - gap
-        )
-      )}px`,
+      maxHeight: `${maxHeight}px`,
     });
 
     return true;
   }, []);
+
+  useEffect(() => {
+    portalRef.current = portal;
+  }, [portal]);
 
   useEffect(() => {
     const close = (
@@ -159,10 +168,17 @@ const Dropdown = ({
     if (!open)
       return;
 
+    if (!portalRef.current)
+      return;
+
     updateMenuPosition();
 
     const closeOnResize = () => {
       setOpen(false);
+    };
+
+    const reposition = () => {
+      updateMenuPosition();
     };
 
     window.addEventListener(
@@ -171,7 +187,7 @@ const Dropdown = ({
     );
     window.addEventListener(
       "scroll",
-      updateMenuPosition,
+      reposition,
       true
     );
 
@@ -182,11 +198,61 @@ const Dropdown = ({
       );
       window.removeEventListener(
         "scroll",
-        updateMenuPosition,
+        reposition,
         true
       );
     };
   }, [open, updateMenuPosition]);
+
+  const menu = (
+    <div
+      ref={menuRef}
+      className={`dropdown-menu ${
+        portal
+          ? "dropdown-menu-portal"
+          : "dropdown-menu-inline"
+      }`}
+      style={
+        portal
+          ? menuStyle
+          : undefined
+      }
+    >
+      {normalizedOptions.map(
+        (
+          option
+        ) => (
+          <button
+            type="button"
+            key={
+              option.value
+            }
+            className={`dropdown-item ${
+              value ===
+              option.value
+                ? "selected"
+                : ""
+            }`}
+            onClick={() => {
+              onChange(
+                option.value
+              );
+
+              setOpen(
+                false
+              );
+            }}
+          >
+            <span>
+              {
+                option.label
+              }
+            </span>
+          </button>
+        )
+      )}
+    </div>
+  );
 
   return (
     <div
@@ -200,7 +266,7 @@ const Dropdown = ({
         type="button"
         className="dropdown-trigger"
         onClick={() => {
-          if (!open) {
+          if (!open && portal) {
             updateMenuPosition();
           }
 
@@ -230,48 +296,12 @@ const Dropdown = ({
       </button>
 
       {open &&
-        createPortal(
-          <div
-            ref={menuRef}
-            className="dropdown-menu dropdown-menu-portal"
-            style={menuStyle}
-          >
-            {normalizedOptions.map(
-              (
-                option
-              ) => (
-                <button
-                  type="button"
-                  key={
-                    option.value
-                  }
-                  className={`dropdown-item ${
-                    value ===
-                    option.value
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() => {
-                    onChange(
-                      option.value
-                    );
-
-                    setOpen(
-                      false
-                    );
-                  }}
-                >
-                  <span>
-                    {
-                      option.label
-                    }
-                  </span>
-                </button>
-              )
-            )}
-          </div>,
-          document.body
-        )}
+        (portal
+          ? createPortal(
+              menu,
+              document.body
+            )
+          : menu)}
     </div>
   );
 };

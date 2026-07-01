@@ -18,55 +18,6 @@ import { useAuth } from "./AuthContext";
 const ProgressContext =
   createContext();
 
-const topicTitleCollator =
-  new Intl.Collator(undefined, {
-    sensitivity: "base",
-    numeric: true,
-  });
-
-const getQuestionTime =
-  (question) => {
-    const time =
-      new Date(
-        question.createdAt ||
-          question.updatedAt ||
-          0
-      ).getTime();
-
-    return Number.isFinite(time)
-      ? time
-      : 0;
-  };
-
-const sortQuestionsByNewest =
-  (questions = []) =>
-    [...questions].sort(
-      (a, b) =>
-        getQuestionTime(b) -
-        getQuestionTime(a)
-    );
-
-const sortTopicsByTitle =
-  (topics = []) =>
-    [...topics].sort((a, b) =>
-      topicTitleCollator.compare(
-        a.title || "",
-        b.title || ""
-      )
-    );
-
-const normalizeTopics =
-  (topics = []) =>
-    sortTopicsByTitle(
-      topics.map((topic) => ({
-        ...topic,
-        questions:
-          sortQuestionsByNewest(
-            topic.questions || []
-          ),
-      }))
-    );
-
 export const ProgressProvider = ({
   children,
 }) => {
@@ -106,12 +57,9 @@ FETCH TOPICS
         const data =
           await getTopics();
 
-        const sortedTopics =
-          normalizeTopics(data);
+        setTopics(data);
 
-        setTopics(sortedTopics);
-
-        return sortedTopics;
+        return data;
       } catch (error) {
         console.error(
           "Error fetching topics:",
@@ -207,16 +155,14 @@ FETCH ANALYTICS
 
   const addTopicToState =
     (topic) => {
-      setTopics((currentTopics) =>
-        normalizeTopics([
-          {
-            ...topic,
-            questions:
-              topic.questions || [],
-          },
-          ...currentTopics,
-        ])
-      );
+      setTopics((currentTopics) => [
+        {
+          ...topic,
+          questions:
+            topic.questions || [],
+        },
+        ...currentTopics,
+      ]);
     };
 
   const removeTopicFromState =
@@ -253,40 +199,10 @@ FETCH ANALYTICS
                       totalQuestions) *
                     100
                   ).toFixed(2),
-            questions:
-              sortQuestionsByNewest([
-                question,
-                ...(topic.questions || []),
-              ]),
-          };
-        })
-      );
-    };
-
-  const replaceQuestionInTopic =
-    (
-      topicId,
-      questionId,
-      replacementQuestion
-    ) => {
-      setTopics((currentTopics) =>
-        currentTopics.map((topic) => {
-          if (topic._id !== topicId) {
-            return topic;
-          }
-
-          return {
-            ...topic,
-            questions:
-              sortQuestionsByNewest(
-                topic.questions?.map(
-                  (question) =>
-                    question._id ===
-                    questionId
-                      ? replacementQuestion
-                      : question
-                ) || []
-              ),
+            questions: [
+              ...(topic.questions || []),
+              question,
+            ],
           };
         })
       );
@@ -499,7 +415,6 @@ INITIAL LOAD
         addTopicToState,
         removeTopicFromState,
         addQuestionToTopic,
-        replaceQuestionInTopic,
         updateQuestionInState,
         removeQuestionFromState,
 

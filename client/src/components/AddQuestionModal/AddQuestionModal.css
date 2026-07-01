@@ -191,6 +191,14 @@
   font-weight: 900;
 }
 
+.question-form-error {
+  margin-top: 12px;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
 .question-form > button svg {
   width: 14px;
   height: 14px;

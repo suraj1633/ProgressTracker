@@ -19,8 +19,8 @@
   background-image:
     linear-gradient(
       180deg,
-      #080808,
-      #080808
+      rgba(8, 8, 8, .98),
+      rgba(8, 8, 8, .94)
     ) !important;
 
   border-bottom: 1px solid
@@ -290,8 +290,8 @@
     background-image:
       linear-gradient(
         180deg,
-        #080808,
-        #080808
+        rgba(8, 8, 8, .98),
+        rgba(8, 8, 8, .94)
       ) !important;
 
     box-shadow:

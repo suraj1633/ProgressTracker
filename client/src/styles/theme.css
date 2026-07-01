@@ -128,8 +128,8 @@
     --glass-bg:
             linear-gradient(
                     145deg,
-                    #181818,
-                    #0c0c0c
+                    rgba(24,24,24,.96),
+                    rgba(12,12,12,.96)
             );
 
     --glass-border:
@@ -176,9 +176,9 @@
             #080808;
 
     --theme-surface-a:
-            #191919;
+            rgba(25, 25, 25, .98);
 
-    --theme-surface-b: #070707;
+    --theme-surface-b: rgb(7 7 7 / 0.98);
 
     --theme-page-bg:
             radial-gradient(
@@ -198,7 +198,7 @@
     --theme-card-bg-strong:
             linear-gradient(
                     145deg,
-                    #181818,
+                    rgba(24, 24, 24, .98),
                     var(--theme-surface-b)
             );
 
@@ -231,15 +231,15 @@
     --theme-glass-bg:
             linear-gradient(
                     145deg,
-                    #181818,
-                    #0a0a0a
+                    rgba(24, 24, 24, .94),
+                    rgba(10, 10, 10, .95)
             );
 
     --theme-glass-bg-soft:
             linear-gradient(
                     145deg,
-                    #181818,
-                    #0a0a0a
+                    rgba(24, 24, 24, .78),
+                    rgba(10, 10, 10, .86)
             );
 
     --theme-glass-highlight:
@@ -692,8 +692,8 @@
     background-image:
             linear-gradient(
                     180deg,
-                    #080808,
-                    #080808
+                    rgba(8, 8, 8, .98),
+                    rgba(8, 8, 8, .94)
             ) !important;
     border-color: var(--theme-border-soft);
     box-shadow:
@@ -786,34 +786,6 @@
             inset 0 1px 0 var(--theme-glass-highlight);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-}
-
-.app .navbar,
-.app .mobile-bottom-nav,
-.app .topic-card,
-.app .stats-card,
-.app .graph-card,
-.app .heatmap-card,
-.app .profile-card,
-.app .auth-panel,
-.app .question-form,
-.app .question-row,
-.app .tips-form,
-.app .tips-library,
-.app .tips-empty,
-.app .tip-card,
-.app .note-modal,
-.app .profile-unified-block-card,
-.app .profile-avatar-inner-card,
-.app .profile-starter-milestone-card,
-.app .profile-editor-modal {
-    background-color: #0f0f0f !important;
-    background-image:
-            linear-gradient(
-                    145deg,
-                    #181818,
-                    #0a0a0a
-            ) !important;
 }
 
 .app .tip-save-button,

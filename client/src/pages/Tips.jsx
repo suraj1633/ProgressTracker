@@ -313,7 +313,7 @@ const Tips = () => {
               <h1>Tips</h1>
 
               <p>
-                Keep short notes, patterns, and mistakes ready for revision.
+                Quick notes for revision.
               </p>
             </div>
 

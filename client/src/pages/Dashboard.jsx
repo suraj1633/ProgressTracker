@@ -33,11 +33,11 @@ const Dashboard = () => {
           <div className="dashboard-header">
             <div>
               <h1>
-                Dashboard
+                DSA Progress Tracker
               </h1>
 
               <p>
-                Track topics, questions, streaks, and daily progress.
+                Focus, solve, repeat.
               </p>
             </div>
           </div>

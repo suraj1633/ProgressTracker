@@ -18,6 +18,7 @@ import {
   SiLeetcode,
 } from "react-icons/si";
 import {
+  getActiveStreakThemeClass,
   getStreakThemeClass,
 } from "../utils/streakTheme";
 import { getMilestoneIconForTheme } from "../utils/milestoneIcons";
@@ -37,7 +38,7 @@ const formatDate = (value) =>
         : "Not available";
 
 const MILESTONE_NAMES_BY_THEME = {
-  "streak-theme-starter": "Fresh Start",
+  "streak-theme-starter": "Starter Milestone",
   "streak-theme-spark": "Volt Ember",
   "streak-theme-week": "Trophy Initiate",
   "streak-theme-bonfire": "Bonfire Vanguard",
@@ -93,12 +94,6 @@ const PLATFORM_LINKS = [
   },
 ];
 
-const platformOptions =
-    PLATFORM_LINKS.map((platform) => ({
-      value: platform.key,
-      label: platform.label,
-    }));
-
 const getDefaultPlatformLinks = (user) =>
     PLATFORM_LINKS.reduce(
         (links, platform) => ({
@@ -107,6 +102,12 @@ const getDefaultPlatformLinks = (user) =>
         }),
         {}
     );
+
+const PLATFORM_OPTIONS =
+    PLATFORM_LINKS.map((platform) => ({
+      value: platform.key,
+      label: platform.label,
+    }));
 
 const getActiveAppStreak = (fallback = 0) => {
   if (typeof document === "undefined") return fallback;
@@ -211,32 +212,10 @@ const Profile = () => {
     email: user?.email || "",
     platformLinks: getDefaultPlatformLinks(user),
   });
+  const [selectedPlatformKey, setSelectedPlatformKey] =
+      useState(PLATFORM_LINKS[0].key);
   const [profileSaveError, setProfileSaveError] = useState("");
   const [isSavingProfile, setIsSavingProfile] = useState(false);
-  const [
-    selectedProfilePlatform,
-    setSelectedProfilePlatform,
-  ] = useState(PLATFORM_LINKS[0].key);
-
-  useEffect(() => {
-    setProfileImage(localStorage.getItem(storageKey));
-  }, [storageKey]);
-
-  useEffect(() => {
-    if (!isProfileEditorOpen) {
-      return undefined;
-    }
-
-    const previousOverflow =
-        document.body.style.overflow;
-
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow =
-          previousOverflow;
-    };
-  }, [isProfileEditorOpen]);
 
   const initial = user?.name?.[0]?.toUpperCase() || "U";
   const streak = dashboardStats?.streak || 0;
@@ -244,34 +223,31 @@ const Profile = () => {
   const totalQuestions = overallProgress?.total || 0;
   const overallCompletionPercent = getProgressPercent(solvedQuestions, totalQuestions);
   const streakThemeClass = getStreakThemeClass(streak);
-  const selectedPlatform =
-      PLATFORM_LINKS.find(
-          (platform) =>
-              platform.key === selectedProfilePlatform
-      ) || PLATFORM_LINKS[0];
-  const [activeMilestone, setActiveMilestone] = useState(() => ({
-    streak: getActiveAppStreak(streak),
-    themeClass: getStreakThemeClass(getActiveAppStreak(streak)),
-  }));
+  const derivedActiveMilestone = (() => {
+    const activeThemeClass = getActiveStreakThemeClass();
 
-  useEffect(() => {
-    const activeStreak = getActiveAppStreak(streak);
-
-    setActiveMilestone({
-      streak: activeStreak,
-      themeClass: getStreakThemeClass(activeStreak),
-    });
-  }, [streak, streakThemeClass]);
+    return {
+      streak: getActiveAppStreak(streak),
+      themeClass:
+          activeThemeClass === "streak-theme-starter" &&
+          streakThemeClass !== "streak-theme-starter"
+              ? streakThemeClass
+              : activeThemeClass ||
+          streakThemeClass,
+    };
+  })();
+  const [appliedMilestone, setAppliedMilestone] =
+      useState(null);
+  const activeMilestone =
+      appliedMilestone || derivedActiveMilestone;
 
   useEffect(() => {
     const handleStreakThemeApplied = (event) => {
-      const activeStreak = getActiveAppStreak(
-          Number(event.detail?.streak) || streak
-      );
-
-      setActiveMilestone({
-        streak: activeStreak,
-        themeClass: getStreakThemeClass(activeStreak),
+      setAppliedMilestone({
+        streak: getActiveAppStreak(Number(event.detail?.streak) || streak),
+        themeClass:
+            event.detail?.themeClass ||
+            getActiveStreakThemeClass(),
       });
     };
 
@@ -290,6 +266,10 @@ const Profile = () => {
 
   const milestoneLabel = getMilestoneLabel(activeMilestone.themeClass);
   const milestoneIcon = getMilestoneIconForTheme(activeMilestone.themeClass);
+  const selectedPlatform =
+      PLATFORM_LINKS.find(
+          (platform) => platform.key === selectedPlatformKey
+      ) || PLATFORM_LINKS[0];
 
   const difficultyTotals = topics.reduce(
       (acc, topic) => {
@@ -394,12 +374,18 @@ const Profile = () => {
   };
 
   const openProfileEditor = () => {
+    const nextPlatformLinks = getDefaultPlatformLinks(user);
+    const firstLinkedPlatform =
+        PLATFORM_LINKS.find(
+            (platform) => nextPlatformLinks[platform.key]
+        ) || PLATFORM_LINKS[0];
+
     setProfileForm({
       name: user?.name || "",
       email: user?.email || "",
-      platformLinks: getDefaultPlatformLinks(user),
+      platformLinks: nextPlatformLinks,
     });
-    setSelectedProfilePlatform(PLATFORM_LINKS[0].key);
+    setSelectedPlatformKey(firstLinkedPlatform.key);
     setProfileSaveError("");
     setIsProfileEditorOpen(true);
   };
@@ -427,7 +413,7 @@ const Profile = () => {
       ...currentForm,
       platformLinks: {
         ...currentForm.platformLinks,
-        [selectedProfilePlatform]: value,
+        [selectedPlatformKey]: value,
       },
     }));
   };
@@ -509,7 +495,7 @@ const Profile = () => {
             <div className="analytics-header-section text-external profile-header-row">
               <div>
                 <h1>Profile</h1>
-                <p>View and manage your account information.</p>
+                <p>Your account details.</p>
               </div>
             </div>
 
@@ -753,11 +739,10 @@ const Profile = () => {
         {isProfileEditorOpen && (
             <div className="profile-cropper-backdrop" role="dialog" aria-modal="true" aria-label="Edit profile information">
               <form className="profile-editor-modal" onSubmit={handleProfileSubmit}>
-                <div className="profile-editor-header">
+                <div className="profile-cropper-header">
                   <div>
-                    <span>Profile settings</span>
                     <h2>Edit profile</h2>
-                    <p>Update your account details and coding profiles.</p>
+                    <p>Update your account details and coding profile links.</p>
                   </div>
                   <button type="button" className="profile-crop-close" onClick={closeProfileEditor} aria-label="Close edit profile dialog">
                     <HiXMark />
@@ -765,52 +750,44 @@ const Profile = () => {
                 </div>
 
                 <div className="profile-editor-fields">
-                  <div className="profile-editor-section">
-                    <span className="profile-editor-section-title">Account</span>
-
-                    <div className="profile-editor-grid">
-                      <label>
-                        <span>Name</span>
-                        <input
-                            type="text"
-                            name="name"
-                            value={profileForm.name}
-                            onChange={handleProfileFieldChange}
-                            maxLength="80"
-                            autoComplete="name"
-                            required
-                        />
-                      </label>
-                      <label>
-                        <span>Email</span>
-                        <input
-                            type="email"
-                            name="email"
-                            value={profileForm.email}
-                            onChange={handleProfileFieldChange}
-                            autoComplete="email"
-                            required
-                        />
-                      </label>
-                    </div>
-                  </div>
-
+                  <label>
+                    <span>Name</span>
+                    <input
+                        type="text"
+                        name="name"
+                        value={profileForm.name}
+                        onChange={handleProfileFieldChange}
+                        maxLength="80"
+                        autoComplete="name"
+                        required
+                    />
+                  </label>
+                  <label>
+                    <span>Email</span>
+                    <input
+                        type="email"
+                        name="email"
+                        value={profileForm.email}
+                        onChange={handleProfileFieldChange}
+                        autoComplete="email"
+                        required
+                    />
+                  </label>
                   <div className="profile-editor-platforms">
                     <span className="profile-editor-section-title">Platform profiles</span>
-
                     <div className="profile-platform-picker">
                       <label>
                         <span>Platform</span>
                         <Dropdown
-                            value={selectedProfilePlatform}
+                            value={selectedPlatformKey}
                             width="100%"
-                            options={platformOptions}
-                            onChange={setSelectedProfilePlatform}
+                            options={PLATFORM_OPTIONS}
+                            onChange={setSelectedPlatformKey}
                         />
                       </label>
 
                       <label>
-                        <span>{selectedPlatform.label} URL</span>
+                        <span>{selectedPlatform.label} link</span>
                         <input
                             type="url"
                             value={profileForm.platformLinks?.[selectedPlatform.key] || ""}

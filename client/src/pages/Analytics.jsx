@@ -36,7 +36,7 @@ const Analytics = () => {
               <h1>Analytics</h1>
 
               <p>
-                Review monthly solving trends and difficulty balance.
+                Trends at a glance.
               </p>
             </div>
           </section>

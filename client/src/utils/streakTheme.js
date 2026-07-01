@@ -111,8 +111,7 @@ export const getStoredStreakThemeClass =
         return "streak-theme-starter";
       }
 
-      let storedTheme =
-        "streak-theme-starter";
+      let storedTheme;
 
       try {
         storedTheme =

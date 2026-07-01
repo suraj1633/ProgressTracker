@@ -110,7 +110,16 @@
 
 .dropdown-menu-portal {
   min-width: 180px;
-  max-height: 260px;
+  max-height: 168px;
+}
+
+.dropdown-menu-inline {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  min-width: 100%;
+  max-height: 168px;
 }
 
 .dropdown-menu::-webkit-scrollbar {

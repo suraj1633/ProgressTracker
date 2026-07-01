@@ -212,13 +212,6 @@ const toDateKey = (
     "0"
   )}`;
 
-const parseDateKey = (
-  value
-) =>
-  new Date(
-    `${value}T00:00:00`
-  );
-
 const formatShortDate = (
   date
 ) =>
@@ -390,7 +383,7 @@ const Graph = () => {
     }, [
       currentYear,
       today,
-      user?.createdAt,
+      user,
     ]);
   const joinedMonth =
     useMemo(() => {
@@ -411,7 +404,7 @@ const Graph = () => {
     }, [
       currentMonth,
       today,
-      user?.createdAt,
+      user,
     ]);
 
   const yearOptions =
@@ -466,8 +459,16 @@ const Graph = () => {
       ]
     );
 
+  const activeSelectedMonth =
+    monthOptions.some(
+      (option) =>
+        option.value === selectedMonth
+    )
+      ? selectedMonth
+      : monthOptions[0]?.value ||
+        String(currentMonth);
   const selectedMonthNumber =
-    Number(selectedMonth);
+    Number(activeSelectedMonth);
   const isCurrentMonthView =
     year === currentYear &&
     selectedMonthNumber ===
@@ -550,28 +551,6 @@ const Graph = () => {
       : `${MONTH_NAMES[
           selectedMonthNumber - 1
         ]} ${year}`;
-
-  useEffect(() => {
-    if (!monthOptions.length) {
-      return;
-    }
-
-    const isValidMonth =
-      monthOptions.some(
-        (option) =>
-          option.value ===
-          selectedMonth
-      );
-
-    if (!isValidMonth) {
-      setSelectedMonth(
-        monthOptions[0].value
-      );
-    }
-  }, [
-    monthOptions,
-    selectedMonth,
-  ]);
 
   useEffect(() => {
     fetchAnalytics(
@@ -670,7 +649,6 @@ const Graph = () => {
       analytics,
       activeRange.endDate,
       activeRange.startDate,
-      year,
     ]);
 
   const totals =
@@ -780,7 +758,7 @@ const Graph = () => {
 
           <Dropdown
             value={
-              selectedMonth
+              activeSelectedMonth
             }
             width={115}
             options={

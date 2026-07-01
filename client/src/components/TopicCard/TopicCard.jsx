@@ -32,8 +32,7 @@ const TopicCard = ({
   ] = useState(false);
 
   const {
-    removeTopicFromState,
-    refreshActivityData,
+    fetchTopics,
   } = useProgress();
 
   const handleDelete =
@@ -53,11 +52,7 @@ const TopicCard = ({
           topic._id
         );
 
-        removeTopicFromState(
-          topic._id
-        );
-
-        await refreshActivityData();
+        await fetchTopics();
       } catch (error) {
         console.error(error);
       }
