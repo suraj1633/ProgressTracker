@@ -2,17 +2,31 @@
 node_modules/
 client/node_modules/
 server/node_modules/
+.pnp/
+.pnp.*
 
 # Environment variables
 .env
 .env.*
 !.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 client/.env
 client/.env.*
 !client/.env.example
+client/.env.local
+client/.env.development.local
+client/.env.test.local
+client/.env.production.local
 server/.env
 server/.env.*
 !server/.env.example
+server/.env.local
+server/.env.development.local
+server/.env.test.local
+server/.env.production.local
 
 # Build output
 dist/
@@ -21,6 +35,8 @@ client/dist/
 client/build/
 server/dist/
 server/build/
+out/
+.next/
 
 # Logs
 logs/
@@ -37,10 +53,18 @@ lerna-debug.log*
 *.pid
 *.seed
 *.pid.lock
+tmp/
+temp/
+.tmp/
+.temp/
+uploads/
+server/uploads/
 
 # Test and coverage output
 coverage/
 .nyc_output/
+test-results/
+playwright-report/
 
 # Cache
 .cache/
@@ -49,10 +73,19 @@ coverage/
 client/.vite/
 server/.vite/
 .eslintcache
+*.tsbuildinfo
+.npm/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnpm-store/
 
 # OS files
 .DS_Store
+._*
 Thumbs.db
+desktop.ini
 
 # Editor and IDE files
 .idea/
@@ -68,3 +101,8 @@ Thumbs.db
 .vercel/
 .netlify/
 render.yaml.local
+
+# Local tooling
+.codex/
+.agents/
+.junie/

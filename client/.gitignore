@@ -14,12 +14,39 @@ dist-ssr
 .env
 .env.*
 !.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Test and cache output
+coverage
+.nyc_output
+test-results
+playwright-report
+.cache
+.vite
+.eslintcache
+*.tsbuildinfo
+
+# Package manager artifacts
+.pnp
+.pnp.*
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnpm-store
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+._*
+Thumbs.db
+desktop.ini
 *.suo
 *.ntvs*
 *.njsproj
