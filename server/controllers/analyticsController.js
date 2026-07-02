@@ -1,4 +1,4 @@
-import ProgressLog from "../models/ProgressLog.js";
+import Question from "../models/Question.js";
 
 /*
 ==================================
@@ -145,9 +145,10 @@ export const getAnalytics =
         );
       }
 
-      const logs =
-        await ProgressLog.find({
+      const questions =
+        await Question.find({
           userId: req.user._id,
+          completed: true,
           completedAt: {
             $gte:
               startDate,
@@ -158,10 +159,10 @@ export const getAnalytics =
       const groupedData =
         {};
 
-      logs.forEach((log) => {
+      questions.forEach((question) => {
         const dateKey =
           new Date(
-            log.completedAt
+            question.completedAt
           )
             .toISOString()
             .split("T")[0];
@@ -185,7 +186,7 @@ export const getAnalytics =
         groupedData[
           dateKey
         ][
-          log.difficulty
+          question.difficulty
         ] += 1;
 
         groupedData[
@@ -219,16 +220,20 @@ GET /api/analytics/heatmap
 export const getHeatmapData =
   async (req, res) => {
     try {
-      const logs =
-        await ProgressLog.find({
+      const questions =
+        await Question.find({
           userId: req.user._id,
+          completed: true,
+          completedAt: {
+            $ne: null,
+          },
         });
 
       const heatmapMap = {};
 
-      logs.forEach((log) => {
+      questions.forEach((question) => {
         const date =
-          log.completedAt
+          question.completedAt
             .toISOString()
             .split("T")[0];
 

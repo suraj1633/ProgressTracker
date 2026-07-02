@@ -51,7 +51,11 @@ export const getTopics = async (
         userId: req.user._id,
       })
         .sort({
-          createdAt: -1,
+          title: 1,
+        })
+        .collation({
+          locale: "en",
+          strength: 2,
         })
         .populate({
           path: "questions",
@@ -60,7 +64,7 @@ export const getTopics = async (
           },
           options: {
             sort: {
-              createdAt: 1,
+              createdAt: -1,
             },
           },
         })
@@ -218,15 +222,30 @@ export const toggleQuestion =
         topic.completedQuestions += 1;
 
         logOperation =
-          ProgressLog.create({
-          questionId:
-            question._id,
-          userId: req.user._id,
-          difficulty:
-            question.difficulty,
-          completedAt:
-            new Date(),
-        });
+          ProgressLog.findOneAndUpdate(
+            {
+              questionId:
+                question._id,
+              userId:
+                req.user._id,
+            },
+            {
+              questionId:
+                question._id,
+              userId:
+                req.user._id,
+              difficulty:
+                question.difficulty,
+              completedAt:
+                question.completedAt,
+            },
+            {
+              upsert: true,
+              new: true,
+              setDefaultsOnInsert:
+                true,
+            }
+          );
       } else {
         question.completedAt =
           null;
@@ -234,7 +253,7 @@ export const toggleQuestion =
         topic.completedQuestions -= 1;
 
         logOperation =
-          ProgressLog.deleteOne({
+          ProgressLog.deleteMany({
           questionId:
             question._id,
           userId: req.user._id,
@@ -335,7 +354,7 @@ export const deleteQuestion =
             ).toFixed(2);
 
       // delete logs if exist
-      await ProgressLog.deleteOne({
+      await ProgressLog.deleteMany({
         questionId: id,
         userId: req.user._id,
       });
@@ -536,17 +555,22 @@ export const getDashboardStats =
         solvedToday,
         streakDates,
       ] = await Promise.all([
-        ProgressLog.countDocuments({
+        Question.countDocuments({
           userId: req.user._id,
+          completed: true,
           completedAt: {
             $gte: todayStart,
             $lt: tomorrowStart,
           },
         }),
-        ProgressLog.aggregate([
+        Question.aggregate([
           {
             $match: {
               userId: req.user._id,
+              completed: true,
+              completedAt: {
+                $ne: null,
+              },
             },
           },
           {
