@@ -71,6 +71,14 @@ const Dropdown = ({
     }
 
     const gap = 8;
+    const itemHeight = 46;
+    const menuMaxHeight = 168;
+    const menuHeight =
+      Math.min(
+        menuMaxHeight,
+        normalizedOptions.length *
+          itemHeight
+      );
     const viewportPadding = 12;
     const menuWidth =
       Math.max(
@@ -97,25 +105,13 @@ const Dropdown = ({
     const opensAbove =
       spaceBelow < 120 &&
       spaceAbove > spaceBelow;
-    const availableSpace =
-      opensAbove
-        ? spaceAbove
-        : spaceBelow;
-    const maxHeight =
-      Math.min(
-        168,
-        Math.max(
-          120,
-          availableSpace - gap
-        )
-      );
     const menuTop =
       opensAbove
         ? Math.max(
             viewportPadding,
             rect.top -
               gap -
-              maxHeight
+              menuHeight
           )
         : rect.bottom +
           gap;
@@ -133,11 +129,12 @@ const Dropdown = ({
       top: `${menuTop}px`,
       bottom: "auto",
       width: `${menuWidth}px`,
-      maxHeight: `${maxHeight}px`,
+      height: `${menuHeight}px`,
+      maxHeight: `${menuMaxHeight}px`,
     });
 
     return true;
-  }, []);
+  }, [normalizedOptions.length]);
 
   useEffect(() => {
     portalRef.current = portal;

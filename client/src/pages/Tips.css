@@ -408,7 +408,7 @@
 .tips-filter .dropdown-menu,
 .tips-field .dropdown-menu {
   min-width: 190px;
-  max-height: min(320px, calc(100vh - 190px));
+  max-height: 168px;
   overflow-y: auto;
 }
 

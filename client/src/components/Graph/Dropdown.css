@@ -76,6 +76,7 @@
 
 .dropdown-menu {
   position: fixed;
+  max-height: 168px;
 
   border-radius: 14px;
 
@@ -86,7 +87,10 @@
 
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--theme-border)
+    transparent;
 
   box-shadow:
     0 30px 70px
@@ -97,7 +101,6 @@
 
 .dropdown-menu-portal {
   min-width: 180px;
-  max-height: 168px;
   z-index: 10050;
 }
 
@@ -107,12 +110,10 @@
   left: 0;
   width: 100%;
   min-width: 100%;
-  max-height: 168px;
 }
 
 .dropdown-menu::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  width: 8px;
 }
 
 .dropdown-menu::-webkit-scrollbar-track {
@@ -120,7 +121,10 @@
 }
 
 .dropdown-menu::-webkit-scrollbar-thumb {
-  background: transparent;
+  background:
+    var(--theme-border);
+  border: 2px solid #0e0e0e;
+  border-radius: 999px;
 }
 
 .dropdown-item {
