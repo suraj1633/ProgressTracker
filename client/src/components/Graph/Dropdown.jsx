@@ -13,7 +13,8 @@ const Dropdown = ({
   options,
   onChange,
   width = 140,
-  portal = true,
+  portal = false,
+  closeOnScroll = true,
 }) => {
   const normalizedOptions =
     options.map((option) =>
@@ -51,6 +52,8 @@ const Dropdown = ({
     useRef(null);
   const portalRef =
     useRef(portal);
+  const closeOnScrollRef =
+    useRef(closeOnScroll);
 
   const updateMenuPosition = useCallback(() => {
     if (!ref.current)
@@ -58,6 +61,14 @@ const Dropdown = ({
 
     const rect =
       ref.current.getBoundingClientRect();
+
+    if (
+      rect.bottom < 0 ||
+      rect.top > window.innerHeight
+    ) {
+      setOpen(false);
+      return false;
+    }
 
     const gap = 8;
     const viewportPadding = 12;
@@ -80,17 +91,34 @@ const Dropdown = ({
       rect.bottom -
       viewportPadding -
       bottomReservedSpace;
+    const spaceAbove =
+      rect.top -
+      viewportPadding;
+    const opensAbove =
+      spaceBelow < 120 &&
+      spaceAbove > spaceBelow;
+    const availableSpace =
+      opensAbove
+        ? spaceAbove
+        : spaceBelow;
     const maxHeight =
       Math.min(
         168,
         Math.max(
           120,
-          spaceBelow - gap
+          availableSpace - gap
         )
       );
     const menuTop =
-      rect.bottom +
-      gap;
+      opensAbove
+        ? Math.max(
+            viewportPadding,
+            rect.top -
+              gap -
+              maxHeight
+          )
+        : rect.bottom +
+          gap;
 
     setMenuStyle({
       left: `${Math.max(
@@ -114,6 +142,11 @@ const Dropdown = ({
   useEffect(() => {
     portalRef.current = portal;
   }, [portal]);
+
+  useEffect(() => {
+    closeOnScrollRef.current =
+      closeOnScroll;
+  }, [closeOnScroll]);
 
   useEffect(() => {
     const close = (
@@ -177,8 +210,25 @@ const Dropdown = ({
       setOpen(false);
     };
 
-    const reposition = () => {
-      updateMenuPosition();
+    let animationFrame = null;
+
+    const handleScroll = () => {
+      if (closeOnScrollRef.current) {
+        setOpen(false);
+        return;
+      }
+
+      if (animationFrame) {
+        cancelAnimationFrame(
+          animationFrame
+        );
+      }
+
+      animationFrame =
+        requestAnimationFrame(() => {
+          updateMenuPosition();
+          animationFrame = null;
+        });
     };
 
     window.addEventListener(
@@ -187,18 +237,24 @@ const Dropdown = ({
     );
     window.addEventListener(
       "scroll",
-      reposition,
+      handleScroll,
       true
     );
 
     return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(
+          animationFrame
+        );
+      }
+
       window.removeEventListener(
         "resize",
         closeOnResize
       );
       window.removeEventListener(
         "scroll",
-        reposition,
+        handleScroll,
         true
       );
     };

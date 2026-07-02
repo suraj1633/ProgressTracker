@@ -753,7 +753,6 @@
 .app .tips-list-panel,
 .app .tips-empty,
 .app .analytics-side-panel,
-.app .note-modal,
 .app .overview-card {
     background: var(--theme-glass-bg);
     border-color: var(--theme-border-soft);
@@ -772,8 +771,20 @@
 .app .tips-list-panel,
 .app .auth-panel,
 .app .analytics-side-panel,
-.app .note-modal {
+.app .profile-editor-modal,
+.app .profile-cropper,
+.app .profile-avatar-menu {
     border-top-color: var(--theme-border);
+}
+
+.app .note-modal,
+.app .profile-editor-modal,
+.app .profile-cropper,
+.app .profile-avatar-menu,
+.app .dropdown-menu {
+    background: #0e0e0e;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 .app .stats-card,

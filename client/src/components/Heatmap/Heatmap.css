@@ -147,6 +147,7 @@
     );
   box-shadow: 0 18px 44px rgba(0, 0, 0, .36);
   scrollbar-width: none;
+  z-index: 250;
 }
 
 .heatmap-selector-menu::-webkit-scrollbar {

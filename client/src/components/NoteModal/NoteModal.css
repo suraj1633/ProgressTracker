@@ -24,12 +24,9 @@
   overflow: hidden;
   border: 1px solid var(--theme-border-soft);
   border-radius: 18px;
-  background:
-    var(--theme-glass-bg);
+  background: #0e0e0e;
   box-shadow:
     var(--theme-glass-shadow);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
 }
 
 .note-modal-header {

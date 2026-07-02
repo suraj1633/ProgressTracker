@@ -271,6 +271,62 @@ const Profile = () => {
           (platform) => platform.key === selectedPlatformKey
       ) || PLATFORM_LINKS[0];
 
+  useEffect(() => {
+    const modalOpen =
+        Boolean(pendingImage) ||
+        isProfileEditorOpen;
+
+    if (!modalOpen) return;
+
+    const scrollY =
+        window.scrollY;
+    const scrollbarWidth =
+        window.innerWidth -
+        document.documentElement.clientWidth;
+    const previousBodyStyles = {
+      overflow: document.body.style.overflow,
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+      paddingRight: document.body.style.paddingRight,
+    };
+    const previousHtmlOverflow =
+        document.documentElement.style.overflow;
+
+    document.documentElement.style.overflow =
+        "hidden";
+    document.body.style.overflow =
+        "hidden";
+    document.body.style.position =
+        "fixed";
+    document.body.style.top =
+        `-${scrollY}px`;
+    document.body.style.width =
+        "100%";
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight =
+          `${scrollbarWidth}px`;
+    }
+
+    return () => {
+      document.documentElement.style.overflow =
+          previousHtmlOverflow;
+      document.body.style.overflow =
+          previousBodyStyles.overflow;
+      document.body.style.position =
+          previousBodyStyles.position;
+      document.body.style.top =
+          previousBodyStyles.top;
+      document.body.style.width =
+          previousBodyStyles.width;
+      document.body.style.paddingRight =
+          previousBodyStyles.paddingRight;
+
+      window.scrollTo(0, scrollY);
+    };
+  }, [pendingImage, isProfileEditorOpen]);
+
   const difficultyTotals = topics.reduce(
       (acc, topic) => {
         topic.questions?.forEach((question) => {
@@ -781,6 +837,8 @@ const Profile = () => {
                         <Dropdown
                             value={selectedPlatformKey}
                             width="100%"
+                            portal={true}
+                            closeOnScroll={false}
                             options={PLATFORM_OPTIONS}
                             onChange={setSelectedPlatformKey}
                         />
