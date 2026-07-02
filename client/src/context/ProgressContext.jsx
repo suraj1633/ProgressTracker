@@ -153,16 +153,42 @@ FETCH ANALYTICS
       ]);
     };
 
+  const sortTopicsByTitle =
+    (topicList) =>
+      [...topicList].sort((a, b) =>
+        (a.title || "").localeCompare(
+          b.title || "",
+          undefined,
+          {
+            sensitivity: "base",
+          }
+        )
+      );
+
+  const sortQuestionsByCreatedAt =
+    (questionList) =>
+      [...questionList].sort(
+        (a, b) =>
+          new Date(
+            b.createdAt || 0
+          ).getTime() -
+          new Date(
+            a.createdAt || 0
+          ).getTime()
+      );
+
   const addTopicToState =
     (topic) => {
-      setTopics((currentTopics) => [
-        {
-          ...topic,
-          questions:
-            topic.questions || [],
-        },
-        ...currentTopics,
-      ]);
+      setTopics((currentTopics) =>
+        sortTopicsByTitle([
+          ...currentTopics,
+          {
+            ...topic,
+            questions:
+              topic.questions || [],
+          },
+        ])
+      );
     };
 
   const removeTopicFromState =
@@ -199,10 +225,11 @@ FETCH ANALYTICS
                       totalQuestions) *
                     100
                   ).toFixed(2),
-            questions: [
-              ...(topic.questions || []),
-              question,
-            ],
+            questions:
+              sortQuestionsByCreatedAt([
+                ...(topic.questions || []),
+                question,
+              ]),
           };
         })
       );
