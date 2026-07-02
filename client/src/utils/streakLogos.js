@@ -26,6 +26,7 @@ import LogoCherry from "../assets/logo_streak-theme-cherry.svg";
 import LogoCrimson from "../assets/logo_streak-theme-crimson.svg";
 
 export const LOGOS_BY_THEME = {
+  "streak-theme-first-steps": LogoStarter,
   "streak-theme-starter": LogoStarter,
   "streak-theme-spark": LogoSpark,
   "streak-theme-week": LogoWeek,

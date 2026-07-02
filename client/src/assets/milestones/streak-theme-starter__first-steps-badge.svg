@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="title desc">
+<title id="title">0-2 day starter milestone</title>
+<desc id="desc">A distinct starter badge with a small sunrise path for the first streak milestone.</desc>
+<defs>
+  <linearGradient id="badgeGrad" x1="68" y1="46" x2="190" y2="210" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFF0B8"/>
+    <stop offset="0.38" stop-color="#FFB347"/>
+    <stop offset="0.72" stop-color="#FF7A18"/>
+    <stop offset="1" stop-color="#D84A05"/>
+  </linearGradient>
+  <linearGradient id="innerGrad" x1="92" y1="76" x2="164" y2="174" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#1B1B1B"/>
+    <stop offset="1" stop-color="#080808"/>
+  </linearGradient>
+  <radialGradient id="glowGrad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(128 130) rotate(90) scale(82)">
+    <stop stop-color="#FFD36C" stop-opacity=".86"/>
+    <stop offset=".55" stop-color="#FF7A18" stop-opacity=".28"/>
+    <stop offset="1" stop-color="#FF7A18" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+    <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#FFD36C" flood-opacity=".62"/>
+    <feDropShadow dx="0" dy="0" stdDeviation="14" flood-color="#FF7A18" flood-opacity=".32"/>
+    <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000000" flood-opacity=".28"/>
+  </filter>
+  <style>
+    .glow { fill: url(#glowGrad); }
+    .badge { fill: url(#badgeGrad); filter: url(#glow); }
+    .inner { fill: url(#innerGrad); }
+    .line { fill: none; stroke: #FFF7D6; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+    .accent { fill: #FFF7D6; }
+    .step { fill: #FFB347; }
+  </style>
+</defs>
+<circle class="glow" cx="128" cy="128" r="76"/>
+<path class="badge" d="M128 36L199 76V156C199 181 174 202 128 220C82 202 57 181 57 156V76L128 36Z"/>
+<path class="inner" d="M128 62L176 89V151C176 167 159 182 128 196C97 182 80 167 80 151V89L128 62Z"/>
+<path class="line" d="M98 143C108 125 118 116 128 116C138 116 148 125 158 143"/>
+<path class="line" d="M103 158H153"/>
+<circle class="accent" cx="128" cy="96" r="10"/>
+<path class="step" d="M104 174H119V185H104V174Z"/>
+<path class="step" d="M137 174H152V185H137V174Z"/>
+</svg>

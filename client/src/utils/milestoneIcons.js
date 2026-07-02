@@ -1,3 +1,4 @@
+import FirstStepsIcon from "../assets/milestones/streak-theme-starter__first-steps-badge.svg";
 import StarterIcon from "../assets/milestones/streak-theme-starter__orange-energy-dot.svg";
 import SparkIcon from "../assets/milestones/streak-theme-spark__electric-spark.svg";
 import WeekIcon from "../assets/milestones/streak-theme-week__trophy-chip.svg";
@@ -20,6 +21,7 @@ import CherryIcon from "../assets/milestones/streak-theme-cherry__cherry-blossom
 import CrimsonIcon from "../assets/milestones/streak-theme-crimson__intense-power-core.svg";
 
 const MILESTONE_ICONS_BY_THEME = {
+  "streak-theme-first-steps": FirstStepsIcon,
   "streak-theme-starter": StarterIcon,
   "streak-theme-spark": SparkIcon,
   "streak-theme-week": WeekIcon,

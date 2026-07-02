@@ -1,4 +1,5 @@
 export const STREAK_THEME_CLASSES = [
+  "streak-theme-first-steps",
   "streak-theme-starter",
   "streak-theme-spark",
   "streak-theme-week",
@@ -24,7 +25,7 @@ export const STREAK_THEME_CLASSES = [
 export const STREAK_MILESTONES = [
   {
     days: 0,
-    themeClass: "streak-theme-starter",
+    themeClass: "streak-theme-first-steps",
   },
   {
     days: 3,
@@ -71,7 +72,11 @@ export const STREAK_MILESTONES = [
     themeClass: "streak-theme-quarter",
   },
   {
-    days: 145,
+    days: 135,
+    themeClass: "streak-theme-obsidian",
+  },
+  {
+    days: 150,
     themeClass: "streak-theme-golden-flare",
   },
   {
@@ -108,7 +113,7 @@ export const getStoredStreakThemeClass =
       if (
           typeof window === "undefined"
       ) {
-        return "streak-theme-starter";
+        return "streak-theme-first-steps";
       }
 
       let storedTheme;
@@ -119,14 +124,14 @@ export const getStoredStreakThemeClass =
             STREAK_THEME_STORAGE_KEY
           );
       } catch {
-        return "streak-theme-starter";
+        return "streak-theme-first-steps";
       }
 
       return STREAK_THEME_CLASSES.includes(
           storedTheme
       )
         ? storedTheme
-        : "streak-theme-starter";
+        : "streak-theme-first-steps";
     };
 
 export const persistActiveStreakThemeClass =
@@ -160,7 +165,7 @@ export const getStreakThemeClass = (
           value >= milestone.days
               ? milestone.themeClass
               : activeTheme,
-      "streak-theme-starter"
+      "streak-theme-first-steps"
   );
 };
 
@@ -177,7 +182,7 @@ export const getActiveStreakThemeClass =
       if (
           typeof document === "undefined"
       ) {
-        return "streak-theme-starter";
+        return "streak-theme-first-steps";
       }
 
       return (

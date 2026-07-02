@@ -18,7 +18,6 @@ import {
   SiLeetcode,
 } from "react-icons/si";
 import {
-  getActiveStreakThemeClass,
   getStreakThemeClass,
 } from "../utils/streakTheme";
 import { getMilestoneIconForTheme } from "../utils/milestoneIcons";
@@ -38,6 +37,7 @@ const formatDate = (value) =>
         : "Not available";
 
 const MILESTONE_NAMES_BY_THEME = {
+  "streak-theme-first-steps": "First Steps",
   "streak-theme-starter": "Starter Milestone",
   "streak-theme-spark": "Volt Ember",
   "streak-theme-week": "Trophy Initiate",
@@ -62,10 +62,22 @@ const MILESTONE_NAMES_BY_THEME = {
 
 const getMilestoneLabel = (themeClass) =>
     MILESTONE_NAMES_BY_THEME[themeClass] ||
-    MILESTONE_NAMES_BY_THEME["streak-theme-starter"];
+    MILESTONE_NAMES_BY_THEME["streak-theme-first-steps"];
 
 const getProgressPercent = (solved, total) =>
     total > 0 ? Math.min(Math.max((solved / total) * 100, 0), 100) : 0;
+
+const getEffectiveAppStreak = (fallback = 0) => {
+  if (typeof document === "undefined") return fallback;
+
+  const appStreak = Number(
+      document.querySelector(".app")?.getAttribute("data-streak")
+  );
+
+  return Number.isFinite(appStreak)
+      ? appStreak
+      : fallback;
+};
 
 const PLATFORM_LINKS = [
   {
@@ -108,16 +120,6 @@ const PLATFORM_OPTIONS =
       value: platform.key,
       label: platform.label,
     }));
-
-const getActiveAppStreak = (fallback = 0) => {
-  if (typeof document === "undefined") return fallback;
-
-  const appStreak = Number(
-      document.querySelector(".app")?.getAttribute("data-streak")
-  );
-
-  return Number.isFinite(appStreak) ? appStreak : fallback;
-};
 
 const getCropStyle = (image, zoom, x, y, size) => {
   const width = size?.width || 1;
@@ -218,37 +220,30 @@ const Profile = () => {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   const initial = user?.name?.[0]?.toUpperCase() || "U";
-  const streak = dashboardStats?.streak || 0;
+  const streak = Number(dashboardStats?.streak) || 0;
+  const [displayStreak, setDisplayStreak] =
+      useState(() => getEffectiveAppStreak(streak));
   const solvedQuestions = overallProgress?.completed || 0;
   const totalQuestions = overallProgress?.total || 0;
   const overallCompletionPercent = getProgressPercent(solvedQuestions, totalQuestions);
-  const streakThemeClass = getStreakThemeClass(streak);
-  const derivedActiveMilestone = (() => {
-    const activeThemeClass = getActiveStreakThemeClass();
+  const streakThemeClass = getStreakThemeClass(displayStreak);
+  const activeMilestone = {
+    streak: displayStreak,
+    themeClass: streakThemeClass,
+  };
 
-    return {
-      streak: getActiveAppStreak(streak),
-      themeClass:
-          activeThemeClass === "streak-theme-starter" &&
-          streakThemeClass !== "streak-theme-starter"
-              ? streakThemeClass
-              : activeThemeClass ||
-          streakThemeClass,
-    };
-  })();
-  const [appliedMilestone, setAppliedMilestone] =
-      useState(null);
-  const activeMilestone =
-      appliedMilestone || derivedActiveMilestone;
+  useEffect(() => {
+    setDisplayStreak(getEffectiveAppStreak(streak));
+  }, [streak]);
 
   useEffect(() => {
     const handleStreakThemeApplied = (event) => {
-      setAppliedMilestone({
-        streak: getActiveAppStreak(Number(event.detail?.streak) || streak),
-        themeClass:
-            event.detail?.themeClass ||
-            getActiveStreakThemeClass(),
-      });
+      const nextStreak =
+          Number(event.detail?.streak);
+
+      if (Number.isFinite(nextStreak)) {
+        setDisplayStreak(nextStreak);
+      }
     };
 
     window.addEventListener(
@@ -262,7 +257,7 @@ const Profile = () => {
           handleStreakThemeApplied
       );
     };
-  }, [streak]);
+  }, []);
 
   const milestoneLabel = getMilestoneLabel(activeMilestone.themeClass);
   const milestoneIcon = getMilestoneIconForTheme(activeMilestone.themeClass);
