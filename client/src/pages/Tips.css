@@ -403,15 +403,17 @@
   min-height: 0;
   overflow: auto;
   display: grid;
+  grid-auto-rows: max-content;
   align-content: start;
-  gap: 10px;
-  padding-right: 2px;
-  scrollbar-color: var(--theme-accent-soft) transparent;
-  scrollbar-width: thin;
+  align-items: start;
+  gap: 14px;
+  padding: 0 2px 18px 0;
+  scrollbar-width: none;
 }
 
 .tips-list::-webkit-scrollbar {
-  width: 8px;
+  width: 0;
+  height: 0;
 }
 
 .tips-list::-webkit-scrollbar-track {
@@ -428,10 +430,13 @@
 }
 
 .tip-card {
+  --tip-actions-width: 108px;
+
   position: relative;
   display: block;
   min-height: 118px;
-  padding: 15px;
+  padding: 20px;
+  overflow: visible;
   border: 1px solid var(--theme-border-soft);
   border-radius: 14px;
   background:
@@ -466,9 +471,9 @@
 .tip-card-main {
   min-width: 0;
   width: 100%;
-  display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .tip-card.is-editing {
@@ -481,8 +486,7 @@
 
 .tip-card-meta {
   min-width: 0;
-  margin-bottom: 8px;
-  padding-right: 100px;
+  padding-right: var(--tip-actions-width);
 }
 
 .tip-card-meta span {
@@ -496,7 +500,8 @@
 }
 
 .tip-card h3 {
-  padding-right: 100px;
+  min-width: 0;
+  padding-right: var(--tip-actions-width);
   color: #ffffff;
   font-size: 17px;
   font-weight: 850;
@@ -505,28 +510,32 @@
 }
 
 .tip-card p {
-  margin-top: 8px;
+  margin: 0;
+  min-width: 0;
+  max-width: 100%;
   color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.55;
   overflow-wrap: anywhere;
+  word-break: break-word;
   white-space: normal;
 }
 
-.tip-card time {
-  justify-self: end;
-  align-self: end;
+.tip-card-date {
+  display: block;
   margin-top: 14px;
+  text-align: right;
   color: var(--text-muted);
   font-size: 12px;
   font-weight: 750;
+  line-height: 1;
   white-space: nowrap;
 }
 
 .tip-card-actions {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 20px;
+  right: 20px;
   display: inline-flex;
   align-items: flex-start;
   gap: 8px;
@@ -707,10 +716,6 @@
 
   .tip-card-actions {
     justify-content: flex-end;
-  }
-
-  .tip-card time {
-    justify-self: end;
   }
 }
 
@@ -993,5 +998,31 @@
     padding: 0 15px;
     border-radius: 11px;
     font-size: 14px;
+  }
+
+  .tip-card {
+    --tip-actions-width: 88px;
+
+    padding: 16px;
+  }
+
+  .tip-card h3,
+  .tip-card p {
+    max-width: 100%;
+  }
+
+  .tip-card-date {
+    margin-top: 10px;
+  }
+
+  .tip-card-actions {
+    top: 16px;
+    right: 16px;
+    gap: 6px;
+  }
+
+  .tip-card-actions button {
+    width: 36px;
+    height: 36px;
   }
 }

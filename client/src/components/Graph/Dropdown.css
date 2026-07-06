@@ -87,10 +87,7 @@
 
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color:
-    var(--theme-border)
-    transparent;
+  scrollbar-width: none;
 
   box-shadow:
     0 30px 70px
@@ -113,7 +110,8 @@
 }
 
 .dropdown-menu::-webkit-scrollbar {
-  width: 8px;
+  width: 0;
+  height: 0;
 }
 
 .dropdown-menu::-webkit-scrollbar-track {

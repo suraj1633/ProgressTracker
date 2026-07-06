@@ -519,12 +519,6 @@ const Tips = () => {
                             {tip.body?.trim() ||
                               "No details added yet."}
                           </p>
-
-                          <time>
-                            {formatDate(
-                              tip.updatedAt
-                            )}
-                          </time>
                         </div>
 
                         <div className="tip-card-actions">
@@ -553,6 +547,12 @@ const Tips = () => {
                             <HiTrash />
                           </button>
                         </div>
+
+                        <time className="tip-card-date">
+                          {formatDate(
+                            tip.updatedAt
+                          )}
+                        </time>
                       </article>
                     )
                   )}
