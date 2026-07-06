@@ -3,7 +3,6 @@
   position: relative;
   isolation: isolate;
   overflow-x: hidden;
-  overscroll-behavior: none;
 
   background: #080808;
 }

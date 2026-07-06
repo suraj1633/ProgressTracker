@@ -1093,7 +1093,6 @@
 #root,
 .app {
     min-height: 100vh;
-    overscroll-behavior: none;
     background-color: #080808;
     background-image:
             linear-gradient(

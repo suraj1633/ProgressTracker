@@ -21,7 +21,6 @@ html {
   scroll-behavior: smooth;
   scrollbar-width: none;
   min-height: 100%;
-  overscroll-behavior: none;
   background-color: #080808;
   background-image:
     linear-gradient(
@@ -62,7 +61,6 @@ body {
   min-height: 100vh;
 
   overflow-x: hidden;
-  overscroll-behavior: none;
 
   -webkit-font-smoothing:
     antialiased;
