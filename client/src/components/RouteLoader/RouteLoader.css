@@ -5,7 +5,7 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: var(--theme-page-bg, #080808);
+  background: #080808;
   color: var(--theme-accent);
 }
 
@@ -17,22 +17,16 @@
   pointer-events: none;
   background-image:
     linear-gradient(
-      rgba(255, 255, 255, 0.035) 1px,
+      rgba(255, 255, 255, 0.07) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.035) 1px,
+      rgba(255, 255, 255, 0.07) 1px,
       transparent 1px
     );
   background-size: 42px 42px;
-  mask-image:
-    radial-gradient(
-      circle at 50% 42%,
-      rgba(0, 0, 0, 0.72),
-      transparent 68%
-    );
-  opacity: 0.42;
+  opacity: 0.62;
 }
 
 .route-loader-card {

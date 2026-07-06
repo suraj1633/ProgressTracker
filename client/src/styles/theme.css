@@ -1089,3 +1089,22 @@
 .app .home-preview-stats span {
     color: var(--text-muted);
 }
+
+#root,
+.app {
+    min-height: 100vh;
+    overscroll-behavior: none;
+    background-color: #080808;
+    background-image:
+            linear-gradient(
+                    rgba(255, 255, 255, 0.07) 1px,
+                    transparent 1px
+            ),
+            linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.07) 1px,
+                    transparent 1px
+            );
+    background-size: 42px 42px;
+    background-attachment: fixed;
+}
