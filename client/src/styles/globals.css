@@ -58,6 +58,7 @@ body {
   color: var(--text-primary);
 
   min-height: 100vh;
+  min-height: 100dvh;
 
   overflow-x: hidden;
 
@@ -70,6 +71,8 @@ body {
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh;
+  background-color: #080808;
 }
 
 /* =========================
