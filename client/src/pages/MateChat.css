@@ -1,7 +1,9 @@
 .mate-chat-page {
-  height: calc(100vh - 76px);
+  position: fixed;
+  inset: 76px 0 0;
+  z-index: 1;
+  height: auto;
   min-height: 0;
-  position: relative;
   isolation: isolate;
   overflow: hidden;
   background: #080808;
@@ -40,8 +42,11 @@
 
 @media (max-width: 768px) {
   .mate-chat-page {
-    height:
-      calc(100dvh - 72px - 76px - env(safe-area-inset-bottom));
+    inset:
+      72px
+      0
+      calc(84px + env(safe-area-inset-bottom));
+    height: auto;
   }
 
   .mate-chat-content {
