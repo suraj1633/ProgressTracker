@@ -21,8 +21,12 @@ import {
   getStreakThemeClass,
 } from "../utils/streakTheme";
 import { getMilestoneIconForTheme } from "../utils/milestoneIcons";
+import {
+  getDifficultyGaugeVars,
+} from "./Friends";
 
 import "./Profile.css";
+import "./Friends.css";
 
 const getProfileImageKey = (user) =>
     user?.email ? `profileImage:${user.email}` : "profileImage";
@@ -135,68 +139,30 @@ const getCropStyle = (image, zoom, x, y, size) => {
   };
 };
 
-const CIRC = 2 * Math.PI * 72;
-const TOTAL_ARC_DEG = 294;
-const GAP_DEG = 8;
-const LANE_DEG = (TOTAL_ARC_DEG - GAP_DEG * 2) / 3;
+const DonutGauge = ({ solved, total, completionPct, difficulty }) => (
+    <div
+        className="mate-gauge"
+        style={getDifficultyGaugeVars(difficulty)}
+    >
+      <div className="mate-gauge-center mate-gauge-center-default">
+        <strong>
+          {solved}
+          <span>/{total}</span>
+        </strong>
+        <small>Solved</small>
+        <small className="mate-gauge-attempting">
+          <b>{Math.max(total - solved, 0)}</b> Attempting
+        </small>
+      </div>
 
-const degToPx = (deg) => (CIRC * deg) / 360;
-const LANE_PX = degToPx(LANE_DEG);
-const GAP_PX = degToPx(GAP_DEG);
-const RING_START_DEG = 123;
-
-function buildLaneDash(filledPx) {
-  return `${filledPx} ${CIRC - filledPx}`;
-}
-
-function buildLaneOffset(laneIndex) {
-  return -(laneIndex * (LANE_PX + GAP_PX));
-}
-
-const DonutGauge = ({ solved, total, completionPct, easePct, medPct, hardPct }) => {
-  const easyFill = degToPx(LANE_DEG * (easePct / 100));
-  const medFill = degToPx(LANE_DEG * (medPct / 100));
-  const hardFill = degToPx(LANE_DEG * (hardPct / 100));
-  const trackDash = `${LANE_PX} ${CIRC - LANE_PX}`;
-  const easyOffset = buildLaneOffset(0);
-  const medOffset = buildLaneOffset(1);
-  const hardOffset = buildLaneOffset(2);
-
-  return (
-      <svg className="profile-gauge-svg" viewBox="0 0 180 180" aria-hidden="true">
-        <g style={{ transform: `rotate(${RING_START_DEG}deg)`, transformOrigin: "90px 90px" }}>
-          <circle className="gauge-track gauge-track-easy" cx="90" cy="90" r="72" fill="none" strokeWidth="9" strokeDasharray={trackDash} strokeDashoffset={easyOffset} />
-          <circle className="gauge-track gauge-track-medium" cx="90" cy="90" r="72" fill="none" strokeWidth="9" strokeDasharray={trackDash} strokeDashoffset={medOffset} />
-          <circle className="gauge-track gauge-track-hard" cx="90" cy="90" r="72" fill="none" strokeWidth="9" strokeDasharray={trackDash} strokeDashoffset={hardOffset} />
-
-          <circle className="gauge-progress gauge-progress-easy" cx="90" cy="90" r="72" fill="none" stroke="var(--difficulty-easy)" strokeWidth="9" strokeDasharray={buildLaneDash(easyFill)} style={{ "--lane-offset": `${easyOffset}px`, "--lane-fill": `${easyFill}px` }} />
-          <circle className="gauge-progress gauge-progress-medium" cx="90" cy="90" r="72" fill="none" stroke="var(--difficulty-medium)" strokeWidth="9" strokeDasharray={buildLaneDash(medFill)} style={{ "--lane-offset": `${medOffset}px`, "--lane-fill": `${medFill}px` }} />
-          <circle className="gauge-progress gauge-progress-hard" cx="90" cy="90" r="72" fill="none" stroke="var(--difficulty-hard)" strokeWidth="9" strokeDasharray={buildLaneDash(hardFill)} style={{ "--lane-offset": `${hardOffset}px`, "--lane-fill": `${hardFill}px` }} />
-        </g>
-        <g className="gauge-center gauge-center-default">
-          <text x="90" y="78" textAnchor="middle" className="gauge-text-solved-count">
-            {solved}
-            <tspan className="gauge-text-total">/{total}</tspan>
-          </text>
-          <text x="90" y="105" textAnchor="middle" className="gauge-text-solved-label">
-            <tspan className="gauge-text-check">✓ </tspan>Solved
-          </text>
-          <text x="90" y="129" textAnchor="middle" className="gauge-text-attempting">
-            <tspan style={{ fill: 'var(--text-primary)', fontWeight: '800' }}>{Math.max(total - solved, 0)} </tspan>Attempting
-          </text>
-        </g>
-        <g className="gauge-center gauge-center-hover">
-          <text x="90" y="84" textAnchor="middle" className="gauge-text-percent">
-            {Math.round(completionPct)}%
-          </text>
-          <text x="90" y="108" textAnchor="middle" className="gauge-text-percent-label">
-            Complete
-          </text>
-        </g>
-      </svg>
-  );
-};
-
+      <div className="mate-gauge-center mate-gauge-center-hover">
+        <strong>
+          {Math.round(completionPct)}%
+        </strong>
+        <small>Complete</small>
+      </div>
+    </div>
+);
 const Profile = () => {
   const { user, updateProfile } = useAuth();
   const { dashboardStats, difficultyCounts, overallProgress, topics } = useProgress();
@@ -333,12 +299,6 @@ const Profile = () => {
       },
       { Easy: 0, Medium: 0, Hard: 0 }
   );
-
-  const difficultyProgress = {
-    Easy: getProgressPercent(difficultyCounts.Easy, difficultyTotals.Easy),
-    Medium: getProgressPercent(difficultyCounts.Medium, difficultyTotals.Medium),
-    Hard: getProgressPercent(difficultyCounts.Hard, difficultyTotals.Hard),
-  };
 
   const handleImageChange = (event) => {
     const file = event.target.files?.[0];
@@ -643,9 +603,20 @@ const Profile = () => {
                         solved={solvedQuestions}
                         total={totalQuestions}
                         completionPct={overallCompletionPercent}
-                        easePct={difficultyProgress.Easy}
-                        medPct={difficultyProgress.Medium}
-                        hardPct={difficultyProgress.Hard}
+                        difficulty={{
+                          Easy: {
+                            solved: difficultyCounts.Easy,
+                            total: difficultyTotals.Easy,
+                          },
+                          Medium: {
+                            solved: difficultyCounts.Medium,
+                            total: difficultyTotals.Medium,
+                          },
+                          Hard: {
+                            solved: difficultyCounts.Hard,
+                            total: difficultyTotals.Hard,
+                          },
+                        }}
                     />
                   </div>
 
@@ -873,3 +844,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

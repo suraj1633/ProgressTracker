@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
+    "backfill:users": "node scripts/backfillUserMateInfo.js",
+    "seed:mates": "node scripts/seedMateUsers.js",
     "dev": "nodemon server.js"
   },
   "keywords": [],

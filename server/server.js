@@ -8,6 +8,7 @@ import topicRoutes from "./routes/topicRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import tipRoutes from "./routes/tipRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import mateRoutes from "./routes/mateRoutes.js";
 
 dotenv.config();
 
@@ -100,6 +101,11 @@ app.use(
 app.use(
   "/api/tips",
   tipRoutes
+);
+
+app.use(
+  "/api/mates",
+  mateRoutes
 );
 
 const PORT =

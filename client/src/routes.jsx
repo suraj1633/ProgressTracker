@@ -12,6 +12,9 @@ import TopicPage from "./pages/TopicPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
+import Friends from "./pages/Friends";
+import MateProfile from "./pages/MateProfile";
+import MateChat from "./pages/MateChat";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const AppRoutes = () => {
@@ -49,6 +52,21 @@ const AppRoutes = () => {
           <Route
             path="/tips"
             element={<Tips />}
+          />
+
+          <Route
+            path="/friends"
+            element={<Friends />}
+          />
+
+          <Route
+            path="/friends/:id"
+            element={<MateProfile />}
+          />
+
+          <Route
+            path="/friends/:id/chat"
+            element={<MateChat />}
           />
 
           <Route

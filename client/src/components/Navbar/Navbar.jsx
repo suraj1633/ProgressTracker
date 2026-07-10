@@ -12,6 +12,7 @@ import {
   HiOutlineChartBar,
   HiOutlineSquares2X2,
   HiOutlineLightBulb,
+  HiOutlineUserGroup,
   HiOutlineUserCircle,
   HiArrowRightOnRectangle,
 } from "react-icons/hi2";
@@ -167,6 +168,22 @@ const Navbar = () => {
         <HiOutlineLightBulb />
 
         Tips
+      </Link>
+
+      <Link
+        to="/friends"
+        title="Mates"
+        aria-label="Mates"
+        className={
+          location.pathname ===
+          "/friends"
+            ? "active-link"
+            : ""
+        }
+      >
+        <HiOutlineUserGroup />
+
+        Mates
       </Link>
 
       <Link

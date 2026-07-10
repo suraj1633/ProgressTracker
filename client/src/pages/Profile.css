@@ -113,6 +113,10 @@
   gap: 16px;
 }
 
+.profile-header-row .mate-profile-heading-copy {
+  min-width: 0;
+}
+
 .profile-edit-button {
   min-height: 40px;
   display: inline-flex;
@@ -1124,7 +1128,7 @@
     grid-template-rows: none;
     gap: 12px;
     align-items: start;
-    padding-right: 0;
+    padding: 18px 16px;
   }
 
   .profile-sidebar-edit-button {
@@ -1239,6 +1243,7 @@
     min-height: 88px;
     grid-template-columns: 58px minmax(0, 1fr);
     align-self: stretch;
+    justify-self: stretch;
     padding: 12px 14px;
   }
 
@@ -1303,6 +1308,11 @@
     gap: 12px;
   }
 
+  .mate-profile-header-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
   .profile-edit-button {
     width: 100%;
   }
@@ -1352,6 +1362,7 @@
 
   .profile-starter-milestone-card {
     width: 100%;
+    max-width: 100%;
     height: auto;
     min-height: 64px;
     align-self: center;

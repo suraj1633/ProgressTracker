@@ -51,6 +51,74 @@ const userSchema = new mongoose.Schema(
         default: "",
       },
     },
+
+    username: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    avatar: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    mateProfile: {
+      milestone: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+
+      streak: {
+        type: Number,
+        default: null,
+      },
+
+      solved: {
+        type: Number,
+        default: null,
+      },
+
+      total: {
+        type: Number,
+        default: null,
+      },
+
+      difficulty: {
+        Easy: {
+          solved: {
+            type: Number,
+            default: null,
+          },
+          total: {
+            type: Number,
+            default: null,
+          },
+        },
+        Medium: {
+          solved: {
+            type: Number,
+            default: null,
+          },
+          total: {
+            type: Number,
+            default: null,
+          },
+        },
+        Hard: {
+          solved: {
+            type: Number,
+            default: null,
+          },
+          total: {
+            type: Number,
+            default: null,
+          },
+        },
+      },
+    },
   },
   {
     timestamps: true,
