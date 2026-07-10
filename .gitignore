@@ -9,6 +9,8 @@ server/node_modules/
 .env
 .env.*
 !.env.example
+*.env
+*.env.*
 .env.local
 .env.development.local
 .env.test.local
@@ -53,6 +55,12 @@ lerna-debug.log*
 *.pid
 *.seed
 *.pid.lock
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.bak
+*.backup
 tmp/
 temp/
 .tmp/
@@ -72,6 +80,9 @@ playwright-report/
 .vite/
 client/.vite/
 server/.vite/
+.turbo/
+.swc/
+.rollup.cache/
 .eslintcache
 *.tsbuildinfo
 .npm/
@@ -86,6 +97,7 @@ server/.vite/
 ._*
 Thumbs.db
 desktop.ini
+ehthumbs.db
 
 # Editor and IDE files
 .idea/
@@ -101,8 +113,16 @@ desktop.ini
 .vercel/
 .netlify/
 render.yaml.local
+.openai/
 
 # Local tooling
 .codex/
 .agents/
 .junie/
+
+# Secrets and certificates
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
