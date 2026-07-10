@@ -9,7 +9,9 @@ import {
 } from "react-icons/hi2";
 
 import {
+  createMateMessageStream,
   getMateMessages,
+  MATE_CHAT_UPDATED_EVENT,
   sendMateMessage,
 } from "../../services/mateApi";
 import "./MateChatPanel.css";
@@ -19,6 +21,25 @@ const formatMessageTime = (value) =>
     hour: "numeric",
     minute: "2-digit",
   }).format(new Date(value));
+
+const appendUniqueMessage = (
+  currentMessages,
+  nextMessage
+) => {
+  if (
+    currentMessages.some(
+      (message) =>
+        message.id === nextMessage.id
+    )
+  ) {
+    return currentMessages;
+  }
+
+  return [
+    ...currentMessages,
+    nextMessage,
+  ];
+};
 
 const MateChatPanel = ({
   selectedUser,
@@ -62,6 +83,39 @@ const MateChatPanel = ({
   }, [selectedUser.id]);
 
   useEffect(() => {
+    const stream =
+      createMateMessageStream(
+        selectedUser.id,
+        (message) => {
+          setMessages(
+            (currentMessages) =>
+              appendUniqueMessage(
+                currentMessages,
+                message
+              )
+          );
+
+          window.dispatchEvent(
+            new CustomEvent(
+              MATE_CHAT_UPDATED_EVENT,
+              {
+                detail: {
+                  userId:
+                    selectedUser.id,
+                  message,
+                },
+              }
+            )
+          );
+        }
+      );
+
+    return () => {
+      stream?.close();
+    };
+  }, [selectedUser.id]);
+
+  useEffect(() => {
     threadRef.current?.scrollTo({
       top: threadRef.current.scrollHeight,
       behavior: "smooth",
@@ -86,10 +140,12 @@ const MateChatPanel = ({
           text
         );
 
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        message,
-      ]);
+      setMessages((currentMessages) =>
+        appendUniqueMessage(
+          currentMessages,
+          message
+        )
+      );
       setDraft("");
     } finally {
       setIsSending(false);

@@ -6,11 +6,14 @@ export const protect =
     try {
       const authHeader =
         req.headers.authorization;
+      const queryToken =
+        req.query.token;
 
       if (
         !authHeader?.startsWith(
           "Bearer "
-        )
+        ) &&
+        !queryToken
       ) {
         return res.status(401).json({
           message:
@@ -19,7 +22,9 @@ export const protect =
       }
 
       const token =
-        authHeader.split(" ")[1];
+        authHeader?.startsWith("Bearer ")
+          ? authHeader.split(" ")[1]
+          : queryToken;
 
       const decoded =
         jwt.verify(

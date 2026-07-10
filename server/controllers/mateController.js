@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { EventEmitter } from "events";
 
 import User from "../models/User.js";
 import Question from "../models/Question.js";
@@ -12,6 +13,11 @@ const STATUS_VALUES = new Set([
   "none",
 ]);
 
+const mateMessageEvents =
+  new EventEmitter();
+
+mateMessageEvents.setMaxListeners(0);
+
 const getConversationKey = (
   firstUserId,
   secondUserId
@@ -19,6 +25,20 @@ const getConversationKey = (
   [String(firstUserId), String(secondUserId)]
     .sort()
     .join(":");
+
+const getMessagePayload = (
+  message,
+  viewerId
+) => ({
+  id: String(message._id),
+  text: message.text,
+  sender:
+    String(message.sender) ===
+    String(viewerId)
+      ? "me"
+      : "mate",
+  createdAt: message.createdAt,
+});
 
 const getUsername = (user) =>
   (
@@ -605,17 +625,11 @@ export const getMateMessages = async (
     res.json({
       messages:
         conversation?.messages.map(
-          (message) => ({
-            id: String(message._id),
-            text: message.text,
-            sender:
-              String(message.sender) ===
-              String(req.user._id)
-                ? "me"
-                : "mate",
-            createdAt:
-              message.createdAt,
-          })
+          (message) =>
+            getMessagePayload(
+              message,
+              req.user._id
+            )
         ) || [],
     });
   } catch (error) {
@@ -695,13 +709,103 @@ export const sendMateMessage = async (
       ];
 
     res.status(201).json({
-      message: {
-        id: String(message._id),
-        text: message.text,
-        sender: "me",
-        createdAt:
-          message.createdAt,
-      },
+      message: getMessagePayload(
+        message,
+        req.user._id
+      ),
+    });
+
+    mateMessageEvents.emit(
+      conversationKey,
+      {
+        message,
+      }
+    );
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const streamMateMessages = async (
+  req,
+  res
+) => {
+  try {
+    const targetUserId = req.params.id;
+
+    if (
+      !mongoose.Types.ObjectId.isValid(
+        targetUserId
+      )
+    ) {
+      return res.status(400).json({
+        message: "Invalid mate",
+      });
+    }
+
+    const targetExists =
+      await User.exists({
+        _id: targetUserId,
+        isVerified: true,
+      });
+
+    if (!targetExists) {
+      return res.status(404).json({
+        message: "Mate not found",
+      });
+    }
+
+    const conversationKey =
+      getConversationKey(
+        req.user._id,
+        targetUserId
+      );
+
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control":
+        "no-cache, no-transform",
+      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
+    });
+
+    res.write(
+      `event: connected\ndata: ${JSON.stringify(
+        {
+          ok: true,
+        }
+      )}\n\n`
+    );
+
+    const sendMessage = ({ message }) => {
+      res.write(
+        `event: message\ndata: ${JSON.stringify(
+          getMessagePayload(
+            message,
+            req.user._id
+          )
+        )}\n\n`
+      );
+    };
+
+    const heartbeat = setInterval(() => {
+      res.write(": heartbeat\n\n");
+    }, 25000);
+
+    mateMessageEvents.on(
+      conversationKey,
+      sendMessage
+    );
+
+    req.on("close", () => {
+      clearInterval(heartbeat);
+      mateMessageEvents.off(
+        conversationKey,
+        sendMessage
+      );
+      res.end();
     });
   } catch (error) {
     res.status(500).json({

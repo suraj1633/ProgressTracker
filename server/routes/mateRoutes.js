@@ -4,6 +4,7 @@ import {
   getMateMessages,
   getMates,
   sendMateMessage,
+  streamMateMessages,
   updateMateStatus,
 } from "../controllers/mateController.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -17,6 +18,11 @@ router.get("/", getMates);
 router.patch(
   "/:id/status",
   updateMateStatus
+);
+
+router.get(
+  "/:id/messages/stream",
+  streamMateMessages
 );
 
 router.get(

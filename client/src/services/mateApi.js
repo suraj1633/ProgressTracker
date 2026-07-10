@@ -74,3 +74,44 @@ export const sendMateMessage = async (
 
   return data.message;
 };
+
+export const createMateMessageStream = (
+  mateId,
+  onMessage,
+  onError
+) => {
+  const token =
+    localStorage.getItem("authToken");
+
+  if (!token) {
+    return null;
+  }
+
+  const apiUrl =
+    import.meta.env.VITE_API_URL || "";
+  const streamUrl = `${apiUrl}/mates/${mateId}/messages/stream?token=${encodeURIComponent(
+    token
+  )}`;
+  const source =
+    new EventSource(streamUrl);
+
+  source.addEventListener(
+    "message",
+    (event) => {
+      try {
+        onMessage(JSON.parse(event.data));
+      } catch {
+        // Ignore malformed stream messages.
+      }
+    }
+  );
+
+  if (onError) {
+    source.addEventListener(
+      "error",
+      onError
+    );
+  }
+
+  return source;
+};
