@@ -75,6 +75,29 @@ export const sendMateMessage = async (
   return data.message;
 };
 
+export const deleteMateMessage = async (
+  mateId,
+  messageId
+) => {
+  const { data } = await API.delete(
+    `/mates/${mateId}/messages/${messageId}`
+  );
+
+  window.dispatchEvent(
+    new CustomEvent(
+      MATE_CHAT_UPDATED_EVENT,
+      {
+        detail: {
+          userId: mateId,
+          message: data.message,
+        },
+      }
+    )
+  );
+
+  return data.message;
+};
+
 export const createMateMessageStream = (
   mateId,
   onMessage,
@@ -92,6 +115,63 @@ export const createMateMessageStream = (
     import.meta.env.VITE_API_URL || "";
   const streamUrl = new URL(
     `${apiUrl.replace(/\/$/, "")}/mates/${mateId}/messages/stream`,
+    window.location.origin
+  );
+
+  streamUrl.searchParams.set(
+    "token",
+    token
+  );
+
+  const source =
+    new EventSource(
+      streamUrl.toString()
+    );
+
+  if (onOpen) {
+    source.addEventListener(
+      "connected",
+      onOpen
+    );
+  }
+
+  source.addEventListener(
+    "message",
+    (event) => {
+      try {
+        onMessage(JSON.parse(event.data));
+      } catch {
+        // Ignore malformed stream messages.
+      }
+    }
+  );
+
+  if (onError) {
+    source.addEventListener(
+      "error",
+      onError
+    );
+  }
+
+  return source;
+};
+
+export const createMateInboxStream = (
+  onMessage,
+  onError,
+  onOpen
+) => {
+  const token =
+    localStorage.getItem("authToken");
+
+  if (!token) {
+    return null;
+  }
+
+  const apiUrl =
+    import.meta.env.VITE_API_URL || "";
+  const streamUrl = new URL(
+    `${apiUrl.replace(/\/$/, "")}/mates/messages/stream`,
     window.location.origin
   );
 

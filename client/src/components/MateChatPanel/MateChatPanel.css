@@ -134,12 +134,45 @@
   background: var(--theme-accent-soft);
 }
 
+.mate-chat-message-row {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
 .mate-chat-message p {
+  flex: 1 1 auto;
   margin: 0;
   font-size: 14px;
   font-weight: 650;
   line-height: 1.35;
   overflow-wrap: anywhere;
+}
+
+.mate-chat-delete {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--theme-text-muted);
+  opacity: .82;
+}
+
+.mate-chat-delete:hover {
+  border-color: rgba(220, 38, 38, 0.35);
+  background: rgba(220, 38, 38, 0.18);
+  color: #ffffff;
+}
+
+.mate-chat-delete svg {
+  width: 15px;
+  height: 15px;
 }
 
 .mate-chat-message span {

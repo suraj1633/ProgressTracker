@@ -6,10 +6,12 @@ import {
 import {
   HiArrowLeft,
   HiPaperAirplane,
+  HiTrash,
 } from "react-icons/hi2";
 
 import {
   createMateMessageStream,
+  deleteMateMessage,
   getMateMessages,
   MATE_CHAT_UPDATED_EVENT,
   sendMateMessage,
@@ -26,13 +28,29 @@ const appendUniqueMessage = (
   currentMessages,
   nextMessage
 ) => {
-  if (
-    currentMessages.some(
+  if (nextMessage.isDeleted) {
+    return currentMessages.filter(
+      (message) =>
+        message.id !== nextMessage.id
+    );
+  }
+
+  const existingIndex =
+    currentMessages.findIndex(
       (message) =>
         message.id === nextMessage.id
-    )
-  ) {
-    return currentMessages;
+    );
+
+  if (existingIndex >= 0) {
+    return currentMessages.map(
+      (message, index) =>
+        index === existingIndex
+          ? {
+              ...message,
+              ...nextMessage,
+            }
+          : message
+    );
   }
 
   return [
@@ -68,6 +86,10 @@ const MateChatPanel = ({
     useState([]);
   const [isSending, setIsSending] =
     useState(false);
+  const [
+    deletingMessageId,
+    setDeletingMessageId,
+  ] = useState(null);
   const activeMateIdRef = useRef(
     selectedUser.id
   );
@@ -219,6 +241,39 @@ const MateChatPanel = ({
   }, [selectedUser.id]);
 
   useEffect(() => {
+    const handleChatUpdate = (event) => {
+      const { userId, message } =
+        event.detail || {};
+
+      if (
+        userId !== selectedUser.id ||
+        !message
+      ) {
+        return;
+      }
+
+      setMessages((currentMessages) =>
+        appendUniqueMessage(
+          currentMessages,
+          message
+        )
+      );
+    };
+
+    window.addEventListener(
+      MATE_CHAT_UPDATED_EVENT,
+      handleChatUpdate
+    );
+
+    return () => {
+      window.removeEventListener(
+        MATE_CHAT_UPDATED_EVENT,
+        handleChatUpdate
+      );
+    };
+  }, [selectedUser.id]);
+
+  useEffect(() => {
     threadRef.current?.scrollTo({
       top: threadRef.current.scrollHeight,
       behavior: "smooth",
@@ -252,6 +307,33 @@ const MateChatPanel = ({
       setDraft("");
     } finally {
       setIsSending(false);
+    }
+  };
+
+  const handleDeleteMessage = async (
+    messageId
+  ) => {
+    if (deletingMessageId) {
+      return;
+    }
+
+    setDeletingMessageId(messageId);
+
+    try {
+      const message =
+        await deleteMateMessage(
+          selectedUser.id,
+          messageId
+        );
+
+      setMessages((currentMessages) =>
+        appendUniqueMessage(
+          currentMessages,
+          message
+        )
+      );
+    } finally {
+      setDeletingMessageId(null);
     }
   };
 
@@ -306,7 +388,30 @@ const MateChatPanel = ({
                 key={message.id}
                 className={`mate-chat-message ${message.sender}`}
               >
-                <p>{message.text}</p>
+                <div className="mate-chat-message-row">
+                  <p>{message.text}</p>
+
+                  {message.canDelete && (
+                    <button
+                      type="button"
+                      className="mate-chat-delete"
+                      onClick={() =>
+                        handleDeleteMessage(
+                          message.id
+                        )
+                      }
+                      disabled={
+                        deletingMessageId ===
+                        message.id
+                      }
+                      aria-label="Delete message"
+                      title="Delete message"
+                    >
+                      <HiTrash />
+                    </button>
+                  )}
+                </div>
+
                 <span>
                   {formatMessageTime(
                     message.createdAt

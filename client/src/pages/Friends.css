@@ -712,6 +712,19 @@
   color: var(--text-primary);
 }
 
+.mini-mate.has-unread {
+  border-color: var(--theme-border);
+  background:
+    linear-gradient(
+      145deg,
+      var(--theme-accent-soft),
+      rgba(255, 255, 255, 0.06)
+    );
+  box-shadow:
+    0 0 0 1px var(--theme-border),
+    0 0 24px var(--theme-accent-soft);
+}
+
 .mate-result img,
 .mini-mate img {
   width: 36px;
@@ -787,6 +800,30 @@
   font-weight: 850;
   line-height: 1;
   white-space: nowrap;
+}
+
+.mini-mate-meta {
+  min-width: max-content;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  overflow: visible;
+}
+
+.mini-mate-unread {
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 950;
+  line-height: 1;
 }
 
 .mini-mate-time.empty {

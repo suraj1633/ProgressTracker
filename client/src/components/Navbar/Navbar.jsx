@@ -23,6 +23,11 @@ import {
 import {
   getLogoForTheme,
 } from "../../utils/streakLogos";
+import {
+  createMateInboxStream,
+  getMates,
+  MATE_CHAT_UPDATED_EVENT,
+} from "../../services/mateApi";
 
 import "./Navbar.css";
 
@@ -48,6 +53,14 @@ const Navbar = () => {
     profileImage,
     setProfileImage,
   ] = useState(null);
+  const [
+    messageNotice,
+    setMessageNotice,
+  ] = useState(null);
+  const [
+    unreadMessages,
+    setUnreadMessages,
+  ] = useState({});
 
   useEffect(() => {
     const syncLogo = () => {
@@ -108,9 +121,172 @@ const Navbar = () => {
     };
   }, [user]);
 
+  useEffect(() => {
+    if (!user) {
+      return undefined;
+    }
+
+    let isMounted = true;
+    const mateById = new Map();
+    let noticeTimeout = null;
+
+    const showMessageNotice = (
+      mate,
+      message
+    ) => {
+      const notice = {
+        id: `${mate.id}:${message.id}`,
+        title: `${mate.name} sent a message`,
+        text: message.text,
+        avatar: mate.avatar,
+      };
+
+      setMessageNotice(notice);
+
+      if (noticeTimeout) {
+        clearTimeout(noticeTimeout);
+      }
+
+      noticeTimeout = setTimeout(
+        () => {
+          setMessageNotice(null);
+        },
+        4200
+      );
+
+      if (document.hidden) {
+        document.title =
+          notice.title;
+      }
+
+      if (
+        "Notification" in window &&
+        Notification.permission === "granted"
+      ) {
+        new Notification(notice.title, {
+          body: notice.text,
+          icon: notice.avatar,
+        });
+      }
+    };
+
+    const openStreams = async () => {
+      try {
+        const mates = await getMates();
+
+        if (!isMounted) {
+          return;
+        }
+
+        mates.forEach((mate) => {
+          mateById.set(mate.id, mate);
+        });
+      } catch {
+        // Notifications can still work from stream payload ids.
+      }
+    };
+
+    openStreams();
+
+    const stream =
+      createMateInboxStream(
+        ({ userId, message }) => {
+          window.dispatchEvent(
+            new CustomEvent(
+              MATE_CHAT_UPDATED_EVENT,
+              {
+                detail: {
+                  userId,
+                  message,
+                },
+              }
+            )
+          );
+
+          if (
+            message.sender === "mate" &&
+            !message.isDeleted
+          ) {
+            const mate =
+              mateById.get(userId) || {
+                id: userId,
+                name: "Your mate",
+                avatar: "",
+              };
+
+            setUnreadMessages(
+              (currentUnread) => ({
+                ...currentUnread,
+                [userId]:
+                  (currentUnread[
+                    userId
+                  ] || 0) + 1,
+              })
+            );
+
+            showMessageNotice(
+              mate,
+              message
+            );
+          }
+        }
+      );
+
+    const resetTitle = () => {
+      document.title = "DSA Tracker";
+    };
+
+    const requestNotifications = () => {
+      if (
+        "Notification" in window &&
+        Notification.permission ===
+          "default"
+      ) {
+        Notification.requestPermission();
+      }
+    };
+
+    window.addEventListener(
+      "focus",
+      resetTitle
+    );
+    window.addEventListener(
+      "pointerdown",
+      requestNotifications,
+      {
+        once: true,
+      }
+    );
+
+    return () => {
+      isMounted = false;
+
+      stream?.close();
+
+      if (noticeTimeout) {
+        clearTimeout(noticeTimeout);
+      }
+
+      window.removeEventListener(
+        "focus",
+        resetTitle
+      );
+      window.removeEventListener(
+        "pointerdown",
+        requestNotifications
+      );
+    };
+  }, [user]);
+
   const logo =
     getLogoForTheme(
       activeTheme
+    );
+  const unreadMessageCount =
+    Object.values(unreadMessages).reduce(
+      (total, count) =>
+        total + count,
+      0
     );
 
   const handleLogout = () => {
@@ -174,6 +350,9 @@ const Navbar = () => {
         to="/friends"
         title="Mates"
         aria-label="Mates"
+        onClick={() => {
+          setUnreadMessages({});
+        }}
         className={
           location.pathname ===
           "/friends"
@@ -184,6 +363,17 @@ const Navbar = () => {
         <HiOutlineUserGroup />
 
         Mates
+
+        {unreadMessageCount > 0 && (
+          <span
+            className="navbar-unread-badge"
+            aria-label={`${unreadMessageCount} unread messages`}
+          >
+            {unreadMessageCount > 9
+              ? "9+"
+              : unreadMessageCount}
+          </span>
+        )}
       </Link>
 
       <Link
@@ -250,6 +440,29 @@ const Navbar = () => {
           {navItems}
         </div>
       </nav>
+
+      {messageNotice && (
+        <div
+          className="navbar-message-notice"
+          role="status"
+          aria-live="polite"
+        >
+          <img
+            src={messageNotice.avatar}
+            alt=""
+            aria-hidden="true"
+          />
+
+          <div>
+            <strong>
+              {messageNotice.title}
+            </strong>
+            <span>
+              {messageNotice.text}
+            </span>
+          </div>
+        </div>
+      )}
 
       <div
         className="navbar-spacer"

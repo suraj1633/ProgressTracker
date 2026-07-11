@@ -302,6 +302,10 @@ const Friends = () => {
     setProfileBackChatUserId,
   ] = useState(null);
   const [users, setUsers] = useState([]);
+  const [
+    unreadMateMessages,
+    setUnreadMateMessages,
+  ] = useState({});
   const [isLoadingMates, setIsLoadingMates] =
     useState(true);
   const [isDesktopView, setIsDesktopView] =
@@ -381,6 +385,43 @@ const Friends = () => {
       window.removeEventListener(
         MATE_CHAT_UPDATED_EVENT,
         loadMates
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleMateMessage = (event) => {
+      const { userId, message } =
+        event.detail || {};
+
+      if (
+        !userId ||
+        !message ||
+        message.sender !== "mate" ||
+        message.isDeleted
+      ) {
+        return;
+      }
+
+      setUnreadMateMessages(
+        (currentUnread) => ({
+          ...currentUnread,
+          [userId]:
+            (currentUnread[userId] ||
+              0) + 1,
+        })
+      );
+    };
+
+    window.addEventListener(
+      MATE_CHAT_UPDATED_EVENT,
+      handleMateMessage
+    );
+
+    return () => {
+      window.removeEventListener(
+        MATE_CHAT_UPDATED_EVENT,
+        handleMateMessage
       );
     };
   }, []);
@@ -485,6 +526,20 @@ const Friends = () => {
   };
 
   const openMateChat = (userId) => {
+    setUnreadMateMessages(
+      (currentUnread) => {
+        if (!currentUnread[userId]) {
+          return currentUnread;
+        }
+
+        const nextUnread = {
+          ...currentUnread,
+        };
+        delete nextUnread[userId];
+        return nextUnread;
+      }
+    );
+
     if (isDesktopView) {
       setSelectedProfileUserId(null);
       setSelectedChatUserId(userId);
@@ -688,58 +743,81 @@ const Friends = () => {
                     {activeListMeta.users
                       .length > 0 ? (
                       activeListMeta.users.map(
-                        (user) => (
-                          <button
-                            type="button"
-                            key={user.id}
-                            className={`mini-mate ${
-                              selectedChatUserId ===
+                        (user) => {
+                          const unreadCount =
+                            unreadMateMessages[
                               user.id
-                                ? "active"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              activeMateList ===
-                              "mates"
-                                ? openMateChat(
-                                    user.id
-                                  )
-                                : selectMate(
-                                    user.id
-                                  )
-                            }
-                          >
-                            <img
-                              src={user.avatar}
-                              alt=""
-                              aria-hidden="true"
-                            />
-                            <span>
-                              {user.name}
-                            </span>
-                            {activeMateList ===
-                              "mates" &&
-                              (() => {
-                                const lastTime =
-                                  getLastMateMessageTime(
-                                    user
-                                  );
+                            ] || 0;
 
-                                return (
-                                  <span
-                                    className={`mini-mate-time ${
-                                      lastTime
-                                        ? ""
-                                        : "empty"
-                                    }`}
-                                  >
-                                    {lastTime ||
-                                      "--"}
-                                  </span>
-                                );
-                              })()}
-                          </button>
-                        )
+                          return (
+                            <button
+                              type="button"
+                              key={user.id}
+                              className={`mini-mate ${
+                                selectedChatUserId ===
+                                user.id
+                                  ? "active"
+                                  : ""
+                              } ${
+                                unreadCount > 0
+                                  ? "has-unread"
+                                  : ""
+                              }`}
+                              onClick={() =>
+                                activeMateList ===
+                                "mates"
+                                  ? openMateChat(
+                                      user.id
+                                    )
+                                  : selectMate(
+                                      user.id
+                                    )
+                              }
+                            >
+                              <img
+                                src={user.avatar}
+                                alt=""
+                                aria-hidden="true"
+                              />
+                              <span>
+                                {user.name}
+                              </span>
+                              {activeMateList ===
+                                "mates" &&
+                                (() => {
+                                  const lastTime =
+                                    getLastMateMessageTime(
+                                      user
+                                    );
+
+                                  return (
+                                    <span className="mini-mate-meta">
+                                      {unreadCount >
+                                        0 && (
+                                        <b className="mini-mate-unread">
+                                          {unreadCount >
+                                          9
+                                            ? "9+"
+                                            : unreadCount}
+                                        </b>
+                                      )}
+
+                                      <span
+                                        className={`mini-mate-time ${
+                                          lastTime
+                                            ? ""
+                                            : "empty"
+                                        }`}
+                                      >
+                                        {lastTime ||
+                                          "--"}
+                                      </span>
+                                    </span>
+                                  );
+                                })()}
+                            </button>
+                          );
+                        }
                       )
                     ) : (
                       <div className="mate-empty compact-empty">

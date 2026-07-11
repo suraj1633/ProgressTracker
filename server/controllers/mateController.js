@@ -26,18 +26,64 @@ const getConversationKey = (
     .sort()
     .join(":");
 
+const getUserMessageEventKey = (
+  userId
+) => `user:${String(userId)}`;
+
+const emitMateMessageEvent = ({
+  conversationKey,
+  message,
+  currentUserId,
+  targetUserId,
+}) => {
+  mateMessageEvents.emit(
+    conversationKey,
+    {
+      message,
+    }
+  );
+
+  mateMessageEvents.emit(
+    getUserMessageEventKey(
+      currentUserId
+    ),
+    {
+      mateId: targetUserId,
+      message,
+    }
+  );
+
+  mateMessageEvents.emit(
+    getUserMessageEventKey(
+      targetUserId
+    ),
+    {
+      mateId: currentUserId,
+      message,
+    }
+  );
+};
+
 const getMessagePayload = (
   message,
   viewerId
 ) => ({
   id: String(message._id),
-  text: message.text,
+  text: message.deletedAt
+    ? ""
+    : message.text,
   sender:
     String(message.sender) ===
     String(viewerId)
       ? "me"
       : "mate",
   createdAt: message.createdAt,
+  isDeleted: Boolean(message.deletedAt),
+  deletedAt: message.deletedAt,
+  canDelete:
+    !message.deletedAt &&
+    String(message.sender) ===
+      String(viewerId),
 });
 
 const getUsername = (user) =>
@@ -391,10 +437,12 @@ const getMatesForUser = async (
               String(currentUserId)
           );
       const lastMessage =
-        conversation.messages[
-          conversation.messages.length -
-            1
-        ];
+        [...conversation.messages]
+          .reverse()
+          .find(
+            (message) =>
+              !message.deletedAt
+          );
 
       if (otherUserId && lastMessage) {
         lastMessageByUser.set(
@@ -624,13 +672,17 @@ export const getMateMessages = async (
 
     res.json({
       messages:
-        conversation?.messages.map(
-          (message) =>
+        conversation?.messages
+          .filter(
+            (message) =>
+              !message.deletedAt
+          )
+          .map((message) =>
             getMessagePayload(
               message,
               req.user._id
             )
-        ) || [],
+          ) || [],
     });
   } catch (error) {
     res.status(500).json({
@@ -715,12 +767,95 @@ export const sendMateMessage = async (
       ),
     });
 
-    mateMessageEvents.emit(
+    emitMateMessageEvent({
       conversationKey,
-      {
+      message,
+      currentUserId: req.user._id,
+      targetUserId,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const deleteMateMessage = async (
+  req,
+  res
+) => {
+  try {
+    const targetUserId = req.params.id;
+    const messageId =
+      req.params.messageId;
+
+    if (
+      !mongoose.Types.ObjectId.isValid(
+        targetUserId
+      ) ||
+      !mongoose.Types.ObjectId.isValid(
+        messageId
+      )
+    ) {
+      return res.status(400).json({
+        message: "Invalid message",
+      });
+    }
+
+    const conversationKey =
+      getConversationKey(
+        req.user._id,
+        targetUserId
+      );
+
+    const conversation =
+      await MateConversation.findOne({
+        conversationKey,
+      });
+
+    const message =
+      conversation?.messages.id(
+        messageId
+      );
+
+    if (!message) {
+      return res.status(404).json({
+        message: "Message not found",
+      });
+    }
+
+    if (
+      String(message.sender) !==
+      String(req.user._id)
+    ) {
+      return res.status(403).json({
+        message:
+          "You can only delete your own messages",
+      });
+    }
+
+    if (!message.deletedAt) {
+      message.deletedAt = new Date();
+      message.deletedBy = req.user._id;
+      await conversation.save();
+    }
+
+    const payload =
+      getMessagePayload(
         message,
-      }
-    );
+        req.user._id
+      );
+
+    res.json({
+      message: payload,
+    });
+
+    emitMateMessageEvent({
+      conversationKey,
+      message,
+      currentUserId: req.user._id,
+      targetUserId,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -805,6 +940,75 @@ export const streamMateMessages = async (
       clearInterval(heartbeat);
       mateMessageEvents.off(
         conversationKey,
+        sendMessage
+      );
+      res.end();
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const streamMateInbox = async (
+  req,
+  res
+) => {
+  try {
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control":
+        "no-cache, no-transform",
+      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
+    });
+
+    res.write("retry: 1500\n");
+
+    res.write(
+      `event: connected\ndata: ${JSON.stringify(
+        {
+          ok: true,
+        }
+      )}\n\n`
+    );
+
+    const sendMessage = ({
+      mateId,
+      message,
+    }) => {
+      res.write(
+        `event: message\ndata: ${JSON.stringify(
+          {
+            userId: String(mateId),
+            message: getMessagePayload(
+              message,
+              req.user._id
+            ),
+          }
+        )}\n\n`
+      );
+    };
+
+    const heartbeat = setInterval(() => {
+      res.write(": heartbeat\n\n");
+    }, 25000);
+
+    const eventKey =
+      getUserMessageEventKey(
+        req.user._id
+      );
+
+    mateMessageEvents.on(
+      eventKey,
+      sendMessage
+    );
+
+    req.on("close", () => {
+      clearInterval(heartbeat);
+      mateMessageEvents.off(
+        eventKey,
         sendMessage
       );
       res.end();
