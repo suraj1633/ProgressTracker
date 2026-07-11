@@ -24,6 +24,8 @@ import MateChatPanel from "../components/MateChatPanel/MateChatPanel";
 import MateProfilePanel from "../components/MateProfilePanel/MateProfilePanel";
 import {
   getMates as fetchMates,
+  hasUnreadMateMessage,
+  markMateMessageRead,
   MATE_CHAT_UPDATED_EVENT,
   MATE_STATUS_UPDATED_EVENT,
   updateMateStatus as persistMateStatus,
@@ -285,6 +287,16 @@ const getLastMateMessageTime = (user) =>
     user.lastMessageAt
   );
 
+const getLastMateMessagePreview = (user) => {
+  if (!user.lastMessage?.text) {
+    return "No messages yet";
+  }
+
+  return user.lastMessage.sender === "me"
+    ? `You: ${user.lastMessage.text}`
+    : user.lastMessage.text;
+};
+
 const Friends = () => {
   const navigate = useNavigate();
   const [query, setQuery] =
@@ -348,6 +360,22 @@ const Friends = () => {
 
         if (isMounted) {
           setUsers(mates);
+          setUnreadMateMessages(
+            mates.reduce(
+              (nextUnread, mate) => {
+                if (
+                  hasUnreadMateMessage(
+                    mate
+                  )
+                ) {
+                  nextUnread[mate.id] = 1;
+                }
+
+                return nextUnread;
+              },
+              {}
+            )
+          );
         }
       } finally {
         if (isMounted) {
@@ -366,13 +394,15 @@ const Friends = () => {
       "focus",
       loadMates
     );
-    window.addEventListener(
-      MATE_CHAT_UPDATED_EVENT,
-      loadMates
+
+    const pollMates = setInterval(
+      loadMates,
+      3500
     );
 
     return () => {
       isMounted = false;
+      clearInterval(pollMates);
 
       window.removeEventListener(
         MATE_STATUS_UPDATED_EVENT,
@@ -380,10 +410,6 @@ const Friends = () => {
       );
       window.removeEventListener(
         "focus",
-        loadMates
-      );
-      window.removeEventListener(
-        MATE_CHAT_UPDATED_EVENT,
         loadMates
       );
     };
@@ -396,7 +422,34 @@ const Friends = () => {
 
       if (
         !userId ||
-        !message ||
+        !message
+      ) {
+        return;
+      }
+
+      if (!message.isDeleted) {
+        setUsers((currentUsers) =>
+          currentUsers.map((user) =>
+            user.id === userId
+              ? {
+                  ...user,
+                  lastMessageAt:
+                    message.createdAt,
+                  lastMessage: {
+                    id: message.id,
+                    text: message.text,
+                    sender:
+                      message.sender,
+                    createdAt:
+                      message.createdAt,
+                  },
+                }
+              : user
+          )
+        );
+      }
+
+      if (
         message.sender !== "mate" ||
         message.isDeleted
       ) {
@@ -406,9 +459,7 @@ const Friends = () => {
       setUnreadMateMessages(
         (currentUnread) => ({
           ...currentUnread,
-          [userId]:
-            (currentUnread[userId] ||
-              0) + 1,
+          [userId]: 1,
         })
       );
     };
@@ -526,6 +577,17 @@ const Friends = () => {
   };
 
   const openMateChat = (userId) => {
+    const mate = users.find(
+      (user) => user.id === userId
+    );
+
+    if (mate?.lastMessage?.id) {
+      markMateMessageRead(
+        userId,
+        mate.lastMessage.id
+      );
+    }
+
     setUnreadMateMessages(
       (currentUnread) => {
         if (!currentUnread[userId]) {
@@ -779,8 +841,18 @@ const Friends = () => {
                                 alt=""
                                 aria-hidden="true"
                               />
-                              <span>
-                                {user.name}
+                              <span className="mini-mate-copy">
+                                <strong>
+                                  {user.name}
+                                </strong>
+                                {activeMateList ===
+                                  "mates" && (
+                                  <small>
+                                    {getLastMateMessagePreview(
+                                      user
+                                    )}
+                                  </small>
+                                )}
                               </span>
                               {activeMateList ===
                                 "mates" &&

@@ -26,7 +26,9 @@ import {
 import {
   createMateInboxStream,
   getMates,
+  hasUnreadMateMessage,
   MATE_CHAT_UPDATED_EVENT,
+  MATE_MESSAGE_READ_EVENT,
 } from "../../services/mateApi";
 
 import "./Navbar.css";
@@ -181,9 +183,49 @@ const Navbar = () => {
         mates.forEach((mate) => {
           mateById.set(mate.id, mate);
         });
+
+        setUnreadMessages(
+          mates.reduce((nextUnread, mate) => {
+            if (hasUnreadMateMessage(mate)) {
+              nextUnread[mate.id] = 1;
+            }
+
+            return nextUnread;
+          }, {})
+        );
       } catch {
         // Notifications can still work from stream payload ids.
       }
+    };
+
+    const handleIncomingMessage = (
+      userId,
+      message
+    ) => {
+      if (
+        !userId ||
+        !message ||
+        message.sender !== "mate" ||
+        message.isDeleted
+      ) {
+        return;
+      }
+
+      const mate =
+        mateById.get(userId) || {
+          id: userId,
+          name: "Your mate",
+          avatar: "",
+        };
+
+      setUnreadMessages(
+        (currentUnread) => ({
+          ...currentUnread,
+          [userId]: 1,
+        })
+      );
+
+      showMessageNotice(mate, message);
     };
 
     openStreams();
@@ -203,34 +245,43 @@ const Navbar = () => {
             )
           );
 
-          if (
-            message.sender === "mate" &&
-            !message.isDeleted
-          ) {
-            const mate =
-              mateById.get(userId) || {
-                id: userId,
-                name: "Your mate",
-                avatar: "",
-              };
-
-            setUnreadMessages(
-              (currentUnread) => ({
-                ...currentUnread,
-                [userId]:
-                  (currentUnread[
-                    userId
-                  ] || 0) + 1,
-              })
-            );
-
-            showMessageNotice(
-              mate,
-              message
-            );
-          }
+          handleIncomingMessage(
+            userId,
+            message
+          );
         }
       );
+
+    const pollLatestMessages = async () => {
+      try {
+        const mates = await getMates();
+
+        if (!isMounted) {
+          return;
+        }
+
+        mates.forEach((mate) => {
+          mateById.set(mate.id, mate);
+        });
+
+        setUnreadMessages(
+          mates.reduce((nextUnread, mate) => {
+            if (hasUnreadMateMessage(mate)) {
+              nextUnread[mate.id] = 1;
+            }
+
+            return nextUnread;
+          }, {})
+        );
+      } catch {
+        // Keep the stream as the primary path.
+      }
+    };
+
+    const pollInbox = setInterval(
+      pollLatestMessages,
+      3500
+    );
 
     const resetTitle = () => {
       document.title = "DSA Tracker";
@@ -246,9 +297,36 @@ const Navbar = () => {
       }
     };
 
+    const clearReadMessage = (event) => {
+      const userId =
+        event.detail?.userId;
+
+      if (!userId) {
+        return;
+      }
+
+      setUnreadMessages(
+        (currentUnread) => {
+          if (!currentUnread[userId]) {
+            return currentUnread;
+          }
+
+          const nextUnread = {
+            ...currentUnread,
+          };
+          delete nextUnread[userId];
+          return nextUnread;
+        }
+      );
+    };
+
     window.addEventListener(
       "focus",
       resetTitle
+    );
+    window.addEventListener(
+      MATE_MESSAGE_READ_EVENT,
+      clearReadMessage
     );
     window.addEventListener(
       "pointerdown",
@@ -262,6 +340,7 @@ const Navbar = () => {
       isMounted = false;
 
       stream?.close();
+      clearInterval(pollInbox);
 
       if (noticeTimeout) {
         clearTimeout(noticeTimeout);
@@ -270,6 +349,10 @@ const Navbar = () => {
       window.removeEventListener(
         "focus",
         resetTitle
+      );
+      window.removeEventListener(
+        MATE_MESSAGE_READ_EVENT,
+        clearReadMessage
       );
       window.removeEventListener(
         "pointerdown",

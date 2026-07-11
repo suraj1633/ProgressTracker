@@ -315,7 +315,7 @@ const getMatePayload = ({
   user,
   stats,
   status,
-  lastMessageAt,
+  lastMessage,
 }) => {
   const profile =
     user.mateProfile || {};
@@ -362,7 +362,21 @@ const getMatePayload = ({
         "",
     },
     status,
-    lastMessageAt,
+    lastMessageAt:
+      lastMessage?.createdAt || null,
+    lastMessage: lastMessage
+      ? {
+          id: String(lastMessage._id),
+          text: lastMessage.text,
+          sender:
+            String(lastMessage.sender) ===
+            String(user._id)
+              ? "mate"
+              : "me",
+          createdAt:
+            lastMessage.createdAt,
+        }
+      : null,
   };
 };
 
@@ -405,7 +419,7 @@ const getMatesForUser = async (
     MateConversation.find({
       participants: currentUserId,
     }).select(
-      "participants messages.createdAt"
+      "participants messages.text messages.sender messages.createdAt messages.deletedAt"
     ),
   ]);
 
@@ -447,7 +461,7 @@ const getMatesForUser = async (
       if (otherUserId && lastMessage) {
         lastMessageByUser.set(
           otherUserId,
-          lastMessage.createdAt
+          lastMessage
         );
       }
     }
@@ -485,7 +499,7 @@ const getMatesForUser = async (
         ),
         currentUserId
       ),
-      lastMessageAt:
+      lastMessage:
         lastMessageByUser.get(
           String(user._id)
         ) || null,

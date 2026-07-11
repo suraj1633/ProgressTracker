@@ -4,6 +4,54 @@ export const MATE_STATUS_UPDATED_EVENT =
   "mate-status-updated";
 export const MATE_CHAT_UPDATED_EVENT =
   "mate-chat-updated";
+export const MATE_MESSAGE_READ_EVENT =
+  "mate-message-read";
+
+const getMateReadKey = (mateId) =>
+  `mateLastReadMessage:${mateId}`;
+
+export const getReadMateMessageId = (
+  mateId
+) =>
+  localStorage.getItem(
+    getMateReadKey(mateId)
+  );
+
+export const markMateMessageRead = (
+  mateId,
+  messageId
+) => {
+  if (!mateId || !messageId) {
+    return;
+  }
+
+  localStorage.setItem(
+    getMateReadKey(mateId),
+    messageId
+  );
+
+  window.dispatchEvent(
+    new CustomEvent(
+      MATE_MESSAGE_READ_EVENT,
+      {
+        detail: {
+          userId: mateId,
+          messageId,
+        },
+      }
+    )
+  );
+};
+
+export const hasUnreadMateMessage = (
+  mate
+) =>
+  Boolean(
+    mate?.lastMessage?.id &&
+      mate.lastMessage.sender === "mate" &&
+      getReadMateMessageId(mate.id) !==
+        mate.lastMessage.id
+  );
 
 export const getMates = async () => {
   const { data } = await API.get(

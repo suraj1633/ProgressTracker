@@ -134,6 +134,10 @@
   background: var(--theme-accent-soft);
 }
 
+.mate-chat-message.can-delete {
+  cursor: pointer;
+}
+
 .mate-chat-message-row {
   min-width: 0;
   display: flex;

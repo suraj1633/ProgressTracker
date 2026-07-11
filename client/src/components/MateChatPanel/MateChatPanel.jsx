@@ -337,6 +337,18 @@ const MateChatPanel = ({
     }
   };
 
+  const requestDeleteMessage = (
+    messageId
+  ) => {
+    if (
+      window.confirm(
+        "Delete this message?"
+      )
+    ) {
+      handleDeleteMessage(messageId);
+    }
+  };
+
   return (
     <div
       className={`mate-chat-panel ${
@@ -386,7 +398,38 @@ const MateChatPanel = ({
             messages.map((message) => (
               <div
                 key={message.id}
-                className={`mate-chat-message ${message.sender}`}
+                className={`mate-chat-message ${message.sender} ${
+                  message.canDelete
+                    ? "can-delete"
+                    : ""
+                }`}
+                role={
+                  message.canDelete
+                    ? "button"
+                    : undefined
+                }
+                tabIndex={
+                  message.canDelete ? 0 : undefined
+                }
+                onClick={() => {
+                  if (message.canDelete) {
+                    requestDeleteMessage(
+                      message.id
+                    );
+                  }
+                }}
+                onKeyDown={(event) => {
+                  if (
+                    message.canDelete &&
+                    (event.key === "Enter" ||
+                      event.key === " ")
+                  ) {
+                    event.preventDefault();
+                    requestDeleteMessage(
+                      message.id
+                    );
+                  }
+                }}
               >
                 <div className="mate-chat-message-row">
                   <p>{message.text}</p>
@@ -395,11 +438,12 @@ const MateChatPanel = ({
                     <button
                       type="button"
                       className="mate-chat-delete"
-                      onClick={() =>
-                        handleDeleteMessage(
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        requestDeleteMessage(
                           message.id
-                        )
-                      }
+                        );
+                      }}
                       disabled={
                         deletingMessageId ===
                         message.id
