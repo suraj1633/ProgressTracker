@@ -13,6 +13,7 @@ import {
   createMateMessageStream,
   deleteMateMessage,
   getMateMessages,
+  markMateMessageRead,
   MATE_CHAT_UPDATED_EVENT,
   sendMateMessage,
 } from "../../services/mateApi";
@@ -279,6 +280,18 @@ const MateChatPanel = ({
       behavior: "smooth",
     });
   }, [messages]);
+
+  useEffect(() => {
+    const latestMessage =
+      messages[messages.length - 1];
+
+    if (latestMessage?.id) {
+      markMateMessageRead(
+        selectedUser.id,
+        latestMessage.id
+      );
+    }
+  }, [messages, selectedUser.id]);
 
   const sendMessage = async (event) => {
     event.preventDefault();
