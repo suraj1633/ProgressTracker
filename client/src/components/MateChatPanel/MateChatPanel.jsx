@@ -41,6 +41,15 @@ const appendUniqueMessage = (
   ];
 };
 
+const mergeUniqueMessages = (
+  currentMessages,
+  nextMessages
+) =>
+  nextMessages.reduce(
+    appendUniqueMessage,
+    currentMessages
+  );
+
 const MateChatPanel = ({
   selectedUser,
   onBack,
@@ -48,16 +57,44 @@ const MateChatPanel = ({
   embedded = false,
 }) => {
   const threadRef = useRef(null);
-  const [draft, setDraft] = useState("");
+  const [
+    draftState,
+    setDraftState,
+  ] = useState({
+    mateId: selectedUser.id,
+    value: "",
+  });
   const [messages, setMessages] =
     useState([]);
   const [isSending, setIsSending] =
     useState(false);
+  const activeMateIdRef = useRef(
+    selectedUser.id
+  );
+
+  useEffect(() => {
+    activeMateIdRef.current =
+      selectedUser.id;
+  }, [selectedUser.id]);
+
+  const draft =
+    draftState.mateId === selectedUser.id
+      ? draftState.value
+      : "";
+
+  const setDraft = (value) => {
+    setDraftState({
+      mateId: selectedUser.id,
+      value,
+    });
+  };
 
   useEffect(() => {
     let isMounted = true;
 
-    const loadThread = async () => {
+    const loadThread = async (
+      replace = false
+    ) => {
       try {
         const nextMessages =
           await getMateMessages(
@@ -65,24 +102,85 @@ const MateChatPanel = ({
           );
 
         if (isMounted) {
-          setMessages(nextMessages);
+          setMessages(
+            (currentMessages) =>
+              replace
+                ? nextMessages
+                : mergeUniqueMessages(
+                    currentMessages,
+                    nextMessages
+                  )
+          );
         }
       } catch {
-        if (isMounted) {
+        if (isMounted && replace) {
           setMessages([]);
         }
       }
     };
 
-    loadThread();
-    setDraft("");
+    loadThread(true);
+
+    const syncThread = () => {
+      loadThread(false);
+    };
+
+    const pollThread = setInterval(
+      syncThread,
+      2500
+    );
+
+    window.addEventListener(
+      "focus",
+      syncThread
+    );
+    document.addEventListener(
+      "visibilitychange",
+      syncThread
+    );
 
     return () => {
       isMounted = false;
+      clearInterval(pollThread);
+      window.removeEventListener(
+        "focus",
+        syncThread
+      );
+      document.removeEventListener(
+        "visibilitychange",
+        syncThread
+      );
     };
   }, [selectedUser.id]);
 
   useEffect(() => {
+    let isMounted = true;
+
+    const syncThread = async () => {
+      try {
+        const nextMessages =
+          await getMateMessages(
+            selectedUser.id
+          );
+
+        if (
+          isMounted &&
+          activeMateIdRef.current ===
+            selectedUser.id
+        ) {
+          setMessages(
+            (currentMessages) =>
+              mergeUniqueMessages(
+                currentMessages,
+                nextMessages
+              )
+          );
+        }
+      } catch {
+        // The interval fallback in the thread loader will retry.
+      }
+    };
+
     const stream =
       createMateMessageStream(
         selectedUser.id,
@@ -107,10 +205,15 @@ const MateChatPanel = ({
               }
             )
           );
-        }
+        },
+        syncThread,
+        syncThread
       );
 
+    syncThread();
+
     return () => {
+      isMounted = false;
       stream?.close();
     };
   }, [selectedUser.id]);

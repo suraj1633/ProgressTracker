@@ -112,6 +112,11 @@ const Home = () => {
         </div>
       </nav>
 
+      <div
+        className="navbar-spacer"
+        aria-hidden="true"
+      />
+
       <section className="home-hero">
         <div className="home-copy">
           <h1>

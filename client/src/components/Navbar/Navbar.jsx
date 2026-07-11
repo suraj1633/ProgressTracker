@@ -251,6 +251,11 @@ const Navbar = () => {
         </div>
       </nav>
 
+      <div
+        className="navbar-spacer"
+        aria-hidden="true"
+      />
+
       <nav
         className="mobile-bottom-nav"
         aria-label="Mobile navigation"

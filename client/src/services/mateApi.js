@@ -78,7 +78,8 @@ export const sendMateMessage = async (
 export const createMateMessageStream = (
   mateId,
   onMessage,
-  onError
+  onError,
+  onOpen
 ) => {
   const token =
     localStorage.getItem("authToken");
@@ -89,11 +90,27 @@ export const createMateMessageStream = (
 
   const apiUrl =
     import.meta.env.VITE_API_URL || "";
-  const streamUrl = `${apiUrl}/mates/${mateId}/messages/stream?token=${encodeURIComponent(
+  const streamUrl = new URL(
+    `${apiUrl.replace(/\/$/, "")}/mates/${mateId}/messages/stream`,
+    window.location.origin
+  );
+
+  streamUrl.searchParams.set(
+    "token",
     token
-  )}`;
+  );
+
   const source =
-    new EventSource(streamUrl);
+    new EventSource(
+      streamUrl.toString()
+    );
+
+  if (onOpen) {
+    source.addEventListener(
+      "connected",
+      onOpen
+    );
+  }
 
   source.addEventListener(
     "message",

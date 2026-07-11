@@ -1,5 +1,11 @@
+.navbar,
+.navbar-spacer {
+  --navbar-height: 76px;
+}
+
 .navbar {
-  height: 76px;
+  height: var(--navbar-height);
+  width: 100%;
 
   display: flex;
   align-items: center;
@@ -8,8 +14,10 @@
 
   padding: 0 clamp(22px, 4vw, 50px);
 
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
 
   backdrop-filter: blur(20px);
@@ -28,6 +36,11 @@
 
   box-shadow:
     var(--theme-glass-shadow);
+}
+
+.navbar-spacer {
+  height: var(--navbar-height, 76px);
+  flex: 0 0 auto;
 }
 
 /* =========================
@@ -238,8 +251,12 @@
 }
 
 @media (max-width: 768px) {
+  .navbar,
+  .navbar-spacer {
+    --navbar-height: 72px;
+  }
+
   .navbar {
-    height: 72px;
     justify-content: flex-start;
     padding: 0 16px;
     gap: 0;

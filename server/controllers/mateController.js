@@ -771,6 +771,8 @@ export const streamMateMessages = async (
       "X-Accel-Buffering": "no",
     });
 
+    res.write("retry: 1500\n");
+
     res.write(
       `event: connected\ndata: ${JSON.stringify(
         {
